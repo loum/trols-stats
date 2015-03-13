@@ -25,9 +25,11 @@ class TestScraper(unittest2.TestCase):
         html = html_fh.read()
         html_fh.close()
 
+        # and an xpath definition to target the extraction
+        xpath = '//a[contains(@onclick, "open_match")]'
+
         # when I scrape the page for match_ids
-        scraper = trols_stats.Scraper()
-        received = scraper.scrape_match_ids(html)
+        received = trols_stats.Scraper.scrape_match_ids(html, xpath)
 
         # then I should receive a list of match IDs
         expected = ['AA039011',
@@ -58,3 +60,28 @@ class TestScraper(unittest2.TestCase):
         expected = 'AA039054'
         msg = 'Match ID extraction error'
         self.assertEqual(received, expected, msg)
+
+    def test_scrape_match_teams_no_color_code(self):
+        """Test scrape_match_teams: no color code.
+        """
+        # Given a TROLS detailed match results page
+        html_fh = open(os.path.join('trols_stats',
+                                    'tests',
+                                    'files',
+                                    'www.trols.org.au',
+                                    'nejta',
+                                    'match_popup.php?matchid=AA039054.html'))
+        html = html_fh.read()
+        html_fh.close()
+
+        # and an xpath definition to target the team extraction
+        xpath = '//table/tr/td/b'
+
+        # when I extract the teams
+        received = trols_stats.Scraper.scrape_match_teams(html, xpath)
+
+        # then I should receive a populated dictionary of the form
+        # {'home': <home_team>, 'away': <away_team>}
+        expected = {'away': 'St Marys', 'home': 'Watsonia '}
+        msg = 'Scraped match detail teams error'
+        self.assertDictEqual(received, expected, msg)

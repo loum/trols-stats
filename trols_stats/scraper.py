@@ -7,11 +7,8 @@ __all__ = ['Scraper']
 
 
 class Scraper(object):
-    def __init__(self):
-        log.debug('Scraper __init__')
-
     @staticmethod
-    def scrape_match_ids(html):
+    def scrape_match_ids(html, xpath):
         """Extract a list of match IDs from *html*.
 
 
@@ -31,7 +28,7 @@ class Scraper(object):
 
         """
         root = lxml.html.fromstring(html)
-        matches = root.xpath('//a[contains(@onclick, "open_match")]')
+        matches = root.xpath(xpath)
 
         match_ids = []
         for match in matches:
@@ -73,3 +70,49 @@ class Scraper(object):
                 log.debug('Found match ID: %s' % match_id)
 
         return match_id
+
+    @staticmethod
+    def scrape_match_teams(html, xpath, color_xpath=None):
+        """Extract information from the match details *html*.
+
+        **Args:**
+            *html*: string representation of the HTML page to process.
+            *html* is typically a TROLS detailed match results page.
+
+        **Returns:**
+            list of match IDs.  For example::
+
+                ['AA039054', <match_id_02>, <match_id_03> ...]
+
+        """
+        root = lxml.html.fromstring(html)
+        raw_teams = root.xpath(xpath)
+
+        teams = {}
+        if len(raw_teams) != 2:
+            log.warn('Expecting two teams. Received %d' % len(raw_teams))
+        else:
+            home_team = raw_teams[0].text.replace(u'\xa0', u' ')
+            away_team = raw_teams[1].text.replace(u'\xa0', u' ')
+
+            
+
+            teams['home'] = home_team
+            teams['away'] = away_team
+
+        log.debug('Teams extracted: "%s"' % teams)
+
+        return teams
+
+    def get_team_color(self, team, html, xpath):
+        """Multi-team color coding check.
+
+        """
+        if color_xpath is not None:
+            log.debug('color_path: %s' % color_xpath)
+            for team in [home_team, away_team]:
+                match = re.search('.*\s+$', team)
+                if match:
+                    color = root.xpath(color_xpath)
+                    log.debug('Found team color: %s' % color[0].text)
+                        team = team + color[0].text
