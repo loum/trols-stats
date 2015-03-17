@@ -5,6 +5,19 @@ import trols_stats
 
 
 class TestScraper(unittest2.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        test_files_dir = os.path.join('trols_stats',
+                                      'tests',
+                                      'files',
+                                      'www.trols.org.au',
+                                      'nejta')
+        detailed_results_page = 'match_popup.php?matchid=AA039054.html'
+
+        html_fh = open(os.path.join(test_files_dir, detailed_results_page))
+        cls._detailed_results_html = html_fh.read()
+        html_fh.close()
+
     def test_init(self):
         """Initialise a trols_stats.Scraper object.
         """
@@ -65,14 +78,7 @@ class TestScraper(unittest2.TestCase):
         """Test scrape_match_teams: no color code.
         """
         # Given a TROLS detailed match results page
-        html_fh = open(os.path.join('trols_stats',
-                                    'tests',
-                                    'files',
-                                    'www.trols.org.au',
-                                    'nejta',
-                                    'match_popup.php?matchid=AA039054.html'))
-        html = html_fh.read()
-        html_fh.close()
+        html = self._detailed_results_html
 
         # and an xpath definition to target the team extraction
         xpath = '//table/tr/td/b'
@@ -90,14 +96,7 @@ class TestScraper(unittest2.TestCase):
         """Test scrape_match_teams: no color code.
         """
         # Given a TROLS detailed match results page
-        html_fh = open(os.path.join('trols_stats',
-                                    'tests',
-                                    'files',
-                                    'www.trols.org.au',
-                                    'nejta',
-                                    'match_popup.php?matchid=AA039054.html'))
-        html = html_fh.read()
-        html_fh.close()
+        html = self._detailed_results_html
 
         # and an xpath definition to target the team extraction
         xpath = '//table/tr/td/b'
@@ -115,3 +114,31 @@ class TestScraper(unittest2.TestCase):
         expected = {'away': 'St Marys', 'home': 'Watsonia Red'}
         msg = 'Scraped match detail teams error'
         self.assertDictEqual(received, expected, msg)
+
+    def test_scrape_player_names(self):
+        """Extract player names from detailed results page.
+        """
+        # Given a TROLS detailed match results page
+        html = self._detailed_results_html
+
+        # when I extract the player names
+        received = trols_stats.Scraper.scrape_player_names(html)
+
+        # then I should receive an enumerated type of the form
+        # (1: <player_1>, 2: <player_2>, ...)
+        expected = [
+            (1, 'Madeline Doyle'),
+            (2, 'Tara Watson'),
+            (3, 'Alexis McIntosh'),
+            (4, 'Grace Heaver'),
+            (5, 'Lauren Amsing'),
+            (6, 'Mia Bovalino'),
+            (7, 'Lucinda Ford'),
+            (8, 'Brooke Moore')
+        ]
+        msg = 'Player extraction from match details error'
+        self.assertListEqual(received, expected, msg)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._detailed_results_html = None

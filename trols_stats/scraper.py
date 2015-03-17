@@ -119,3 +119,30 @@ class Scraper(object):
         log.debug('Teams extracted: "%s"' % teams)
 
         return teams
+
+    @staticmethod
+    def scrape_player_names(html):
+        """Highly customised extract  of player names from *html*.
+
+        **Args:**
+            *html*: string representation of the HTML page to process.
+            *html* is typically a TROLS match results page.
+
+        **Returns:**
+            list of player names.  For example::
+
+                [(1, 'Madeline Doyle'), (2, 'Tara Watson'), ...]
+
+        """
+        root = lxml.html.fromstring(html)
+
+        namespaces = {"re": "http://exslt.org/regular-expressions"}
+        elements = root.xpath("//td[re:match(text(), '^\d\.')]/text()",
+                              namespaces=namespaces)
+
+        player_re = re.compile('^\d\.\s+')
+        players = [(i, player_re.sub('', j)) for i, j in enumerate(elements,
+                                                                   start=1)]
+
+        log.debug('Players extracted: %s' % players)
+        return players
