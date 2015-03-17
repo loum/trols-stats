@@ -85,6 +85,15 @@ class Scraper(object):
                 ['AA039054', <match_id_02>, <match_id_03> ...]
 
         """
+        def get_team_color_code(root, team, xpath):
+            color_xpath = xpath % team
+            log.debug('Team color xpath "%s"' % color_xpath)
+            color = root.xpath(color_xpath)
+            if len(color):
+                team += color[0]
+
+            return team
+
         root = lxml.html.fromstring(html)
         raw_teams = root.xpath(xpath)
 
@@ -92,27 +101,21 @@ class Scraper(object):
         if len(raw_teams) != 2:
             log.warn('Expecting two teams. Received %d' % len(raw_teams))
         else:
-            home_team = raw_teams[0].text.replace(u'\xa0', u' ')
-            away_team = raw_teams[1].text.replace(u'\xa0', u' ')
+            home_team = raw_teams[0].text
+            away_team = raw_teams[1].text
 
-            
+            if color_xpath is not None:
+                home_team = get_team_color_code(root,
+                                                home_team,
+                                                color_xpath)
 
-            teams['home'] = home_team
-            teams['away'] = away_team
+                away_team = get_team_color_code(root,
+                                                away_team,
+                                                color_xpath)
+
+            teams['home'] = home_team.replace(u'\xa0', u' ')
+            teams['away'] = away_team.replace(u'\xa0', u' ')
 
         log.debug('Teams extracted: "%s"' % teams)
 
         return teams
-
-    def get_team_color(self, team, html, xpath):
-        """Multi-team color coding check.
-
-        """
-        if color_xpath is not None:
-            log.debug('color_path: %s' % color_xpath)
-            for team in [home_team, away_team]:
-                match = re.search('.*\s+$', team)
-                if match:
-                    color = root.xpath(color_xpath)
-                    log.debug('Found team color: %s' % color[0].text)
-                        team = team + color[0].text
