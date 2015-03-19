@@ -11,7 +11,6 @@ class Scraper(object):
     def scrape_match_ids(html, xpath):
         """Extract a list of match IDs from *html*.
 
-
         During processing, the :mod:`lxml.xpath` extraction will
         produce a list of tuples of the form::
 
@@ -122,7 +121,7 @@ class Scraper(object):
 
     @staticmethod
     def scrape_player_names(html):
-        """Highly customised extract  of player names from *html*.
+        """Highly customised extract of player names from *html*.
 
         **Args:**
             *html*: string representation of the HTML page to process.
@@ -146,3 +145,81 @@ class Scraper(object):
 
         log.debug('Players extracted: %s' % players)
         return players
+
+    @staticmethod
+    def scrape_match_preamble(html, xpath):
+        """Extract match preamble from *html*.
+
+        A typical preamble string is as follows::
+
+            GIRLS 14 on 28th Feb 15  Rd.5
+
+        **Args:**
+            *html*: string representation of the HTML page to process.
+            *html* is typically a TROLS match results page.
+
+        **Returns:**
+            dictionary structure representing components of the
+            preamble in the form::
+
+                {'sex': <girls_or_boys>,
+                 'section': <section_no>,
+                 'date': <date>,
+                 'round': <round_no>}
+
+        """
+        root = lxml.html.fromstring(html)
+        preamble = root.xpath(xpath)[0]
+        raw_preamble = preamble.replace(u'\xa0', u' ')
+
+        log.debug('Scraped preamble: "%s"' % raw_preamble)
+
+        preamble = {}
+
+        def sex(matchobj):
+            match_sex = matchobj.group(1).lower()
+            log.debug('Match sex: "%s"' % match_sex)
+            preamble['sex'] = match_sex.encode('utf8')
+
+            return matchobj.group(2)
+
+        sex_re = re.compile(r'^(girls|boys)\s+(.*)', re.IGNORECASE)
+        raw_preamble = sex_re.sub(sex, raw_preamble)
+
+        def section(matchobj):
+            match_section = int(matchobj.group(1))
+            log.debug('Match section: %d' % match_section)
+            preamble['section'] = match_section
+
+            return matchobj.group(2)
+
+        section_re = re.compile(r'^(\d+)\s+on\s+(.*)')
+        raw_preamble = section_re.sub(section, raw_preamble)
+
+        def date(matchobj):
+            match_date = ('%s %s %s' % (matchobj.group(1),
+                                        matchobj.group(3),
+                                        matchobj.group(4)))
+            log.debug('Match date: %s' % match_date)
+            preamble['date'] = match_date
+
+            return matchobj.group(5)
+
+        date_re = re.compile(r'^(\d+)(st|nd|rd|th)\s+(\w+)\s+(\d{2})\s+(.*)')
+        raw_preamble = date_re.sub(date, raw_preamble)
+
+        def round_no(matchobj):
+            match_round_no = int(matchobj.group(1))
+            log.debug('Match round: %d' % match_round_no)
+            preamble['round'] = match_round_no
+
+            return matchobj.group(2)
+
+        round_no_re = re.compile(r'^Rd.(\d+)(.*)')
+        raw_preamble = round_no_re.sub(round_no, raw_preamble)
+
+        if len(raw_preamble):
+            log.warn('Match preamble string has unparsed tokens "%s"' %
+                     raw_preamble)
+
+        return preamble

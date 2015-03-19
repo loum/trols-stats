@@ -139,6 +139,30 @@ class TestScraper(unittest2.TestCase):
         msg = 'Player extraction from match details error'
         self.assertListEqual(received, expected, msg)
 
+    def test_scrape_match_preamble(self):
+        """Extract match preamble.
+        """
+        # Given a TROLS detailed match results page
+        html = self._detailed_results_html
+
+        # and an xpath definition to target the match preamble extraction
+        xpath = '//table/tr/td[contains(@class, "mb")]/text()'
+
+        # when I extract the match preamble
+        received = trols_stats.Scraper.scrape_match_preamble(html, xpath)
+
+        # then I should receive a dictionary structure of the form
+        # {'sex': <girls_or_boys>,
+        #  'section': <section_no>,
+        #  'date': <date>,
+        #  'round': <round_no>}
+        expected = {'sex': 'girls',
+                    'section': 14,
+                    'date': '28 Feb 15',
+                    'round': 5}
+        msg = 'Match preamble dictionary error'
+        self.assertDictEqual(received, expected, msg)
+
     @classmethod
     def tearDownClass(cls):
         cls._detailed_results_html = None
