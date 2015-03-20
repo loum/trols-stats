@@ -3,6 +3,8 @@ import os
 
 import trols_stats
 
+from trols_stats.tests.results.match_stats import MATCH_STATS
+
 
 class TestScraper(unittest2.TestCase):
     @classmethod
@@ -161,6 +163,126 @@ class TestScraper(unittest2.TestCase):
                     'date': '28 Feb 15',
                     'round': 5}
         msg = 'Match preamble dictionary error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_scrape_match_scores(self):
+        """Scrape match scores.
+        """
+        # Given a TROLS detailed match results page
+        html = self._detailed_results_html
+
+        # and an xpath definition to target the match scores extraction
+        xpath = '//td/table/tr[contains(@valign, "top")]/td'
+
+        # when I extract the match scores
+        received = trols_stats.Scraper.scrape_match_scores(html, xpath)
+
+        # then I should received a dictionary structure of the form
+        # {
+        #     1: [
+        #         {
+        #             'opposition': (5, 6),
+        #             'score_against': 6,
+        #             'score_for': 3,
+        #             'team_mate': 2
+        #         },
+        #     ...
+        # }
+        expected = MATCH_STATS
+        msg = 'Match stats dictionary structure error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_create_stat(self):
+        """Create a match results stat.
+        """
+        # Given a tuple of players
+        players = (1, 2)
+
+        # and a tuple of results
+        results = (3, 6)
+
+        # when I create a stat
+        received = trols_stats.Scraper.create_stat(players, results)
+
+        # then I should receive a dictionary structure of the form
+        expected = {
+            'team_mate': 2,
+            'opposition': (5, 6),
+            'score_for': 3,
+            'score_against': 6,
+        }
+        msg = 'Match stat creation error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_create_stat_away(self):
+        """Create a match results stat: away.
+        """
+        # Given a tuple of players
+        players = (1, 2)
+
+        # and a tuple of results
+        results = (3, 6)
+
+        # when I create an away team stat
+        received = trols_stats.Scraper.create_stat(players,
+                                                   results,
+                                                   away_team=True)
+
+        # then I should receive a dictionary structure of the form
+        expected = {
+            'team_mate': 6,
+            'opposition': (1, 2),
+            'score_for': 6,
+            'score_against': 3,
+        }
+        msg = 'Match stat creation error: away_team'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_create_stat_reverse(self):
+        """Create a match results stat: reverse.
+        """
+        # Given a tuple of players
+        players = (1, 2)
+
+        # and a tuple of results
+        results = (3, 6)
+
+        # when I create a stat
+        received = trols_stats.Scraper.create_stat(players, results, True)
+
+        # then I should receive a dictionary structure of the form
+        expected = {
+            'team_mate': 1,
+            'opposition': (5, 6),
+            'score_for': 3,
+            'score_against': 6,
+        }
+        msg = 'Match stat creation error: reverse'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_create_stat_reverse_away(self):
+        """Create a match results stat: away team reverse.
+        """
+        # Given a tuple of players
+        players = (1, 2)
+
+        # and a tuple of results
+        results = (3, 6)
+
+        # when I create a stat
+        received = trols_stats.Scraper.create_stat(players,
+                                                   results,
+                                                   reverse=True,
+                                                   away_team=True)
+
+        # then I should receive a dictionary structure of the form
+        expected = {
+            'team_mate': 5,
+            'opposition': (1, 2),
+            'score_for': 6,
+            'score_against': 3,
+        }
+        msg = 'Match stat creation error: away team reverse'
         self.assertDictEqual(received, expected, msg)
 
     @classmethod

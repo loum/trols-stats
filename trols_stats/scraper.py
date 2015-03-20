@@ -223,3 +223,134 @@ class Scraper(object):
                      raw_preamble)
 
         return preamble
+
+    @staticmethod
+    def scrape_match_scores(html, xpath):
+        """Extract match scores from *html*.
+
+        **Args:**
+            *html*: string representation of the HTML page to process.
+            *html* is typically a TROLS match results page.
+
+        **Returns:**
+            dictionary structure representing components of the
+            preamble in the form::
+
+        """
+        root = lxml.html.fromstring(html)
+        raw_scores = root.xpath(xpath)
+
+        count = -1
+        active_players = ()
+        match_results = {}
+        for score in raw_scores:
+            count += 1
+            if count % 3 == 2:
+                continue
+
+            log.debug('score: %s' % score.text)
+
+            player_re = re.compile(r'^(\d+)\+(\d+)')
+            players = player_re.match(score.text)
+            if players:
+                active_players = (int(players.group(1)),
+                                  int(players.group(2)))
+                log.debug('Players: %s' % (active_players,))
+                continue
+
+            score_re = re.compile(r'^(\d+)\-(\d+)')
+            scores = score_re.match(score.text)
+            if scores:
+                active_scores = (int(scores.group(1)),
+                                 int(scores.group(2)))
+                log.debug('Scores: %s' % (active_scores, ))
+
+                if match_results.get(active_players[0]) is None:
+                    match_results[active_players[0]] = []
+
+                stat = Scraper.create_stat(active_players, active_scores)
+                match_results[active_players[0]].append(stat)
+
+                if match_results.get(active_players[1]) is None:
+                    match_results[active_players[1]] = []
+
+                stat = Scraper.create_stat(active_players,
+                                           active_scores,
+                                           reverse=True)
+                match_results[active_players[1]].append(stat)
+
+                if match_results.get(active_players[0] + 4) is None:
+                    match_results[active_players[0] + 4] = []
+
+                stat = Scraper.create_stat(active_players,
+                                           active_scores,
+                                           away_team=True)
+                match_results[active_players[0] + 4].append(stat)
+
+                if match_results.get(active_players[1] + 4) is None:
+                    match_results[active_players[1] + 4] = []
+
+                stat = Scraper.create_stat(active_players,
+                                           active_scores,
+                                           reverse=True,
+                                           away_team=True)
+                match_results[active_players[1] + 4].append(stat)
+
+        return match_results
+
+    @staticmethod
+    def create_stat(players, scores, reverse=False, away_team=False):
+        """Helper function to create a match results stat.
+
+        **Args:**
+            *players*: tuple representing the player game positions.
+            For example, ``(1, 2)``
+
+            *scores*: tuple representing the player game results.
+            For example, ``(6, 3)``.
+
+            *reverse*: boolean which will create a stat within the
+            context of the partner player (second item in the *players*
+            tuple)
+
+            *away_team*: boolean which will create a stat within the
+            context of the away team (*players* tuple value plus 4)
+
+        **Returns:**
+            dictionary structure of the form::
+
+                {
+                    'team_mate': 5,
+                    'opposition': (1, 2),
+                    'score_for': 6,
+                    'score_against': 3,
+                }
+
+        """
+        team_mate = players[1]
+        if reverse:
+            team_mate = players[0]
+
+        if away_team:
+            team_mate += 4
+
+        score_for = scores[0]
+        if away_team:
+            score_for = scores[1]
+
+        score_against = scores[1]
+        if away_team:
+            score_against = scores[0]
+
+        inc = 4
+        if away_team:
+            inc = 0
+
+        stat = {
+            'team_mate': team_mate,
+            'opposition': (players[0] + inc, players[1] + inc),
+            'score_for': score_for,
+            'score_against': score_against,
+        }
+
+        return stat
