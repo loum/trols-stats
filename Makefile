@@ -18,7 +18,9 @@ PYTHONPATH=.:../logga:../configa:../daemoniser:../filer
 #
 # Note: for this to work you will need to import the test class into
 # the current namespace via "tests/__init__.py"
-TEST=trols_stats.tests:TestScraper
+TEST=trols_stats.tests:TestScraper \
+	trols_stats.tests:TestPlayer \
+	trols_stats.tests:TestGame
 
 sdist:
 	$(PY) setup.py sdist
