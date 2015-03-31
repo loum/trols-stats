@@ -15,6 +15,7 @@ class Player(object):
     _player_id = None
     _name = None
     _team = None
+    _sex = None
 
     @property
     def player_id(self):
@@ -40,7 +41,15 @@ class Player(object):
     def team(self, value):
         self._team = value
 
-    def __init__(self, player_id=None, name=None, team=None):
+    @property
+    def sex(self):
+        return self._sex
+
+    @sex.setter
+    def sex(self, value):
+        self._sex = value
+
+    def __init__(self, player_id=None, name=None, team=None, sex=None):
         if player_id is not None:
             self._player_id = player_id
 
@@ -50,14 +59,18 @@ class Player(object):
         if team is not None:
             self._team = team
 
-    def to_json(self):
-        """Return a json representation of the object.
+        if sex is not None:
+            self._sex = sex
 
-        """
+    def to_json(self):
+        return json.dumps(self.to_dict())
+
+    def to_dict(self):
         obj = {
             'id': self.player_id,
             'name': self.name,
             'team': self.team,
+            'sex': self.sex
         }
 
-        return json.dumps(obj)
+        return obj

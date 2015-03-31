@@ -14,13 +14,14 @@ class TestPlayer(unittest2.TestCase):
     def test_to_json(self):
         """Convert trols_stats.Player() object to JSON.
         """
-        player_id = 'xyz'
-        name = 'Player 1'
-        team = 'Best team'
-        player = trols_stats.Player(player_id, name, team)
+        player_data = {'player_id': 'xyz',
+                       'name': 'Player 1',
+                       'team': 'Best team',
+                       'sex': 'girls'}
+        player = trols_stats.Player(**player_data)
 
         received = player.to_json()
 
-        expected = '{"team": "Best team", "id": "xyz", "name": "Player 1"}'
+        expected = '{"team": "Best team", "sex": "girls", "id": "xyz", "name": "Player 1"}'
         msg = 'trols_stats.Player() to JSON error'
         self.assertEqual(received, expected, msg)
