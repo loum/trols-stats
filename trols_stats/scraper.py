@@ -162,7 +162,7 @@ class Scraper(object):
             dictionary structure representing components of the
             preamble in the form::
 
-                {'sex': <girls_or_boys>,
+                {'competition': <girls_or_boys>,
                  'section': <section_no>,
                  'date': <date>,
                  'round': <round_no>}
@@ -176,15 +176,15 @@ class Scraper(object):
 
         preamble = {}
 
-        def sex(matchobj):
-            match_sex = matchobj.group(1).lower()
-            log.debug('Match sex: "%s"' % match_sex)
-            preamble['sex'] = match_sex.encode('utf8')
+        def competition(matchobj):
+            match_competition = matchobj.group(1).lower()
+            log.debug('Match competition: "%s"' % match_competition)
+            preamble['competition'] = match_competition.encode('utf8')
 
             return matchobj.group(2)
 
-        sex_re = re.compile(r'^(girls|boys)\s+(.*)', re.IGNORECASE)
-        raw_preamble = sex_re.sub(sex, raw_preamble)
+        competition_re = re.compile(r'^(girls|boys)\s+(.*)', re.IGNORECASE)
+        raw_preamble = competition_re.sub(competition, raw_preamble)
 
         def section(matchobj):
             match_section = int(matchobj.group(1))

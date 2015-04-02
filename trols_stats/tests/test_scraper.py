@@ -154,11 +154,11 @@ class TestScraper(unittest2.TestCase):
         received = trols_stats.Scraper.scrape_match_preamble(html, xpath)
 
         # then I should receive a dictionary structure of the form
-        # {'sex': <girls_or_boys>,
+        # {'competition': <girls_or_boys>,
         #  'section': <section_no>,
         #  'date': <date>,
         #  'round': <round_no>}
-        expected = {'sex': 'girls',
+        expected = {'competition': 'girls',
                     'section': 14,
                     'date': '28 Feb 15',
                     'round': 5}

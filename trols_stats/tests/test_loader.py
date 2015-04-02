@@ -18,7 +18,7 @@ class TestLoader(unittest2.TestCase):
         # Given a scraped player tuple
         player = {'team': 'Watsonia Red',
                   'name': 'Madeline Doyle',
-                  'sex': 'girls'}
+                  'competition': 'girls'}
 
         # and the player does not exist in the cache
         loader = trols_stats.Loader()
@@ -36,7 +36,7 @@ class TestLoader(unittest2.TestCase):
         # Given a scraped player tuple
         player = {'team': 'Watsonia Red',
                   'name': 'Madeline Doyle',
-                  'sex': 'girls'}
+                  'competition': 'girls'}
 
         # and the player already exists in the cache
         loader = trols_stats.Loader()
@@ -59,7 +59,7 @@ class TestLoader(unittest2.TestCase):
         """Create a trols_stats.Game() aggregate object.
         """
         # Given a match details data structure
-        match = {'sex': 'girls',
+        match = {'competition': 'girls',
                  'section': 14,
                  'date': '28 Feb 15',
                  'round': 5}
