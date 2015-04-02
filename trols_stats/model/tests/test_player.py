@@ -16,12 +16,11 @@ class TestPlayer(unittest2.TestCase):
         """
         player_data = {'player_id': 'xyz',
                        'name': 'Player 1',
-                       'team': 'Best team',
-                       'competition': 'girls'}
+                       'team': 'Best team'}
         player = trols_stats.Player(**player_data)
 
         received = player.to_json()
 
-        expected = '{"team": "Best team", "id": "xyz", "competition": "girls", "name": "Player 1"}'
+        expected = '{"team": "Best team", "id": "xyz", "name": "Player 1"}'
         msg = 'trols_stats.Player() to JSON error'
         self.assertEqual(received, expected, msg)

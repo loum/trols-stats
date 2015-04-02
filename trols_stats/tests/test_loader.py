@@ -17,8 +17,7 @@ class TestLoader(unittest2.TestCase):
         """
         # Given a scraped player tuple
         player = {'team': 'Watsonia Red',
-                  'name': 'Madeline Doyle',
-                  'competition': 'girls'}
+                  'name': 'Madeline Doyle'}
 
         # and the player does not exist in the cache
         loader = trols_stats.Loader()
@@ -35,8 +34,7 @@ class TestLoader(unittest2.TestCase):
         """
         # Given a scraped player tuple
         player = {'team': 'Watsonia Red',
-                  'name': 'Madeline Doyle',
-                  'competition': 'girls'}
+                  'name': 'Madeline Doyle'}
 
         # and the player already exists in the cache
         loader = trols_stats.Loader()

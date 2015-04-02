@@ -21,7 +21,8 @@ PYTHONPATH=.:../logga:../configa:../daemoniser:../filer
 TEST=trols_stats.tests:TestScraper \
 	trols_stats.tests:TestLoader \
 	trols_stats.model.tests:TestPlayer \
-	trols_stats.model.tests:TestGame
+	trols_stats.model.tests:TestGame \
+	trols_stats.model.tests:TestFixture
 
 sdist:
 	$(PY) setup.py sdist
