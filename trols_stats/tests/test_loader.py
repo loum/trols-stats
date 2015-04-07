@@ -1,6 +1,7 @@
 import unittest2
 
 import trols_stats
+import trols_stats.model
 
 
 class TestLoader(unittest2.TestCase):
@@ -13,11 +14,10 @@ class TestLoader(unittest2.TestCase):
         self.assertIsInstance(loader, trols_stats.Loader, msg)
 
     def test_set_players_cache_new_player(self):
-        """Create a local Player() cache: new player.
+        """Create a local trols_stats.model.Player() cache: new player.
         """
         # Given a scraped player tuple
-        player = {'team': 'Watsonia Red',
-                  'name': 'Madeline Doyle'}
+        player = {'name': 'Madeline Doyle'}
 
         # and the player does not exist in the cache
         loader = trols_stats.Loader()
@@ -25,16 +25,17 @@ class TestLoader(unittest2.TestCase):
         # when I load the player into the players cache
         received = loader.set_players_cache(player)
 
-        # then I should receive a trols_stats.Player() object
+        # then I should receive a trols_stats.model.Player() object
         msg = 'Loader players cache error: new player'
-        self.assertIsInstance(received, trols_stats.Player, msg)
+        self.assertIsInstance(received,
+                              trols_stats.model.entities.Player,
+                              msg)
 
     def test_set_players_cache_existing_player(self):
-        """Create a local Player() cache: new player.
+        """Create a local trols_stats.model.Player() cache: new player.
         """
         # Given a scraped player tuple
-        player = {'team': 'Watsonia Red',
-                  'name': 'Madeline Doyle'}
+        player = {'name': 'Madeline Doyle'}
 
         # and the player already exists in the cache
         loader = trols_stats.Loader()
@@ -43,9 +44,11 @@ class TestLoader(unittest2.TestCase):
         # when I reload the player into the players cache
         received = loader.set_players_cache(player)
 
-        # then I should receive a trols_stats.Player() object
+        # then I should receive a trols_stats.model.entities.Player() object
         msg = 'Loader players cache error: player create'
-        self.assertIsInstance(received, trols_stats.Player, msg)
+        self.assertIsInstance(received,
+                              trols_stats.model.entities.Player,
+                              msg)
 
         # and only a single player should exist in the player cache
         received = len(loader.players_cache)

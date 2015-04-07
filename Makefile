@@ -20,9 +20,9 @@ PYTHONPATH=.:../logga:../configa:../daemoniser:../filer
 # the current namespace via "tests/__init__.py"
 TEST=trols_stats.tests:TestScraper \
 	trols_stats.tests:TestLoader \
-	trols_stats.model.tests:TestPlayer \
-	trols_stats.model.tests:TestGame \
-	trols_stats.model.tests:TestFixture
+	trols_stats.model.entities.tests:TestPlayer \
+	trols_stats.model.entities.tests:TestFixture \
+	trols_stats.model.aggregates.tests:TestGame
 
 sdist:
 	$(PY) setup.py sdist

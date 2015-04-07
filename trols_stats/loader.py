@@ -1,4 +1,6 @@
-import trols_stats
+import trols_stats.model
+import trols_stats.model.entities
+import trols_stats.model.aggregates
 
 from logga.log import log
 
@@ -8,17 +10,15 @@ __all__ = ['Loader']
 class Loader(object):
     """
     ..attribute:: games_cache
-        list of :class:`trols_stats.Games` objects
+        list of :class:`trols_stats.model.aggregrates.Games` objects
 
     ..attribute:: players_cache
-        list of :class:`trols_stats.Players` objects
+        list of :class:`trols_stats.model.entities.Player` objects
 
     """
-    _players_cache = []
-    _games_cache = []
-
     def __init__(self):
-        log.debug('Loader __init__')
+        self._players_cache = []
+        self._games_cache = []
 
     @property
     def players_cache(self):
@@ -26,7 +26,7 @@ class Loader(object):
 
     def set_players_cache(self, player_details):
         """Add *player_details* to the cache or return the existing
-        :class:`trols_stats.Players` object.
+        :class:`trols_stats.model.entities.Player` object.
 
         **Args:**
             *player_details*: dictionary of player details in the form::
@@ -35,8 +35,8 @@ class Loader(object):
                  'team': '<player_team>'}
 
         **Return:**
-            :class:`trols_stats.Players` object corresponding to
-            *player_details*
+            :class:`trols_stats.model.entities.Player` object
+            corresponding to *player_details*
 
         """
         if player_details is None:
@@ -54,7 +54,7 @@ class Loader(object):
         if player is None:
             log.debug('Adding "%s" to player cache' %
                       player_details.get('name'))
-            player = trols_stats.Player(**player_details)
+            player = trols_stats.model.entities.Player(**player_details)
             self._players_cache.append(player)
 
         return player
@@ -65,13 +65,13 @@ class Loader(object):
 
     def set_games_cache(self, game_details):
         """Add *game_details* to the cache or return the existing
-        :class:`trols_stats.Game` object.
+        :class:`trols_stats.model.Game` object.
 
         **Args:**
             *game_details*: dictionary of player details in the form::
 
         **Return:**
-            :class:`trols_stats.Game` object corresponding to
+            :class:`trols_stats.model.Game` object corresponding to
             *game_details*
 
         """
@@ -79,13 +79,7 @@ class Loader(object):
             del self._games_cache[:]
             self._games_cache = []
 
-        game = trols_stats.Game(**game_details)
+        game = trols_stats.model.Game(**game_details)
         self._game_cache.append(game)
 
         return game
-
-    def game_aggregate(self, match_details, match_players, teams):
-        """
-
-        """
-        pass
