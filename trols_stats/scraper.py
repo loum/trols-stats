@@ -165,7 +165,7 @@ class Scraper(object):
                 {'competition': <girls_or_boys>,
                  'section': <section_no>,
                  'date': <date>,
-                 'round': <round_no>}
+                 'match_round': <round_no>}
 
         """
         root = lxml.html.fromstring(html)
@@ -211,7 +211,7 @@ class Scraper(object):
         def round_no(matchobj):
             match_round_no = int(matchobj.group(1))
             log.debug('Match round: %d' % match_round_no)
-            preamble['round'] = match_round_no
+            preamble['match_round'] = match_round_no
 
             return matchobj.group(2)
 

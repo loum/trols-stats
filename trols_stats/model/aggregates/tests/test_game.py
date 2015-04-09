@@ -1,4 +1,5 @@
 import unittest2
+import os
 
 import trols_stats.model.aggregates
 
@@ -26,6 +27,13 @@ class TestGame(unittest2.TestCase):
         received = game.to_json()
 
         # then I should get a serialised JSON string
-        expected = '{"uid": "xyz"}'
+        expected_fh = open(os.path.join('trols_stats',
+                                        'model',
+                                        'aggregates',
+                                        'tests',
+                                        'results',
+                                        'game_aggregate.json'))
+        expected = expected_fh.read().rstrip()
+        expected_fh.close()
         msg = 'trols_stats.model.Game() to JSON error'
         self.assertEqual(received, expected, msg)

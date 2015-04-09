@@ -14,10 +14,11 @@ class TestLoader(unittest2.TestCase):
         self.assertIsInstance(loader, trols_stats.Loader, msg)
 
     def test_set_players_cache_new_player(self):
-        """Create a local trols_stats.model.Player() cache: new player.
+        """Create a local trols_stats.model.entities.Player cache: new player.
         """
         # Given a scraped player tuple
-        player = {'name': 'Madeline Doyle'}
+        player = {'name': 'Madeline Doyle',
+                  'team': 'Watsonia Red'}
 
         # and the player does not exist in the cache
         loader = trols_stats.Loader()
@@ -25,7 +26,7 @@ class TestLoader(unittest2.TestCase):
         # when I load the player into the players cache
         received = loader.set_players_cache(player)
 
-        # then I should receive a trols_stats.model.Player() object
+        # then I should receive a trols_stats.model.entities.Player object
         msg = 'Loader players cache error: new player'
         self.assertIsInstance(received,
                               trols_stats.model.entities.Player,
@@ -35,7 +36,8 @@ class TestLoader(unittest2.TestCase):
         """Create a local trols_stats.model.Player() cache: new player.
         """
         # Given a scraped player tuple
-        player = {'name': 'Madeline Doyle'}
+        player = {'name': 'Madeline Doyle',
+                  'team': 'Watsonia Red'}
 
         # and the player already exists in the cache
         loader = trols_stats.Loader()
@@ -59,14 +61,18 @@ class TestLoader(unittest2.TestCase):
     def test_game_aggregate(self):
         """Create a trols_stats.Game() aggregate object.
         """
-        # Given a match details data structure
-        match = {'competition': 'girls',
-                 'section': 14,
-                 'date': '28 Feb 15',
-                 'round': 5}
+        # Given a fixture details data structure
+        fixture = {
+            'competition': 'girls',
+            'section': 14,
+            'date': '28 Feb 15',
+            'match_round': 5,
+            'home': 'Watsonia Red',
+            'away': 'St Marys',
+        }
 
         # and a match players data structure
-        players =  [
+        players = [
             (1, 'Madeline Doyle'),
             (2, 'Tara Watson'),
             (3, 'Alexis McIntosh'),
@@ -93,5 +99,14 @@ class TestLoader(unittest2.TestCase):
         }
 
         # when I create the game aggregate
+        loader = trols_stats.Loader(players=dict(players),
+                                    teams=teams,
+                                    fixture=fixture)
+        loader.build_game_aggregate(stats)
 
         # then I should receive a game object
+        received = loader.games_cache
+        msg = 'Games aggregate not created'
+        self.assertIsInstance(received[0],
+                              trols_stats.model.aggregates.Game,
+                              msg)

@@ -157,11 +157,11 @@ class TestScraper(unittest2.TestCase):
         # {'competition': <girls_or_boys>,
         #  'section': <section_no>,
         #  'date': <date>,
-        #  'round': <round_no>}
+        #  'match_round': <round_no>}
         expected = {'competition': 'girls',
                     'section': 14,
                     'date': '28 Feb 15',
-                    'round': 5}
+                    'match_round': 5}
         msg = 'Match preamble dictionary error'
         self.assertDictEqual(received, expected, msg)
 
