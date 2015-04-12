@@ -4,10 +4,10 @@ import trols_stats.model.aggregates
 
 from logga.log import log
 
-__all__ = ['Loader']
+__all__ = ['Stats']
 
 
-class Loader(object):
+class Stats(object):
     """
     ..attribute:: players
 

@@ -4,14 +4,14 @@ import trols_stats
 import trols_stats.model
 
 
-class TestLoader(unittest2.TestCase):
+class TestStats(unittest2.TestCase):
 
     def test_init(self):
-        """Initialise a trols_stats.Loader object.
+        """Initialise a trols_stats.Stats object.
         """
-        loader = trols_stats.Loader()
-        msg = 'Object is not a trols_stats.Loader'
-        self.assertIsInstance(loader, trols_stats.Loader, msg)
+        stats = trols_stats.Stats()
+        msg = 'Object is not a trols_stats.Stats'
+        self.assertIsInstance(stats, trols_stats.Stats, msg)
 
     def test_set_players_cache_new_player(self):
         """Create a local trols_stats.model.entities.Player cache: new player.
@@ -21,13 +21,13 @@ class TestLoader(unittest2.TestCase):
                   'team': 'Watsonia Red'}
 
         # and the player does not exist in the cache
-        loader = trols_stats.Loader()
+        stats = trols_stats.Stats()
 
         # when I load the player into the players cache
-        received = loader.set_players_cache(player)
+        received = stats.set_players_cache(player)
 
         # then I should receive a trols_stats.model.entities.Player object
-        msg = 'Loader players cache error: new player'
+        msg = 'Stats players cache error: new player'
         self.assertIsInstance(received,
                               trols_stats.model.entities.Player,
                               msg)
@@ -40,20 +40,20 @@ class TestLoader(unittest2.TestCase):
                   'team': 'Watsonia Red'}
 
         # and the player already exists in the cache
-        loader = trols_stats.Loader()
-        loader.set_players_cache(player)
+        stats = trols_stats.Stats()
+        stats.set_players_cache(player)
 
         # when I reload the player into the players cache
-        received = loader.set_players_cache(player)
+        received = stats.set_players_cache(player)
 
         # then I should receive a trols_stats.model.entities.Player() object
-        msg = 'Loader players cache error: player create'
+        msg = 'Stats players cache error: player create'
         self.assertIsInstance(received,
                               trols_stats.model.entities.Player,
                               msg)
 
         # and only a single player should exist in the player cache
-        received = len(loader.players_cache)
+        received = len(stats.players_cache)
         expected = 1
         msg = 'Length of players_cache should be 1: existing player'
         self.assertEqual(received, expected, msg)
@@ -87,7 +87,7 @@ class TestLoader(unittest2.TestCase):
         teams = {'away': 'St Marys', 'home': 'Watsonia Red'}
 
         # and a match stats structure
-        stats = {
+        stats_data = {
             1: [
                 {
                     'opposition': (5, 6),
@@ -99,13 +99,13 @@ class TestLoader(unittest2.TestCase):
         }
 
         # when I create the game aggregate
-        loader = trols_stats.Loader(players=dict(players),
-                                    teams=teams,
-                                    fixture=fixture)
-        loader.build_game_aggregate(stats)
+        stats = trols_stats.Stats(players=dict(players),
+                                  teams=teams,
+                                  fixture=fixture)
+        stats.build_game_aggregate(stats_data)
 
         # then I should receive a game object
-        received = loader.games_cache
+        received = stats.games_cache
         msg = 'Games aggregate not created'
         self.assertIsInstance(received[0],
                               trols_stats.model.aggregates.Game,
