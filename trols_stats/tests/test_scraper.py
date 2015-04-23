@@ -1,5 +1,6 @@
 import unittest2
 import os
+import lxml
 
 import trols_stats
 
@@ -9,9 +10,12 @@ from trols_stats.tests.results.match_stats import MATCH_STATS
 class TestScraper(unittest2.TestCase):
     @classmethod
     def setUpClass(cls):
-        test_files_dir = os.path.join('trols_stats',
-                                      'tests',
-                                      'files',
+        cls.maxDiff = None
+
+        cls._test_files_dir = os.path.join('trols_stats',
+                                           'tests',
+                                           'files')
+        test_files_dir = os.path.join(cls._test_files_dir,
                                       'www.trols.org.au',
                                       'nejta')
         detailed_results_page = 'match_popup.php?matchid=AA039054.html'
@@ -26,6 +30,86 @@ class TestScraper(unittest2.TestCase):
         scraper = trols_stats.Scraper()
         msg = 'Object is not of type trols_stats.Scraper'
         self.assertIsInstance(scraper, trols_stats.Scraper, msg)
+
+    def test_scrape_competition_ids(self):
+        """Test scrape_competition_ids.
+        """
+        # Given a TROLS competition|section results page
+        test_file = os.path.join(self._test_files_dir, 'main_results.php')
+        with open(test_file) as html_fh:
+            html = html_fh.read()
+
+        # and an xpath definition to target the extraction
+        xpath = '//select[@id="section" and @name="section"]/option'
+
+        # when I scrape the page for match competitions
+        received = trols_stats.Scraper.scrape_competition_ids(html, xpath)
+
+        # then I should receive a list of match competition codes of the
+        # form {'GIRLS 1': 'AA026', 'GIRLS 2': 'AA027', ...}
+        expected = {
+            'BOYS 1': 'AA001',
+            'BOYS 10': 'AA010',
+            'BOYS 11': 'AA011',
+            'BOYS 12': 'AA012',
+            'BOYS 13': 'AA013',
+            'BOYS 14': 'AA014',
+            'BOYS 15': 'AA015',
+            'BOYS 16': 'AA016',
+            'BOYS 17': 'AA017',
+            'BOYS 18': 'AA018',
+            'BOYS 19': 'AA019',
+            'BOYS 2': 'AA002',
+            'BOYS 20': 'AA020',
+            'BOYS 21': 'AA021',
+            'BOYS 22': 'AA022',
+            'BOYS 23': 'AA023',
+            'BOYS 24': 'AA024',
+            'BOYS 25': 'AA025',
+            'BOYS 3': 'AA003',
+            'BOYS 4': 'AA004',
+            'BOYS 5': 'AA005',
+            'BOYS 6': 'AA006',
+            'BOYS 7': 'AA007',
+            'BOYS 8': 'AA008',
+            'BOYS 9': 'AA009',
+            'GIRLS 1': 'AA026',
+            'GIRLS 10': 'AA035',
+            'GIRLS 11': 'AA036',
+            'GIRLS 12': 'AA037',
+            'GIRLS 13': 'AA038',
+            'GIRLS 14': 'AA039',
+            'GIRLS 15': 'AA040',
+            'GIRLS 2': 'AA027',
+            'GIRLS 3': 'AA028',
+            'GIRLS 4': 'AA029',
+            'GIRLS 5': 'AA030',
+            'GIRLS 6': 'AA031',
+            'GIRLS 7': 'AA032',
+            'GIRLS 8': 'AA033',
+            'GIRLS 9': 'AA034',
+        }
+        msg = 'Competition IDs extracted error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_get_competition_id(self):
+        """Test get_competition_id.
+        """
+        # Given a NEJTA competition lxml.html.HtmlElement instance
+        element = lxml.html.HtmlElement()
+        element.attrib['value'] = 'AA026'
+        element.text = 'GIRLS 1'
+
+        # when I extract the competition ID
+        loader = trols_stats.Scraper()
+        received = loader._get_competition_id(element)
+
+        # then I should receive a dictionary structure of the form
+        # {'GIRLS 1': 'AA026'}
+        expected = {'GIRLS 1': 'AA026'}
+        msg = 'Competition dictionary error'
+        self.assertDictEqual(received, expected, msg)
+
 
     def test_scrape_match_ids(self):
         """Test scrape_match_ids.
@@ -287,4 +371,5 @@ class TestScraper(unittest2.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+        cls._test_files_dir = None
         cls._detailed_results_html = None

@@ -8,6 +8,55 @@ __all__ = ['Scraper']
 
 class Scraper(object):
     @staticmethod
+    def scrape_competition_ids(html, xpath):
+        """Extract the competition IDs.
+
+        **Args:**
+            *html*: string representation of the HTML page to process.
+
+        **Returns:**
+            dictionary structure representing the competition IDs as the key
+            and the competition code as the value.  For example::
+
+                {'GIRLS 1': 'AA026', 'GIRLS 2': 'AA027' ...}
+
+        """
+        root = lxml.html.fromstring(html)
+        comp_id_elements = root.xpath(xpath)
+
+        comp_ids = {}
+        for element in comp_id_elements:
+            if (element.attrib.get('value') is not None and
+               element.attrib.get('value') == ''):
+                continue
+
+            comp_ids.update(Scraper._get_competition_id(element))
+
+        return comp_ids
+
+    @staticmethod
+    def _get_competition_id(element):
+        """Competition ID extractor helper.
+
+        **Args:**
+            *element*: :class:`lxml.html.HtmlElement` instance generated
+            from raw HTML of the form::
+
+                <option value="AA026">GIRLS 1</option>
+
+        **Returns:**
+            dictionary structure representing the competition ID as the key
+            and the competition code as the value.  For example::
+
+                {'GIRLS 1': 'AA026'}
+
+        """
+        comp_id = {element.text: element.attrib['value']}
+        log.debug('Competition ID extracted: %s' % comp_id)
+
+        return comp_id
+
+    @staticmethod
     def scrape_match_ids(html, xpath):
         """Extract a list of match IDs from *html*.
 

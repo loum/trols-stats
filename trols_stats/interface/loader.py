@@ -1,3 +1,5 @@
+import urllib2
+
 import trols_stats
 import trols_stats.interface
 from logga.log import log
@@ -63,3 +65,18 @@ class Loader(object):
                                   fixture=fixture)
         stats.build_game_aggregate(match_data)
         self.games.extend(stats.games_cache)
+
+    @staticmethod
+    def get_main_results_page():
+        """Get the main results page.
+
+        This is the NEJTA top level results.php page that contains
+        the competition codes.  For example, ``GIRLS 1`` and code ``AA026``.
+
+        """
+        request = urllib2.Request('http://trols.org.au/nejta/results.php')
+
+        response = urllib2.urlopen(request)
+        html = response.read()
+
+        return html
