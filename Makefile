@@ -4,7 +4,7 @@ NOSE_ENV=.env/bin/nosetests -s -v --with-xunit --with-coverage --cover-erase --c
 GIT=/usr/bin/git
 COVERAGE=/usr/bin/coverage
 COVERAGE_ENV=.env/bin/coverage
-PYTHONPATH=.:../logga:../configa:../daemoniser:../filer
+PYTHONPATH=.:../logga:../configa:../filer
 
 # The TEST variable can be set to allow you to control which tests
 # to run.  For example, if the current project has a test set defined at
@@ -23,7 +23,8 @@ TEST=trols_stats.tests:TestScraper \
 	trols_stats.interface.tests:TestLoader \
 	trols_stats.model.entities.tests:TestPlayer \
 	trols_stats.model.entities.tests:TestFixture \
-	trols_stats.model.aggregates.tests:TestGame
+	trols_stats.model.aggregates.tests:TestGame \
+	trols_stats.tests:TestConfig
 
 sdist:
 	$(PY) setup.py sdist

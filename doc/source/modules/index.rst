@@ -8,3 +8,4 @@ Modules
 
    loader.rst
    scraper.rst
+   config.rst

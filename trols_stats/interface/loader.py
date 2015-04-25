@@ -1,3 +1,4 @@
+import urllib
 import urllib2
 
 import trols_stats
@@ -67,16 +68,27 @@ class Loader(object):
         self.games.extend(stats.games_cache)
 
     @staticmethod
-    def get_main_results_page():
-        """Get the main results page.
+    def request(url, request_args=None):
+        """Send a URL request to *url*.
 
-        This is the NEJTA top level results.php page that contains
-        the competition codes.  For example, ``GIRLS 1`` and code ``AA026``.
+        **Args:**
+            *url*: the web address to send request
+
+            *request_args*: dictionary of query terms that will put in the
+            POST request body
+
+        **Returns:**
+            HTML response string of the *url*
 
         """
-        request = urllib2.Request('http://trols.org.au/nejta/results.php')
+        request = urllib2.Request(url)
 
-        response = urllib2.urlopen(request)
+        if request_args is None:
+            request_args = {}
+
+        encoded_args = urllib.urlencode(request_args)
+
+        response = urllib2.urlopen(request, encoded_args)
         html = response.read()
 
         return html
