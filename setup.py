@@ -60,10 +60,11 @@ def find_data_files(srcdir, *wildcards, **kw):
 
 setup(name='python-trols-stats',
       version=VERSION,
-      description='BAIP-Loader',
+      description='TROLS-Stats',
       author='Lou Markovski',
       author_email='lou.markovski@gmail.com',
       url='',
       # scripts=['trols_stats/bin/trols-stats'],
-      packages=['trols_stats'],
+      packages=['trols_stats',
+                'trols_stats.interface'],
       package_data={'trols_stats': ['conf/*.conf.[0-9]*.[0-9]*.[0-9]*']})

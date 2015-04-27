@@ -1,5 +1,8 @@
 import urllib
 import urllib2
+import urlparse
+import re
+import json
 
 import trols_stats
 import trols_stats.interface
@@ -14,6 +17,15 @@ class Loader(object):
 
     """
     @property
+    def competition_map(self):
+        return self.__competition_map
+
+    @competition_map.setter
+    def competition_map(self, value):
+        self.__competition_map.clear()
+        self.__competition_map = value
+
+    @property
     def games(self):
         return self.__games
 
@@ -22,10 +34,11 @@ class Loader(object):
         self.__games = value
 
     def __init__(self):
+        self.__competition_map = {}
         self.__games = []
 
-    def load(self, html):
-        """Scrape and load *html* page.
+    def build_game_map(self, html):
+        """Scrape *html* game page and build a game map.
 
         Produces a list of :class:`trols_stats.model.aggregates.Games`
         objects that are appended to the :attr:`games` attribute.
@@ -68,19 +81,71 @@ class Loader(object):
         self.games.extend(stats.games_cache)
 
     @staticmethod
-    def request(url, request_args=None):
-        """Send a URL request to *url*.
+    def request(uri, request_args=None):
+        """Send a URL request to *uri*.  If *uri* is a file-type resource
+        then an attempt will be made to open the file instead.
 
         **Args:**
-            *url*: the web address to send request
+            *uri*: the web address to send request
 
             *request_args*: dictionary of query terms that will put in the
             POST request body
 
         **Returns:**
-            HTML response string of the *url*
+            HTML response string of the *uri*
 
         """
+        components = urlparse.urlparse(uri)
+        log.debug('scheme|path: %s|%s' %
+                  (components.scheme, components.path))
+
+        scheme_match = re.match('http',
+                                components.scheme,
+                                flags=re.IGNORECASE)
+        html = None
+        if scheme_match:
+            html = Loader._request_url(uri, request_args)
+        else:
+            html = Loader._request_file(components.path)
+
+        return html
+
+    @staticmethod
+    def _request_file(path):
+        """Request a file resource.
+
+        .. note:
+
+            Based on the current URI specification as of 2009, RFC 3986,
+            ``file`` type schemes cannot represent relative paths.  Here,
+            we assume relativeness and reconstruct the path component
+            to be relative to the current directory.
+
+        **Args:**
+            *path*: file resource as taken from the ``file`` URI scheme type
+
+        **Returns:**
+            HTML response string of the *path*
+
+        """
+        log.info('Attempting to read file resource "%s"' % path)
+        html = None
+
+        with open(path) as file_h:
+            html = file_h.read()
+
+        return html
+
+    @staticmethod
+    def _request_url(url, request_args=None):
+        """Request a URL.
+
+        See the :method:`request_uri` method for parameters and return
+        value.
+
+        """
+        log.info('Attempting to read URL "%s": args "%s"' %
+                 (url, request_args))
         request = urllib2.Request(url)
 
         if request_args is None:

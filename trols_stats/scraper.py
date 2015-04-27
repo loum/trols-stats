@@ -134,6 +134,8 @@ class Scraper(object):
 
         """
         def get_team_color_code(root, team, xpath):
+            team = team.replace("'", "&apos;")
+
             color_xpath = xpath % team
             log.debug('Team color xpath "%s"' % color_xpath)
             color = root.xpath(color_xpath)
@@ -297,7 +299,10 @@ class Scraper(object):
             if count % 3 == 2:
                 continue
 
-            log.debug('score: %s' % score.text)
+            log.debug('score component: %s' % score.text)
+
+            if score.text is None:
+                continue
 
             player_re = re.compile(r'^(\d+)\+(\d+)')
             players = player_re.match(score.text)
