@@ -44,7 +44,7 @@ class TestLoader(unittest2.TestCase):
         """Make request to a file resource.
         """
         # Given a file resource on the local file system.
-        uri_file = 'file:///trols_stats/tests/files/main_results.php'
+        uri_file = 'trols_stats/tests/files/main_results.php'
 
         # when I make a TROLS stats request
         received = trols_stats.interface.Loader.request(uri_file)

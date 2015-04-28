@@ -9,3 +9,4 @@ Modules
    loader.rst
    scraper.rst
    config.rst
+   store.rst
