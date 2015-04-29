@@ -17,6 +17,9 @@ class Stats(object):
     ..attribute:: players_cache
         list of :class:`trols_stats.model.entities.Player` objects
 
+    ..attribute:: fixutres_cache
+        list of :class:`trols_stats.model.entities.Fixture` objects
+
     """
     @property
     def players(self):
@@ -44,21 +47,19 @@ class Stats(object):
 
     def __init__(self, players=None, teams=None, fixture=None):
         if players is None:
-            self.__players = {}
-        else:
-            self.__players = players
+            players = {}
+        self.__players = players
 
         if teams is None:
-            self.__teams = {}
-        else:
-            self.__teams = teams
+            teams = {}
+        self.__teams = teams
 
         if fixture is None:
-            self.__fixture = {}
-        else:
-            self.fixture = fixture
+            fixture = {}
+        self.fixture = fixture
 
         self.__players_cache = []
+        self.__fixtures_cache = []
         self.__games_cache = []
 
     def __str__(self):
@@ -105,6 +106,55 @@ class Stats(object):
             self.__players_cache.append(player)
 
         return player
+
+    @property
+    def fixtures_cache(self):
+        return self.__fixtures_cache
+
+    def set_fixtures_cache(self, fixture_details):
+        """Add *fixture_details* to the cache or return the existing
+        :class:`trols_stats.model.entities.Fixture` object.
+
+        **Args:**
+            *fixture_details*: dictionary of fixture details.  For example::
+
+                {
+                    'competition': 'girls',
+                    'section': 14,
+                    'date': '28 Feb 15',
+                    'match_round': 5,
+                    'home_team': 'Watsonia Red',
+                    'away_team': 'St Marys',
+                }
+
+        **Return:**
+            :class:`trols_stats.model.entities.Fixture` object
+            corresponding to *fixture_details*
+
+        """
+        if fixture_details is None:
+            del self.__fixture__cache[:]
+            self.__fixture_cache = []
+
+        fixture = None
+        for cache in self.__fixtures_cache:
+            if cache == fixture_details:
+                log.debug('Fixture cache hit "%s %s round %s"' %
+                          (fixture_details.get('competition'),
+                           fixture_details.get('section'),
+                           fixture_details.get('match_round')))
+                fixture = cache
+                break
+
+        if fixture is None:
+            log.debug('Adding "%s %s round %s" to fixture cache' %
+                      (fixture_details.get('competition'),
+                       fixture_details.get('section'),
+                       fixture_details.get('match_round')))
+            fixture = trols_stats.model.entities.Fixture(**fixture_details)
+            self.__fixtures_cache.append(fixture)
+
+        return fixture
 
     @property
     def games_cache(self):

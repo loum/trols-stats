@@ -163,8 +163,8 @@ class Scraper(object):
                                                 away_team,
                                                 color_xpath)
 
-            teams['home'] = home_team.replace(u'\xa0', u' ')
-            teams['away'] = away_team.replace(u'\xa0', u' ')
+            teams['home_team'] = home_team.replace(u'\xa0', u' ')
+            teams['away_team'] = away_team.replace(u'\xa0', u' ')
 
         log.debug('Teams extracted: "%s"' % teams)
 

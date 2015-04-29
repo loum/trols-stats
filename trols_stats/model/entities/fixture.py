@@ -67,16 +67,16 @@ class Fixture(trols_stats.model.Base):
                  competition=None,
                  section=None,
                  date=None,
-                 home=None,
-                 away=None):
+                 home_team=None,
+                 away_team=None):
         super(Fixture, self).__init__(uid=uid)
 
         self.__round = match_round
         self.__competition = competition
         self.__section = section
-        self.__date_played = date
-        self.__home_team = home
-        self.__away_team = away
+        self.__date = date
+        self.__home_team = home_team
+        self.__away_team = away_team
 
     def __call__(self):
         return {
@@ -84,7 +84,25 @@ class Fixture(trols_stats.model.Base):
             'match_round': self.match_round,
             'competition': self.competition,
             'section': self.section,
-            'date': self.__date_played,
+            'date': self.date,
             'home_team': self.home_team,
             'away_team': self.away_team,
         }
+
+    def __eq__(self, other):
+        is_same = False
+
+        if isinstance(other, dict):
+            fixture = {
+                'competition': self.competition,
+                'section': self.section,
+                'date': self.date,
+                'match_round': self.match_round,
+                'home_team': self.home_team,
+                'away_team': self.away_team,
+            }
+            is_same = (cmp(fixture, other) == 0)
+        else:
+            is_same = self.__dict__ == other.__dict__
+
+        return is_same

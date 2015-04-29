@@ -23,8 +23,8 @@ class TestFixture(unittest2.TestCase):
             'section': 14,
             'date': '28 Feb 15',
             'match_round': 5,
-            'home': 'Watsonia Red',
-            'away': 'St Marys',
+            'home_team': 'Watsonia Red',
+            'away_team': 'St Marys',
         }
 
         # when I create a trols_stats.model.entities.Fixture object

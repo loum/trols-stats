@@ -174,7 +174,7 @@ class TestScraper(unittest2.TestCase):
 
         # then I should receive a populated dictionary of the form
         # {'home': <home_team>, 'away': <away_team>}
-        expected = {'away': 'St Marys', 'home': 'Watsonia '}
+        expected = {'away_team': 'St Marys', 'home_team': 'Watsonia '}
         msg = 'Scraped match detail teams error'
         self.assertDictEqual(received, expected, msg)
 
@@ -197,7 +197,7 @@ class TestScraper(unittest2.TestCase):
 
         # then I should receive a populated dictionary of the form
         # {'home': <home_team>, 'away': <away_team>}
-        expected = {'away': 'St Marys', 'home': 'Watsonia Red'}
+        expected = {'away_team': 'St Marys', 'home_team': 'Watsonia Red'}
         msg = 'Scraped match detail teams error'
         self.assertDictEqual(received, expected, msg)
 

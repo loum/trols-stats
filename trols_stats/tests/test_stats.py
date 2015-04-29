@@ -14,7 +14,7 @@ class TestStats(unittest2.TestCase):
         self.assertIsInstance(stats, trols_stats.Stats, msg)
 
     def test_set_players_cache_new_player(self):
-        """Create a local trols_stats.model.entities.Player cache: new player.
+        """trols_stats.model.entities.Player cache: new player.
         """
         # Given a scraped player tuple
         player = {'name': 'Madeline Doyle',
@@ -30,6 +30,31 @@ class TestStats(unittest2.TestCase):
         msg = 'Stats players cache error: new player'
         self.assertIsInstance(received,
                               trols_stats.model.entities.Player,
+                              msg)
+
+    def test_set_fixture_cache_new_fixture(self):
+        """trols_stats.model.entities.Fixture cache: new fixture
+        """
+        # Given a scraped fixture tuple
+        fixture = {
+            'competition': 'girls',
+            'section': 14,
+            'date': '28 Feb 15',
+            'match_round': 5,
+            'home_team': 'Watsonia Red',
+            'away_team': 'St Marys',
+        }
+
+        # and the fixture does not exist in the cache
+        stats = trols_stats.Stats()
+
+        # when I load the fixture into the fixture cache
+        received = stats.set_fixtures_cache(fixture)
+
+        # then I should receive a trols_stats.model.entities.Fixture object
+        msg = 'Stats fixture cache error: new fixture'
+        self.assertIsInstance(received,
+                              trols_stats.model.entities.Fixture,
                               msg)
 
     def test_set_players_cache_existing_player(self):
@@ -58,6 +83,38 @@ class TestStats(unittest2.TestCase):
         msg = 'Length of players_cache should be 1: existing player'
         self.assertEqual(received, expected, msg)
 
+    def test_set_fixture_cache_existing_fixture(self):
+        """Create a local trols_stats.model.Player() cache: new fixture
+        """
+        # Given a scraped fixture tuple
+        fixture = {
+            'competition': 'girls',
+            'section': 14,
+            'date': '28 Feb 15',
+            'match_round': 5,
+            'home_team': 'Watsonia Red',
+            'away_team': 'St Marys',
+        }
+
+        # and the fixture already exists in the cache
+        stats = trols_stats.Stats()
+        stats.set_fixtures_cache(fixture)
+
+        # when I reload the fixture into the fixtures cache
+        received = stats.set_fixtures_cache(fixture)
+
+        # then I should receive a trols_stats.model.entities.Player() object
+        msg = 'Stats fixtures cache error: fixture create'
+        self.assertIsInstance(received,
+                              trols_stats.model.entities.Fixture,
+                              msg)
+
+        # and only a single fixture should exist in the fiture cache
+        received = len(stats.fixtures_cache)
+        expected = 1
+        msg = 'Length of fixtures_cache should be 1: existing fixture'
+        self.assertEqual(received, expected, msg)
+
     def test_game_aggregate(self):
         """Create a trols_stats.Game() aggregate object.
         """
@@ -67,8 +124,8 @@ class TestStats(unittest2.TestCase):
             'section': 14,
             'date': '28 Feb 15',
             'match_round': 5,
-            'home': 'Watsonia Red',
-            'away': 'St Marys',
+            'home_team': 'Watsonia Red',
+            'away_team': 'St Marys',
         }
 
         # and a match players data structure
