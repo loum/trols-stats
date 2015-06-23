@@ -27,7 +27,7 @@ class Scraper(object):
         comp_ids = {}
         for element in comp_id_elements:
             if (element.attrib.get('value') is not None and
-               element.attrib.get('value') == ''):
+                    element.attrib.get('value') == ''):
                 continue
 
             comp_ids.update(Scraper._get_competition_id(element))
@@ -108,7 +108,7 @@ class Scraper(object):
             ``AA039054``
 
         """
-        prog = re.compile('open_match\(event,\'\',\'(\w+)\'\);')
+        prog = re.compile(r'open_match\(event,\'\',\'(\w+)\'\);')
 
         match_id = None
         if attributes[0] == 'onclick':
@@ -187,10 +187,10 @@ class Scraper(object):
         root = lxml.html.fromstring(html)
 
         namespaces = {"re": "http://exslt.org/regular-expressions"}
-        elements = root.xpath("//td[re:match(text(), '^\d\.')]/text()",
+        elements = root.xpath(r"//td[re:match(text(), '^\d\.')]/text()",
                               namespaces=namespaces)
 
-        player_re = re.compile('^\d\.\s+')
+        player_re = re.compile(r'^\d\.\s+')
         players = [(i, player_re.sub('', j)) for i, j in enumerate(elements,
                                                                    start=1)]
 
@@ -304,12 +304,21 @@ class Scraper(object):
             if score.text is None:
                 continue
 
+            # Check for doubles.
             player_re = re.compile(r'^(\d+)\+(\d+)')
             players = player_re.match(score.text)
             if players:
                 active_players = (int(players.group(1)),
                                   int(players.group(2)))
                 log.debug('Players: %s' % (active_players,))
+                continue
+
+            # Check for singles.
+            player_re = re.compile(r'^(\d+)$')
+            players = player_re.match(score.text)
+            if players:
+                active_players = (int(players.group(1)), None)
+                log.debug('Player: %s' % (active_players,))
                 continue
 
             score_re = re.compile(r'^(\d+)\-(\d+)')
@@ -326,12 +335,14 @@ class Scraper(object):
                 match_results[active_players[0]].append(stat)
 
                 if match_results.get(active_players[1]) is None:
-                    match_results[active_players[1]] = []
+                    if active_players[1] is not None:
+                        match_results[active_players[1]] = []
 
                 stat = Scraper.create_stat(active_players,
                                            active_scores,
                                            reverse=True)
-                match_results[active_players[1]].append(stat)
+                if active_players[1] is not None:
+                    match_results[active_players[1]].append(stat)
 
                 if match_results.get(active_players[0] + 4) is None:
                     match_results[active_players[0] + 4] = []
@@ -341,14 +352,16 @@ class Scraper(object):
                                            away_team=True)
                 match_results[active_players[0] + 4].append(stat)
 
-                if match_results.get(active_players[1] + 4) is None:
-                    match_results[active_players[1] + 4] = []
+                if active_players[1] is not None:
+                    if match_results.get(active_players[1] + 4) is None:
+                        match_results[active_players[1] + 4] = []
 
                 stat = Scraper.create_stat(active_players,
                                            active_scores,
                                            reverse=True,
                                            away_team=True)
-                match_results[active_players[1] + 4].append(stat)
+                if active_players[1] is not None:
+                    match_results[active_players[1] + 4].append(stat)
 
         return match_results
 
@@ -382,10 +395,10 @@ class Scraper(object):
 
         """
         team_mate = players[1]
-        if reverse:
+        if team_mate is not None and reverse:
             team_mate = players[0]
 
-        if away_team:
+        if team_mate is not None and away_team:
             team_mate += 4
 
         score_for = scores[0]
@@ -400,9 +413,14 @@ class Scraper(object):
         if away_team:
             inc = 0
 
+        opposition_1 = players[0] + inc
+        opposition_2 = None
+        if players[1] is not None:
+            opposition_2 = players[1] + inc
+
         stat = {
             'team_mate': team_mate,
-            'opposition': (players[0] + inc, players[1] + inc),
+            'opposition': (opposition_1, opposition_2),
             'score_for': score_for,
             'score_against': score_against,
         }

@@ -20,11 +20,6 @@ class TestLoader(unittest2.TestCase):
         test_files_dir = os.path.join(test_dir,
                                       'www.trols.org.au',
                                       'nejta')
-        detailed_results_page = 'match_popup.php?matchid=AA039054.html'
-
-        html_fh = open(os.path.join(test_files_dir, detailed_results_page))
-        cls._detailed_results_html = html_fh.read()
-        html_fh.close()
 
     def test_init(self):
         """Initialise a interface.Loader object.
@@ -37,7 +32,9 @@ class TestLoader(unittest2.TestCase):
         """build_game_map of a game HTML page.
         """
         # Given a TROLS detailed match results page
-        html = self._detailed_results_html
+        match_popup = 'game_AA039054.html'
+        with open(os.path.join(self.__test_dir, match_popup)) as html_fh:
+            html = html_fh.read()
 
         # when a scrape and load occurs
         loader = interface.Loader()
@@ -189,4 +186,3 @@ class TestLoader(unittest2.TestCase):
     @classmethod
     def teatDownClass(cls):
         cls.__test_dir = None
-        cls._detailed_results_html = None
