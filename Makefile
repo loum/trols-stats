@@ -1,5 +1,5 @@
 PY=/usr/bin/python
-NOSE=/usr/bin/nosetests1.1 -s -v --with-xunit --with-coverage --cover-erase --cover-package trols_stats
+NOSE=/usr/bin/nosetests -s -v --with-xunit --with-coverage --cover-erase --cover-package trols_stats
 NOSE_ENV=.env/bin/nosetests -s -v --with-xunit --with-coverage --cover-erase --cover-package trols_stats
 GIT=/usr/bin/git
 COVERAGE=/usr/bin/coverage

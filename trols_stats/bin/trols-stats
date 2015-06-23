@@ -3,9 +3,10 @@
 import sys
 import os
 import argparse
-import json
+# import json
 
 import trols_stats.interface
+# from filer.files import get_directory_files
 
 CONF = os.path.join(os.sep, 'etc', 'trols-stats', 'conf', 'config.conf')
 DESCRIPTION = """TROLS Stats Tool"""
@@ -45,7 +46,6 @@ def main():
 
     # Cycle through each competition and get the match codes.
     uri = 'http://trols.org.au/nejta/results.php'
-    match_uri = 'http://www.trols.org.au/nejta/match_popup.php'
     match_xpath = '//a[contains(@onclick, "open_match")]'
     for comp, code in comps_map.iteritems():
         query_args = {
@@ -58,23 +58,30 @@ def main():
         match_codes = trols_stats.Scraper.scrape_match_ids(matches_html,
                                                            match_xpath)
 
+        match_uri = 'http://www.trols.org.au/nejta/match_popup.php'
         for match_code in match_codes:
-            match_query_args = {
-                'matchid': match_code,
+            request_kwargs = {
+                'uri': match_uri,
+                'request_args': {
+                    'matchid': match_code,
+                },
+                'cache_dir':  conf.cache_dir,
+                'force_cache': False
             }
-            match_html = loader.request(match_uri, match_query_args)
+            match_html = loader.request(**request_kwargs)
 
-            loader.build_game_map(match_html)
-
-        tmp_games = []
-        for game in loader.games:
-            tmp_games.append(game())
-
-        with open('stats.json', 'w') as games_fh:
-            games_fh.write(json.dumps(tmp_games,
-                                      sort_keys=True,
-                                      indent=4,
-                                      separators=(',', ': ')))
+#        for html_file in get_directory_files(conf.cache_dir):
+#            loader.build_game_map(match_html)
+#
+#        tmp_games = []
+#        for game in loader.games:
+#            tmp_games.append(game())
+#
+#        with open('stats.json', 'w') as games_fh:
+#            games_fh.write(json.dumps(tmp_games,
+#                                      sort_keys=True,
+#                                      indent=4,
+#                                      separators=(',', ': ')))
 
 
 if __name__ == '__main__':

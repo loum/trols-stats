@@ -2,11 +2,13 @@ import urllib
 import urllib2
 import urlparse
 import re
-import json
+import os
+import tempfile
 
 import trols_stats
 import trols_stats.interface
 from logga.log import log
+from filer.files import copy_file
 
 __all__ = ['Loader']
 
@@ -81,32 +83,67 @@ class Loader(object):
         self.games.extend(stats.games_cache)
 
     @staticmethod
-    def request(uri, request_args=None):
+    def request(uri, request_args=None, cache_dir=None, force_cache=False):
         """Send a URL request to *uri*.  If *uri* is a file-type resource
         then an attempt will be made to open the file instead.
 
         **Args:**
             *uri*: the web address to send request
 
-            *request_args*: dictionary of query terms that will put in the
-            POST request body
+        **Kwargs:**
+            *request_args*: dictionary of query terms that will form part
+            of the POST request payload
+
+            *cache_dir*: relevant to the TROLS match popups HTML
+            response.  Caches the HTML response match popup content
+            locally
+
+            *force_cache*: overwrite the file if it already exists in the
+            cache
 
         **Returns:**
             HTML response string of the *uri*
 
         """
-        components = urlparse.urlparse(uri)
-        log.debug('scheme|path: %s|%s' %
-                  (components.scheme, components.path))
+        match_id = None
+        if request_args is not None:
+            match_id = request_args.get('matchid')
 
-        scheme_match = re.match('http',
-                                components.scheme,
-                                flags=re.IGNORECASE)
+        target_file = None
+        if match_id is not None and cache_dir is not None:
+            target_file = os.path.join(cache_dir,
+                                       'game_{}.html'.format(match_id))
+            log.debug('HTML response cache filename: "%s"', target_file)
+
         html = None
-        if scheme_match:
-            html = Loader._request_url(uri, request_args)
+        if (force_cache
+                or target_file is None
+                or not os.path.exists(target_file)):
+            components = urlparse.urlparse(uri)
+            log.debug('URI "%s" scheme|path: %s|%s',
+                      uri, components.scheme, components.path)
+            scheme_match = re.match('http',
+                                    components.scheme,
+                                    flags=re.IGNORECASE)
+            if scheme_match:
+                html = Loader._request_url(uri, request_args)
+            else:
+                html = Loader._request_file(components.path)
+
+        if html is not None:
+            if target_file is not None:
+                log.info('Writing HTML response to cache file "%s"',
+                         target_file)
+                with tempfile.NamedTemporaryFile() as _fh:
+                    _fh.write(html)
+                    _fh.flush()
+                    copy_file(_fh.name, target_file)
         else:
-            html = Loader._request_file(components.path)
+            if target_file is not None:
+                log.info('Returning HTML response from cache file "%s"',
+                         target_file)
+                with open(target_file) as _fh:
+                    html = _fh.read()
 
         return html
 
@@ -140,7 +177,7 @@ class Loader(object):
     def _request_url(url, request_args=None):
         """Request a URL.
 
-        See the :method:`request_uri` method for parameters and return
+        See the :method:`request` method for parameters and return
         value.
 
         """
