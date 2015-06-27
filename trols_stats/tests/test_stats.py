@@ -145,7 +145,7 @@ class TestStats(unittest2.TestCase):
         ]
 
         # and a teams data structure
-        teams = {'away': 'St Marys', 'home': 'Watsonia Red'}
+        teams = {'away_team': 'St Marys', 'home_team': 'Watsonia Red'}
 
         # and a match stats structure
         stats_data = {
@@ -197,7 +197,7 @@ class TestStats(unittest2.TestCase):
         ]
 
         # and a teams data structure
-        teams = {'away': 'Eltham', 'home': 'Norris Bank'}
+        teams = {'away_team': 'Eltham', 'home_team': 'Norris Bank'}
 
         # and a match stats structure
         stats_data = {
@@ -239,7 +239,7 @@ class TestStats(unittest2.TestCase):
         ]
 
         # and a teams data structure
-        teams = {'away': 'St Marys', 'home': 'Watsonia Red'}
+        teams = {'away_team': 'St Marys', 'home_team': 'Watsonia Red'}
 
         # when I create the opposition players data structure
         stats = trols_stats.Stats(players=dict(players), teams=teams)
@@ -270,7 +270,7 @@ class TestStats(unittest2.TestCase):
         ]
 
         # and a teams data structure
-        teams = {'away': 'St Marys', 'home': 'Watsonia Red'}
+        teams = {'away_team': 'St Marys', 'home_team': 'Watsonia Red'}
 
         # when I create the opposition players data structure
         stats = trols_stats.Stats(players=dict(players), teams=teams)

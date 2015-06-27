@@ -226,8 +226,11 @@ class Stats(object):
         player = None
         if code is not None:
             name = self.players.get(code)
-            team = self.teams.get('away' if code / 4 else 'home')
+            team = self.teams.get('away_team' if code / 4 else 'home_team')
             player = {'name': name, 'team': team}
+
+            log.debug('Player cache lookup for code "%d" returned "%s"',
+                      code, player)
 
         return player
 
