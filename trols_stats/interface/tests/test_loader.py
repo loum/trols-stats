@@ -16,10 +16,6 @@ class TestLoader(unittest2.TestCase):
                                       'interface',
                                       'tests',
                                       'files')
-        test_dir = os.path.join('trols_stats', 'tests', 'files')
-        test_files_dir = os.path.join(test_dir,
-                                      'www.trols.org.au',
-                                      'nejta')
 
     def test_init(self):
         """Initialise a interface.Loader object.

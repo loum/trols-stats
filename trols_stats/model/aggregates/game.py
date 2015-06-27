@@ -1,5 +1,5 @@
 import trols_stats.model
-import trols_stats.model.entities
+import trols_stats.model.entities as entities
 
 __all__ = ['Game']
 
@@ -25,7 +25,7 @@ class Game(trols_stats.model.Base):
 
     @fixture.setter
     def fixture(self, value):
-        self.__fixture = value
+        self.__fixture = Game.set_fixture(value)
 
     @property
     def player(self):
@@ -33,7 +33,7 @@ class Game(trols_stats.model.Base):
 
     @player.setter
     def player(self, value):
-        self.__player = value
+        self.__player = Game.set_player(value)
 
     @property
     def team_mate(self):
@@ -48,8 +48,8 @@ class Game(trols_stats.model.Base):
         return self.__opposition
 
     @opposition.setter
-    def opposition(self, value):
-        self.__opposition = value
+    def opposition(self, values):
+        self.__opposition = Game.set_opposition(values)
 
     @property
     def score_for(self):
@@ -77,41 +77,129 @@ class Game(trols_stats.model.Base):
                  score_against=None):
         super(Game, self).__init__(uid=uid)
 
-        if fixture is None:
-            self.__fixture = trols_stats.model.entities.Fixture()
-        else:
-            self.__fixture = fixture
-
-        if player is None:
-            self.__player = trols_stats.model.entities.Player()
-        else:
-            self.__player = player
-
-        if team_mate is None:
-            self.__team_mate = trols_stats.model.entities.Player()
-        else:
-            self.__team_mate = team_mate
-
-        if opposition is None:
-            self.__opposition = (trols_stats.model.entities.Player(),
-                                 trols_stats.model.entities.Player())
-        else:
-            self.__opposition = opposition
-
+        self.__fixture = Game.set_fixture(fixture)
+        self.__player = Game.set_player(player)
+        self.__team_mate = Game.set_player(team_mate)
+        self.__opposition = Game.set_opposition(opposition)
         self.__score_for = score_for
         self.__score_against = score_against
 
     def __call__(self):
-        return {
+        # Cater for singles where player 2 is None.
+        opposition = [self.opposition[0]()]
+        if len(self.opposition) == 2 and self.opposition[1] is not None:
+            opposition.append(self.opposition[1]())
+
+        game = {
             'uid': self.uid,
-            'fixture': self.fixture(),
-            'player': self.player(),
-            'opposition': [self.opposition[0](),
-                           self.opposition[1]()],
-            'team_mate': self.team_mate(),
+            'fixture': self.__fixture(),
+            'player': self.__player(),
+            'opposition': opposition,
             'score_for': self.score_for,
             'score_against': self.score_against,
         }
 
+        if self.team_mate.name is not None:
+            game['team_mate'] = self.__team_mate()
+
+        return game
+
     def __str__(self):
         return str(self.__dict__)
+
+    @staticmethod
+    def set_opposition(data):
+        """Build an opposition players data structure.
+
+        **Args:**
+            *data*: Either ``None``, a tuple of
+            :class:`trols_stats.model.entities.Player` items or
+            dictionary of values that feed into the
+            :class:`trols_stats.model.entities.Player` initialiser::
+
+            (
+                {
+                    'name': 'Isabella Markovski',
+                    'team': 'Watsonia',
+                },
+                ...
+            )
+
+        **Returns:** tuple of :class:`trols_stats.model.entities.Player`
+
+        """
+        if data is None:
+            players = tuple()
+        elif all(isinstance(oppn, dict) for oppn in data):
+            players = tuple([entities.Player(**oppn) for oppn in data])
+        elif all(isinstance(oppn, entities.Player) for oppn in data):
+            players = data
+        elif isinstance(data[0], entities.Player):
+            players = (data[0], None)
+        elif isinstance(data[0], dict):
+            players = (entities.Player(**data[0]), None)
+
+        return players
+
+    @staticmethod
+    def set_player(data):
+        """Build a player data structure.
+
+        **Args:**
+            *data*: Either ``None``, a tuple of
+            :class:`trols_stats.model.entities.Player` items or
+            dictionary of values that feed into the
+            :class:`trols_stats.model.entities.Player` initialiser::
+
+            (
+                {
+                    'name': 'Isabella Markovski',
+                    'team': 'Watsonia',
+                },
+            )
+
+        **Returns:** :class:`trols_stats.model.entities.Player` instance
+
+        """
+        if data is None:
+            player = entities.Player()
+        elif isinstance(data, dict):
+            player = entities.Player(**data)
+        elif isinstance(data, entities.Player):
+            player = data
+
+        return player
+
+    @staticmethod
+    def set_fixture(data):
+        """Build a :class:`trols_stats.model.entities.Fixture` from *data*.
+
+        **Args:**
+            *data*: Either ``None``,
+            a :class:`trols_stats.model.entities.Fixture` or a
+            dictionary of values that feed into the
+            :class:`trols_stats.model.entities.Fixture` initialiser::
+
+            (
+                {
+                    'away_team': 'St Marys',
+                    'competition': 'girls',
+                    'date': '28 Feb 15',
+                    'home_team': 'Watsonia Red',
+                    'match_round': 5,
+                    'section': 14,
+                    'uid': None
+                }
+            }
+
+        **Returns:** :class:`trols_stats.model.entities.Fixture` instance
+
+        """
+        if data is None:
+            fixture = entities.Fixture()
+        elif isinstance(data, dict):
+            fixture = entities.Fixture(**data)
+        elif isinstance(data, entities.Fixture):
+            fixture = data
+
+        return fixture

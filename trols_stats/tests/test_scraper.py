@@ -16,14 +16,10 @@ class TestScraper(unittest2.TestCase):
         cls._test_files_dir = os.path.join('trols_stats',
                                            'tests',
                                            'files')
-        test_files_dir = os.path.join(cls._test_files_dir,
-                                      'www.trols.org.au',
-                                      'nejta')
-        detailed_results_page = 'match_popup.php?matchid=AA039054.html'
 
-        html_fh = open(os.path.join(test_files_dir, detailed_results_page))
-        cls._detailed_results_html = html_fh.read()
-        html_fh.close()
+        with  open(os.path.join(cls._test_files_dir,
+                                'game_AA039054.html')) as _fh:
+            cls._detailed_results_html = _fh.read()
 
     def test_init(self):
         """Initialise a trols_stats.Scraper object.
@@ -199,6 +195,31 @@ class TestScraper(unittest2.TestCase):
         # then I should receive a populated dictionary of the form
         # {'home': <home_team>, 'away': <away_team>}
         expected = {'away_team': 'St Marys', 'home_team': 'Watsonia Red'}
+        msg = 'Scraped match detail teams error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_scrape_match_teams_with_color_code_late_start(self):
+        """Test scrape_match_teams: no color code (late start).
+        """
+        # Given a TROLS detailed match results page
+        html_file = os.path.join(self._test_files_dir, 'game_AA031012.html')
+        with open(html_file) as _fh:
+            html = _fh.read()
+
+        # and an xpath definition to target the team extraction
+        xpath = '//table/tr/td/b'
+
+        # and a color xpath definition has been supplied
+        color_xpath = "//table/tr/td/b[contains(text(), '%s')]/span/text()"
+
+        # when I extract the teams
+        received = trols_stats.Scraper.scrape_match_teams(html,
+                                                          xpath,
+                                                          color_xpath)
+
+        # then I should receive a populated dictionary of the form
+        # {'home': <home_team>, 'away': <away_team>}
+        expected = {'away_team': 'Eaglemont', 'home_team': 'Clifton'}
         msg = 'Scraped match detail teams error'
         self.assertDictEqual(received, expected, msg)
 

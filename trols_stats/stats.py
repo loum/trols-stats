@@ -17,7 +17,7 @@ class Stats(object):
     ..attribute:: players_cache
         list of :class:`trols_stats.model.entities.Player` objects
 
-    ..attribute:: fixutres_cache
+    ..attribute:: fixtures_cache
         list of :class:`trols_stats.model.entities.Fixture` objects
 
     """
@@ -56,7 +56,7 @@ class Stats(object):
 
         if fixture is None:
             fixture = {}
-        self.fixture = fixture
+        self.__fixture = trols_stats.model.entities.Fixture(**fixture)
 
         self.__players_cache = []
         self.__fixtures_cache = []
@@ -87,23 +87,21 @@ class Stats(object):
             corresponding to *player_details*
 
         """
-        if player_details is None:
-            del self.__players_cache[:]
-            self.__players_cache = []
-
         player = None
-        for cache in self.__players_cache:
-            if cache == player_details:
-                log.debug('Player cache hit "%s"' %
-                          player_details.get('name'))
-                player = cache
-                break
 
-        if player is None:
-            log.debug('Adding "%s" to player cache' %
-                      player_details.get('name'))
-            player = trols_stats.model.entities.Player(**player_details)
-            self.__players_cache.append(player)
+        if player_details is not None:
+            for cache in self.__players_cache:
+                if cache == player_details:
+                    log.debug('Player cache hit "%s"' %
+                              player_details.get('name'))
+                    player = cache
+                    break
+
+            if player is None:
+                log.debug('Adding "%s" to player cache' %
+                          player_details.get('name'))
+                player = trols_stats.model.entities.Player(**player_details)
+                self.__players_cache.append(player)
 
         return player
 
@@ -132,10 +130,6 @@ class Stats(object):
             corresponding to *fixture_details*
 
         """
-        if fixture_details is None:
-            del self.__fixture__cache[:]
-            self.__fixture_cache = []
-
         fixture = None
         for cache in self.__fixtures_cache:
             if cache == fixture_details:
@@ -172,10 +166,6 @@ class Stats(object):
             corresponding to *game_details*
 
         """
-        if game_details is None:
-            del self.__games_cache[:]
-            self.__games_cache = []
-
         game = trols_stats.model.aggregates.Game(**game_details)
         self.__games_cache.append(game)
 
@@ -189,54 +179,63 @@ class Stats(object):
         **Args:**
             *stats*: the match statistics in the form::
 
-                {1: [
-                    {
-                        'opposition': (5, 6),
-                        'score_against': 6,
-                        'score_for': 3,
-                        'team_mate': 2
-                    }
-                ]}
+                {
+                    1: [
+                        {
+                            'opposition': (5, 6),
+                            'score_against': 6,
+                            'score_for': 3,
+                            'team_mate': 2
+                        }
+                    ]
+                }
 
         """
         for code, games in stats.iteritems():
             player_obj = self.set_players_cache(self.get_player(code))
 
-            for game in games:
-                # Opposition players.
-                opposition = game.get('opposition')
-                opposition_data_1 = self.get_player(opposition[0])
-                opposition_obj_1 = self.set_players_cache(opposition_data_1)
-                opposition_data_2 = self.get_player(opposition[1])
-                opposition_obj_2 = self.set_players_cache(opposition_data_2)
-
+            for raw_game in games:
                 # Team mate.
-                team_mate = game.get('team_mate')
-                team_mate_data = self.get_player(team_mate)
-                team_mate_obj = self.set_players_cache(team_mate_data)
+                team_mate = raw_game.get('team_mate')
+                team_mate_obj = None
+                if team_mate is not None:
+                    team_mate_data = self.get_player(team_mate)
+                    team_mate_obj = self.set_players_cache(team_mate_data)
 
                 # Score against.
-                score_against = game.get('score_against')
+                score_against = raw_game.get('score_against')
 
                 # Score for.
-                score_for = game.get('score_for')
+                score_for = raw_game.get('score_for')
 
-                game = trols_stats.model.aggregates.Game()
-                game.score_for = score_for
-                game.score_against = score_against
+                game_data = {
+                    'fixture': self.fixture,
+                    'player': player_obj,
+                    'opposition':
+                        self.get_opposition(raw_game.get('opposition')),
+                    'score_for': score_for,
+                    'score_against': score_against
+                }
 
-                game_data = {'fixture': self.fixture,
-                             'player': player_obj,
-                             'team_mate': team_mate_obj,
-                             'opposition': (opposition_obj_1,
-                                            opposition_obj_2),
-                             'score_for': score_for,
-                             'score_against': score_against}
+                if team_mate_obj is not None:
+                    game_data['team_mate'] = team_mate_obj
 
                 self.set_games_cache(game_data)
 
     def get_player(self, code):
-        name = self.players.get(code)
-        team = self.teams.get('away' if code / 4 else 'home')
+        player = None
+        if code is not None:
+            name = self.players.get(code)
+            team = self.teams.get('away' if code / 4 else 'home')
+            player = {'name': name, 'team': team}
 
-        return {'name': name, 'team': team}
+        return player
+
+    def get_opposition(self, opposition_codes):
+        opposition_data_1 = self.get_player(opposition_codes[0])
+        player_1 = self.set_players_cache(opposition_data_1)
+
+        opposition_data_2 = self.get_player(opposition_codes[1])
+        player_2 = self.set_players_cache(opposition_data_2)
+
+        return (player_1, player_2)

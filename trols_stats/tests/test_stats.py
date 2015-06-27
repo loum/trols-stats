@@ -2,9 +2,13 @@ import unittest2
 
 import trols_stats
 import trols_stats.model
+from trols_stats.tests.results.game_aggregates import SINGLES, DOUBLES
 
 
 class TestStats(unittest2.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.maxDiff = None
 
     def test_init(self):
         """Initialise a trols_stats.Stats object.
@@ -161,9 +165,122 @@ class TestStats(unittest2.TestCase):
                                   fixture=fixture)
         stats.build_game_aggregate(stats_data)
 
-        # then I should receive a game object
-        received = stats.games_cache
-        msg = 'Games aggregate not created'
-        self.assertIsInstance(received[0],
-                              trols_stats.model.aggregates.Game,
-                              msg)
+        # then I should receive a Game dictionary object
+        received = stats.games_cache[0]()
+        expected = DOUBLES
+        msg = 'Games aggregate (singles) error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_game_aggregate_singles(self):
+        """Create a trols_stats.Game() aggregate object: singles.
+        """
+        # Given a fixture details data structure
+        fixture = {
+            'competition': 'girls',
+            'section': 1,
+            'date': '21 Feb 15',
+            'match_round': 4,
+            'home_team': 'Norris Bank',
+            'away_team': 'Eltham',
+        }
+
+        # and a match players data structure
+        players = [
+            (1, 'Mladena Mitic'),
+            (2, 'Erica Bramble'),
+            (3, 'Indiana Pisasale'),
+            (4, 'Sasha Pecanic'),
+            (5, 'Shania Peric'),
+            (6, 'Maddison Batchelor'),
+            (7, 'Kristen Fisher'),
+            (8, 'Paris Batchelor')
+        ]
+
+        # and a teams data structure
+        teams = {'away': 'Eltham', 'home': 'Norris Bank'}
+
+        # and a match stats structure
+        stats_data = {
+            7: [
+                {
+                    'opposition': (3, None),
+                    'score_against': 3,
+                    'score_for': 6,
+                    'team_mate': None
+                }
+            ]
+        }
+
+        # when I create the game aggregate
+        stats = trols_stats.Stats(players=dict(players),
+                                  teams=teams,
+                                  fixture=fixture)
+        stats.build_game_aggregate(stats_data)
+
+        # then I should receive a Game dictionary object
+        received = stats.games_cache[0]()
+        expected = SINGLES
+        msg = 'Games aggregate (singles) error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_get_oppositon_doubles(self):
+        """Get the opposition players (doubles) data structure.
+        """
+        # Given a match players data structure
+        players = [
+            (1, 'Madeline Doyle'),
+            (2, 'Tara Watson'),
+            (3, 'Alexis McIntosh'),
+            (4, 'Grace Heaver'),
+            (5, 'Lauren Amsing'),
+            (6, 'Mia Bovalino'),
+            (7, 'Lucinda Ford'),
+            (8, 'Brooke Moore')
+        ]
+
+        # and a teams data structure
+        teams = {'away': 'St Marys', 'home': 'Watsonia Red'}
+
+        # when I create the opposition players data structure
+        stats = trols_stats.Stats(players=dict(players), teams=teams)
+        opposition = stats.get_opposition((1, 2))
+
+        # then I should get a tuple of trols_stats.Players
+        received = (opposition[0].to_json(), opposition[1].to_json())
+        expected = (
+            '{"team": "Watsonia Red", "uid": null, "name": "Madeline Doyle"}',
+            '{"team": "Watsonia Red", "uid": null, "name": "Tara Watson"}'
+        )
+        msg = 'Opposition player structure (doubles) incorrect'
+        self.assertTupleEqual(received, expected, msg)
+
+    def test_get_oppositon_singles(self):
+        """Get the opposition players (singles) data structure.
+        """
+        # Given a match players data structure
+        players = [
+            (1, 'Madeline Doyle'),
+            (2, 'Tara Watson'),
+            (3, 'Alexis McIntosh'),
+            (4, 'Grace Heaver'),
+            (5, 'Lauren Amsing'),
+            (6, 'Mia Bovalino'),
+            (7, 'Lucinda Ford'),
+            (8, 'Brooke Moore')
+        ]
+
+        # and a teams data structure
+        teams = {'away': 'St Marys', 'home': 'Watsonia Red'}
+
+        # when I create the opposition players data structure
+        stats = trols_stats.Stats(players=dict(players), teams=teams)
+        opposition = stats.get_opposition((1, None))
+
+        # then I should get a tuple of trols_stats.Players
+        received = (opposition[0].to_json(), opposition[1])
+        expected = (
+            '{"team": "Watsonia Red", "uid": null, "name": "Madeline Doyle"}',
+            None
+        )
+        msg = 'Opposition player structure (doubles) incorrect'
+        self.assertTupleEqual(received, expected, msg)

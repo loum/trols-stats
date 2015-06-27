@@ -140,9 +140,11 @@ class Scraper(object):
             log.debug('Team color xpath "%s"' % color_xpath)
             color = root.xpath(color_xpath)
             if len(color):
+                # Some identifiers we don't want.
+                color[0] = color[0].replace('(Late Start)', '')
                 team += color[0]
 
-            return team
+            return team.rstrip()
 
         root = lxml.html.fromstring(html)
         raw_teams = root.xpath(xpath)
