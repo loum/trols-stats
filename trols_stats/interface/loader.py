@@ -112,7 +112,7 @@ class Loader(object):
         target_file = None
         if match_id is not None and cache_dir is not None:
             target_file = os.path.join(cache_dir,
-                                       'game_{}.html'.format(match_id))
+                                       'match_{}.html'.format(match_id))
             log.debug('HTML response cache filename: "%s"', target_file)
 
         html = None

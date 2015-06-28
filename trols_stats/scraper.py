@@ -207,6 +207,10 @@ class Scraper(object):
 
             GIRLS 14 on 28th Feb 15  Rd.5
 
+        For finals::
+
+            GIRLS 14 on Semi Final
+
         **Args:**
             *html*: string representation of the HTML page to process.
             *html* is typically a TROLS match results page.
@@ -270,6 +274,17 @@ class Scraper(object):
 
         round_no_re = re.compile(r'^Rd.(\d+)(.*)')
         raw_preamble = round_no_re.sub(round_no, raw_preamble)
+
+        def final(matchobj):
+            final_token = '{} {}'.format(matchobj.group(1),
+                                         matchobj.group(2))
+            log.debug('Final token: "%s"' % final_token)
+            preamble['match_round'] = final_token
+
+            return matchobj.group(3)
+
+        final_re = re.compile(r'^(Semi|Grand) (Final)(.*)')
+        raw_preamble = final_re.sub(final, raw_preamble)
 
         if len(raw_preamble):
             log.warn('Match preamble string has unparsed tokens "%s"' %

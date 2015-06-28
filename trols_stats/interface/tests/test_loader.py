@@ -28,8 +28,8 @@ class TestLoader(unittest2.TestCase):
         """build_game_map of a game HTML page.
         """
         # Given a TROLS detailed match results page
-        match_popup = 'game_AA039054.html'
-        with open(os.path.join(self.__test_dir, match_popup)) as html_fh:
+        match_file = 'match_AA039054.html'
+        with open(os.path.join(self.__test_dir, match_file)) as html_fh:
             html = html_fh.read()
 
         # when a scrape and load occurs
@@ -52,8 +52,8 @@ class TestLoader(unittest2.TestCase):
         request_args = {'matchid': 'AA026044'}
 
         # when I make a TROLS request
-        html_file = os.path.join(self.__test_dir, 'game_AA026044.html')
-        with open(html_file) as _fh:
+        match_file = 'match_AA026044.html'
+        with open(os.path.join(self.__test_dir, match_file)) as _fh:
             html = _fh.read()
 
         with mock.patch.object(interface.Loader,
@@ -79,8 +79,8 @@ class TestLoader(unittest2.TestCase):
         cache_dir = tempfile.mkdtemp()
 
         # when I make a TROLS request
-        html_file = os.path.join(self.__test_dir, 'game_AA026044.html')
-        with open(html_file) as _fh:
+        match = 'match_AA026044.html'
+        with open(os.path.join(self.__test_dir, match)) as _fh:
             html = _fh.read()
 
         with mock.patch.object(interface.Loader,
@@ -89,7 +89,7 @@ class TestLoader(unittest2.TestCase):
             interface.Loader.request(uri, request_args, cache_dir)
 
         # then the HTML response should be saved in the cache
-        cache_file = os.path.join(cache_dir, 'game_AA026044.html')
+        cache_file = os.path.join(cache_dir, match)
         msg = 'Cached HTML match popup not created'
         self.assertTrue(os.path.exists(cache_file), msg)
 
@@ -110,8 +110,9 @@ class TestLoader(unittest2.TestCase):
         cache_dir = tempfile.mkdtemp()
 
         # and a copy of the request file already cached
-        html_file = os.path.join(self.__test_dir, 'game_AA026044.html')
-        copy_file(html_file, os.path.join(cache_dir, 'game_AA026044.html'))
+        match_file = 'match_AA026044.html'
+        html_file = os.path.join(self.__test_dir, match_file)
+        copy_file(html_file, os.path.join(cache_dir, match_file))
 
         # when I make a TROLS request
         received = interface.Loader.request(uri, request_args, cache_dir)
@@ -142,14 +143,15 @@ class TestLoader(unittest2.TestCase):
         force_cache = True
 
         # and an existing match popup exists
-        cache_file = os.path.join(cache_dir, 'game_AA026044.html')
+        match_file = 'match_AA026044.html'
+        cache_file = os.path.join(cache_dir, match_file)
         with open(cache_file, 'w'):
             os.utime(cache_file, None)
 
         # when I make a TROLS request
         with mock.patch.object(interface.Loader,
                                '_request_url') as mock_request_url:
-            html_file = os.path.join(self.__test_dir, 'game_AA026044.html')
+            html_file = os.path.join(self.__test_dir, match_file)
             with open(html_file) as _fh:
                 html = _fh.read()
             mock_request_url.return_value = html

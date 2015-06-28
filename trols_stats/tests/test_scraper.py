@@ -13,13 +13,8 @@ class TestScraper(unittest2.TestCase):
     def setUpClass(cls):
         cls.maxDiff = None
 
-        cls._test_files_dir = os.path.join('trols_stats',
-                                           'tests',
-                                           'files')
-
-        with  open(os.path.join(cls._test_files_dir,
-                                'game_AA039054.html')) as _fh:
-            cls._detailed_results_html = _fh.read()
+        cls.__files_dir = os.path.join('trols_stats', 'tests', 'files')
+        cls.__results_dir = os.path.join('trols_stats', 'tests', 'results')
 
     def test_init(self):
         """Initialise a trols_stats.Scraper object.
@@ -32,7 +27,7 @@ class TestScraper(unittest2.TestCase):
         """Test scrape_competition_ids.
         """
         # Given a TROLS competition|section results page
-        test_file = os.path.join(self._test_files_dir, 'main_results.php')
+        test_file = os.path.join(self.__files_dir, 'main_results.php')
         with open(test_file) as html_fh:
             html = html_fh.read()
 
@@ -112,14 +107,11 @@ class TestScraper(unittest2.TestCase):
         """Test scrape_match_ids.
         """
         # Given a TROLS competition|section results page
-        html_fh = open(os.path.join('trols_stats',
-                                    'tests',
-                                    'files',
-                                    'www.trols.org.au',
-                                    'nejta',
-                                    'results.php'))
-        html = html_fh.read()
-        html_fh.close()
+        with open(os.path.join(self.__files_dir,
+                               'www.trols.org.au',
+                               'nejta',
+                               'results.php')) as _fh:
+            html = _fh.read()
 
         # and an xpath definition to target the extraction
         xpath = '//a[contains(@onclick, "open_match")]'
@@ -161,7 +153,9 @@ class TestScraper(unittest2.TestCase):
         """Test scrape_match_teams: no color code.
         """
         # Given a TROLS detailed match results page
-        html = self._detailed_results_html
+        match_file = 'match_AA039054.html'
+        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+            html = _fh.read()
 
         # and an xpath definition to target the team extraction
         xpath = '//table/tr/td/b'
@@ -179,7 +173,9 @@ class TestScraper(unittest2.TestCase):
         """Test scrape_match_teams: no color code.
         """
         # Given a TROLS detailed match results page
-        html = self._detailed_results_html
+        match_file = 'match_AA039054.html'
+        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+            html = _fh.read()
 
         # and an xpath definition to target the team extraction
         xpath = '//table/tr/td/b'
@@ -202,8 +198,8 @@ class TestScraper(unittest2.TestCase):
         """Test scrape_match_teams: no color code (late start).
         """
         # Given a TROLS detailed match results page
-        html_file = os.path.join(self._test_files_dir, 'game_AA031012.html')
-        with open(html_file) as _fh:
+        match_file = 'match_AA031012.html'
+        with open(os.path.join(self.__files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the team extraction
@@ -227,7 +223,9 @@ class TestScraper(unittest2.TestCase):
         """Extract player names from detailed results page.
         """
         # Given a TROLS detailed match results page
-        html = self._detailed_results_html
+        match_file = 'match_AA039054.html'
+        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+            html = _fh.read()
 
         # when I extract the player names
         received = trols_stats.Scraper.scrape_player_names(html)
@@ -251,7 +249,9 @@ class TestScraper(unittest2.TestCase):
         """Extract match preamble.
         """
         # Given a TROLS detailed match results page
-        html = self._detailed_results_html
+        match_file = 'match_AA039054.html'
+        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+            html = _fh.read()
 
         # and an xpath definition to target the match preamble extraction
         xpath = '//table/tr/td[contains(@class, "mb")]/text()'
@@ -271,11 +271,38 @@ class TestScraper(unittest2.TestCase):
         msg = 'Match preamble dictionary error'
         self.assertDictEqual(received, expected, msg)
 
+    def test_scrape_match_preamble_semi_final(self):
+        """Extract match preamble: semi final.
+        """
+        # Given a TROLS detailed match results page: semi final
+        match_semi_final = 'match_AA039301.html'
+        with open(os.path.join(self.__files_dir, match_semi_final)) as _fh:
+            html = _fh.read()
+
+        # and an xpath definition to target the match preamble extraction
+        xpath = '//table/tr/td[contains(@class, "mb")]/text()'
+
+        # when I extract the match preamble
+        received = trols_stats.Scraper.scrape_match_preamble(html, xpath)
+
+        # then I should receive a dictionary structure of the form
+        # {'competition': <girls_or_boys>,
+        #  'section': <section_no>,
+        #  'date': <date>,
+        #  'match_round': <round_no>}
+        expected = {'competition': 'girls',
+                    'section': 14,
+                    'match_round': 'Semi Final'}
+        msg = 'Match preamble (semi-final) dictionary error'
+        self.assertDictEqual(received, expected, msg)
+
     def test_scrape_match_scores_doubles(self):
         """Scrape match scores: doubles.
         """
         # Given a TROLS detailed match results page
-        html = self._detailed_results_html
+        match_file = 'match_AA039054.html'
+        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+            html = _fh.read()
 
         # and an xpath definition to target the match scores extraction
         xpath = '//td/table/tr[contains(@valign, "top")]/td'
@@ -302,9 +329,10 @@ class TestScraper(unittest2.TestCase):
         """Scrape match scores: singles.
         """
         # Given a TROLS detailed match results page
-        with open(os.path.join(self._test_files_dir,
-                               'game_AA026044.html')) as html_fh:
-            html = html_fh.read()
+        match_singles_file = 'match_AA026044.html'
+        with open(os.path.join(self.__files_dir,
+                               match_singles_file)) as _fh:
+            html = _fh.read()
 
         # and an xpath definition to target the match scores extraction
         xpath = '//td/table/tr[contains(@valign, "top")]/td'
@@ -515,5 +543,5 @@ class TestScraper(unittest2.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls._test_files_dir = None
-        cls._detailed_results_html = None
+        cls.__files_dir = None
+        cls.__results_dir = None
