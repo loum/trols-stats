@@ -29,7 +29,7 @@ def find_data_files(srcdir, *wildcards, **kw):
                 filename = opj(dirname, current_file)
 
                 if (fnmatch.fnmatch(filename, wc_name) and
-                    not os.path.isdir(filename)):
+                        not os.path.isdir(filename)):
                     if kw.get('version') is None:
                         names.append(filename)
                     else:
@@ -64,7 +64,7 @@ setup(name='python-trols-stats',
       author='Lou Markovski',
       author_email='lou.markovski@gmail.com',
       url='',
-      # scripts=['trols_stats/bin/trols-stats'],
+      scripts=['trols_stats/bin/trols-stats'],
       packages=['trols_stats',
                 'trols_stats.interface'],
       package_data={'trols_stats': ['conf/*.conf.[0-9]*.[0-9]*.[0-9]*']})
