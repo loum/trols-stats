@@ -7,7 +7,8 @@ from configa.setter import set_scalar
 class Config(configa.Config):
     def __init__(self, config_file=None):
         self.__main_results = None
-        self.__cache_dir = None
+        self.__cache = None
+        self.__shelve = None
 
         configa.Config.__init__(self, config_file)
 
@@ -18,13 +19,21 @@ class Config(configa.Config):
     @set_scalar
     def set_main_results(self, value):
         pass
- 
+
     @property
-    def cache_dir(self):
-        return self.__cache_dir
+    def cache(self):
+        return self.__cache
 
     @set_scalar
-    def set_cache_dir(self, value):
+    def set_cache(self, value):
+        pass
+
+    @property
+    def shelve(self):
+        return self.__shelve
+
+    @set_scalar
+    def set_shelve(self, value):
         pass
 
     def parse_config(self):
@@ -39,7 +48,11 @@ class Config(configa.Config):
             },
             {
                 'section': 'directories',
-                'option': 'cache_dir',
+                'option': 'cache',
+            },
+            {
+                'section': 'directories',
+                'option': 'shelve',
             }
         ]
 

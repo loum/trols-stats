@@ -31,18 +31,32 @@ class TestConfig(unittest2.TestCase):
         msg = 'trols_stats.Config.main_results error'
         self.assertEqual(received, expected, msg)
 
-    def test_parse_config_cache_dir(self):
-        """Parse cache_dir from the config.
+    def test_parse_config_cache(self):
+        """Parse cache from the config.
         """
         # Given a TROLS Stats config instance
         conf = trols_stats.Config(self.__conf_path)
 
-        # when I reference the cache_dir attribute
-        received = conf.cache_dir
+        # when I reference the cache attribute
+        received = conf.cache
 
         # then I should get the expected directory
         expected = os.path.join(os.sep, 'tmp', 'trols_stats')
-        msg = 'trols_stats.Config.cache_dir error'
+        msg = 'trols_stats.Config.cache error'
+        self.assertEqual(received, expected, msg)
+
+    def test_parse_config_shelve(self):
+        """Parse shelve from the config.
+        """
+        # Given a TROLS Stats config instance
+        conf = trols_stats.Config(self.__conf_path)
+
+        # when I reference the shelve attribute
+        received = conf.shelve
+
+        # then I should get the expected directory
+        expected = os.path.join(os.sep, 'tmp', 'trols_shelve')
+        msg = 'trols_stats.Config.shelve error'
         self.assertEqual(received, expected, msg)
 
     @classmethod

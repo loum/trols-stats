@@ -20,6 +20,7 @@ PYTHONPATH=.:../logga:../configa:../filer
 # the current namespace via "tests/__init__.py"
 TEST=trols_stats.tests:TestScraper \
 	trols_stats.tests:TestStats \
+	trols_stats.tests:TestDBSession \
 	trols_stats.interface.tests:TestLoader \
 	trols_stats.interface.tests:TestReporter \
 	trols_stats.model.entities.tests:TestPlayer \
