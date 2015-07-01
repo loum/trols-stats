@@ -96,7 +96,7 @@ def source(args, conf):
                 'request_args': {
                     'matchid': match_code,
                 },
-                'cache_dir':  conf.cache_dir,
+                'cache':  conf.cache,
                 'force_cache': args.force
             }
             loader.request(**request_kwargs)
@@ -105,7 +105,7 @@ def source(args, conf):
 def scrape(args, conf):
     loader = trols_stats.interface.Loader()
 
-    for html_file in get_directory_files(conf.cache_dir):
+    for html_file in get_directory_files(conf.cache):
         with open(html_file) as _fh:
             loader.build_game_map(_fh.read())
 
@@ -113,13 +113,15 @@ def scrape(args, conf):
     for game in loader.games:
         tmp_games.append(game())
 
-
     with open(args.dump, 'w') as games_fh:
         games_fh.write(json.dumps(tmp_games,
                                   sort_keys=True,
                                   indent=4,
                                   separators=(',', ': ')))
 
+    db = trols_stats.DBSession(shelve=conf.shelve)
+    if db.connect():
+        db.connection['trols'] = tmp_games
 
 if __name__ == '__main__':
     main()
