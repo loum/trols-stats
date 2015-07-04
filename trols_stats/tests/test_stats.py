@@ -2,7 +2,9 @@ import unittest2
 
 import trols_stats
 import trols_stats.model
-from trols_stats.tests.results.game_aggregates import SINGLES, DOUBLES
+from trols_stats.tests.results.game_aggregates import (SINGLES,
+                                                       DOUBLES,
+                                                       COLOR_CODED_DOUBLES)
 
 
 class TestStats(unittest2.TestCase):
@@ -168,6 +170,58 @@ class TestStats(unittest2.TestCase):
         # then I should receive a Game dictionary object
         received = stats.games_cache[0]()
         expected = DOUBLES
+        msg = 'Games aggregate (singles) error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_game_aggregate_color_coded_teams(self):
+        """Create a trols_stats.Game() aggregate object.
+        """
+        # Given a fixture details data structure
+        fixture = {
+            'competition': 'girls',
+            'section': 14,
+            'date': '18 Apr 15',
+            'match_round': 9,
+            'home_team': 'Watsonia Red',
+            'away_team': 'Watsonia Blue',
+        }
+
+        # and a match players data structure
+        players = [
+            (1, 'Grace Heaver'),
+            (2, 'Alexis McIntosh'),
+            (3, 'Madeline Doyle'),
+            (4, 'Tara Watson'),
+            (5, 'Eboni Amos'),
+            (6, 'Isabella Markovski'),
+            (7, 'Maddison Hollyoak'),
+            (8, 'Lily Matt')
+        ]
+
+        # and a teams data structure
+        teams = {'away_team': 'Watsonia Blue', 'home_team': 'Watsonia Red'}
+
+        # and a match stats structure
+        stats_data = {
+            1: [
+                {
+                    'opposition': (5, 6),
+                    'score_against': 6,
+                    'score_for': 3,
+                    'team_mate': 2
+                }
+            ]
+        }
+
+        # when I create the game aggregate
+        stats = trols_stats.Stats(players=dict(players),
+                                  teams=teams,
+                                  fixture=fixture)
+        stats.build_game_aggregate(stats_data)
+
+        # then I should receive a Game dictionary object
+        received = stats.games_cache[0]()
+        expected = COLOR_CODED_DOUBLES
         msg = 'Games aggregate (singles) error'
         self.assertDictEqual(received, expected, msg)
 

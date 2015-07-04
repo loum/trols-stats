@@ -1,5 +1,6 @@
 import lxml.html
 import re
+import string
 
 from logga.log import log
 
@@ -133,16 +134,29 @@ class Scraper(object):
                 ['AA039054', <match_id_02>, <match_id_03> ...]
 
         """
-        def get_team_color_code(root, team, xpath):
+        def get_team_color_code(root, team, xpath, away=False):
             team = team.replace("'", "&apos;")
 
             color_xpath = xpath % team
+
             log.debug('Team color xpath "%s"' % color_xpath)
-            color = root.xpath(color_xpath)
-            if len(color):
+            tmp_colors = root.xpath(color_xpath)
+
+            colors = []
+            for color in tmp_colors:
                 # Some identifiers we don't want.
-                color[0] = color[0].replace('(Late Start)', '')
-                team += color[0]
+                clean_color = string.replace(color, '(Late Start)', '')
+                if len(clean_color):
+                    colors.append(clean_color)
+
+            # Colors could come through for both home and away teams.
+            if len(colors):
+                if away:
+                    team += colors[-1]
+                else:
+                    team += colors[0]
+
+                log.debug('Color coded team: "%s"', team)
 
             return team.rstrip()
 
@@ -163,7 +177,8 @@ class Scraper(object):
 
                 away_team = get_team_color_code(root,
                                                 away_team,
-                                                color_xpath)
+                                                color_xpath,
+                                                away=True)
 
             teams['home_team'] = home_team.replace(u'\xa0', u' ')
             teams['away_team'] = away_team.replace(u'\xa0', u' ')

@@ -42,6 +42,29 @@ class TestLoader(unittest2.TestCase):
         msg = 'interface.Loader.games list length should be 8'
         self.assertEqual(len(received), expected, msg)
 
+    def test_build_game_map_color_coded_teams(self):
+        """build_game_map of a game HTML page: color coded teams.
+        """
+        # Given a TROLS detailed match results page
+        match_file = 'match_AA039094.html'
+        with open(os.path.join(self.__test_dir, match_file)) as html_fh:
+            html = html_fh.read()
+
+        # when a scrape and load occurs
+        loader = interface.Loader()
+        loader.build_game_map(html)
+
+        # then I should receive the properly color coded teams
+        received = loader.games[0].fixture.home_team
+        expected = 'Watsonia Red'
+        msg = 'Color coded home team should be Watsonia Red'
+        self.assertEqual(received, expected, msg)
+
+        received = loader.games[0].fixture.away_team
+        expected = 'Watsonia Blue'
+        msg = 'Color coded home team should be Watsonia Blue'
+        self.assertEqual(received, expected, msg)
+
     def test_request_http(self):
         """Make request to a HTTP resource.
         """

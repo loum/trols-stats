@@ -61,3 +61,40 @@ DOUBLES = {
     },
     'uid': None
 }
+
+COLOR_CODED_DOUBLES = {
+    'fixture': {
+        'away_team': 'Watsonia Blue',
+        'competition': 'girls',
+        'date': '18 Apr 15',
+        'home_team': 'Watsonia Red',
+        'match_round': 9,
+        'section': 14,
+        'uid': None
+    },
+    'opposition': [
+        {
+            'name': 'Eboni Amos',
+            'team': 'Watsonia Blue',
+            'uid': None
+        },
+        {
+            'name': 'Isabella Markovski',
+            'team': 'Watsonia Blue',
+            'uid': None
+        }
+    ],
+    'player': {
+        'name': 'Grace Heaver',
+        'team': 'Watsonia Red',
+        'uid': None
+    },
+    'score_against': 6,
+    'score_for': 3,
+    'team_mate': {
+        'name': 'Alexis McIntosh',
+        'team': 'Watsonia Red',
+        'uid': None
+    },
+    'uid': None
+}

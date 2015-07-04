@@ -194,7 +194,7 @@ class TestScraper(unittest2.TestCase):
         msg = 'Scraped match detail teams error'
         self.assertDictEqual(received, expected, msg)
 
-    def test_scrape_match_teams_with_color_code_late_start(self):
+    def test_scrape_match_teams_with__late_start(self):
         """Test scrape_match_teams: no color code (late start).
         """
         # Given a TROLS detailed match results page
@@ -217,6 +217,62 @@ class TestScraper(unittest2.TestCase):
         # {'home': <home_team>, 'away': <away_team>}
         expected = {'away_team': 'Eaglemont', 'home_team': 'Clifton'}
         msg = 'Scraped match detail teams error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_scrape_match_teams_with_home_away_color_codes(self):
+        """Test scrape_match_teams: home-away color codes.
+        """
+        # Given a TROLS detailed match results page
+        match_file = 'match_AA039094.html'
+        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+            html = _fh.read()
+
+        # and an xpath definition to target the team extraction
+        xpath = '//table/tr/td/b'
+
+        # and a color xpath definition has been supplied
+        color_xpath = "//table/tr/td/b[contains(text(), '%s')]/span/text()"
+
+        # when I extract the teams
+        received = trols_stats.Scraper.scrape_match_teams(html,
+                                                          xpath,
+                                                          color_xpath)
+
+        # then I should receive a populated dictionary of the form
+        # {'home': <home_team>, 'away': <away_team>}
+        expected = {
+            'away_team': 'Watsonia Blue',
+            'home_team': 'Watsonia Red'
+        }
+        msg = 'Scraped match detail teams error (home-away color codes)'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_scrape_match_teams_with_away_only_color_codes(self):
+        """Test scrape_match_teams: away only color codes.
+        """
+        # Given a TROLS detailed match results page
+        match_file = 'match_AA039301.html'
+        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+            html = _fh.read()
+
+        # and an xpath definition to target the team extraction
+        xpath = '//table/tr/td/b'
+
+        # and a color xpath definition has been supplied
+        color_xpath = "//table/tr/td/b[contains(text(), '%s')]/span/text()"
+
+        # when I extract the teams
+        received = trols_stats.Scraper.scrape_match_teams(html,
+                                                          xpath,
+                                                          color_xpath)
+
+        # then I should receive a populated dictionary of the form
+        # {'home': <home_team>, 'away': <away_team>}
+        expected = {
+            'away_team': 'Watsonia Blue',
+            'home_team': 'Bundoora'
+        }
+        msg = 'Scraped match detail teams error (home-away color codes)'
         self.assertDictEqual(received, expected, msg)
 
     def test_scrape_player_names(self):

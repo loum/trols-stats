@@ -33,13 +33,8 @@ class TestReporter(unittest2.TestCase):
             {
                 'name': 'Isabella Markovski',
                 'section': 14,
-                'team': u'Watsonia Red'
-            },
-            {
-                'name': 'Isabella Markovski',
-                'section': 14,
                 'team': u'Watsonia Blue'
-            }
+            },
         ]
         msg = 'Player cache mismatch'
         self.assertListEqual(received, expected, msg)
@@ -53,7 +48,7 @@ class TestReporter(unittest2.TestCase):
         received = len(self.__reporter.get_players())
 
         # then I should get the player profile
-        expected = 3729
+        expected = 3652
         msg = 'Player cache incorrect count'
         self.assertEqual(received, expected, msg)
 
