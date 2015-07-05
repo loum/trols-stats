@@ -98,3 +98,40 @@ COLOR_CODED_DOUBLES = {
     },
     'uid': None
 }
+
+COLOR_CODED_4TH_DOUBLES = {
+    'fixture': {
+        'away_team': 'Watsonia Red',
+        'competition': 'girls',
+        'date': '7 Feb 15',
+        'home_team': 'Watsonia Blue',
+        'match_round': 2,
+        'section': 14,
+        'uid': None
+    },
+    'opposition': [
+        {
+            'name': 'Sallyanne Glover',
+            'team': 'Watsonia Red',
+            'uid': None
+        },
+        {
+            'name': 'Madeline Doyle',
+            'team': 'Watsonia Red',
+            'uid': None
+        }
+    ],
+    'player': {
+        'name': 'Isabella Markovski',
+        'team': 'Watsonia Blue',
+        'uid': None
+    },
+    'score_against': 2,
+    'score_for': 6,
+    'team_mate': {
+        'name': 'Eboni Amos',
+        'team': 'Watsonia Blue',
+        'uid': None
+    },
+    'uid': None
+}

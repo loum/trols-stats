@@ -107,6 +107,25 @@ class Game(trols_stats.model.Base):
     def __str__(self):
         return str(self.__dict__)
 
+    def __eq__(self, other):
+        player = {
+            'name': self.player.name,
+            'section': self.fixture.section,
+            'team': self.player.team,
+        }
+        return player == other
+
+    def player_id(self):
+        """Return a dictiony structure that attempts to uniquely
+        identify a player.
+
+        """
+        return {
+            'name': self.player.name,
+            'team': self.player.team,
+            'section': self.fixture.section
+        }
+
     @staticmethod
     def set_opposition(data):
         """Build an opposition players data structure.

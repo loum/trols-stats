@@ -4,7 +4,8 @@ import trols_stats
 import trols_stats.model
 from trols_stats.tests.results.game_aggregates import (SINGLES,
                                                        DOUBLES,
-                                                       COLOR_CODED_DOUBLES)
+                                                       COLOR_CODED_DOUBLES,
+                                                       COLOR_CODED_4TH_DOUBLES)
 
 
 class TestStats(unittest2.TestCase):
@@ -222,6 +223,58 @@ class TestStats(unittest2.TestCase):
         # then I should receive a Game dictionary object
         received = stats.games_cache[0]()
         expected = COLOR_CODED_DOUBLES
+        msg = 'Games aggregate (singles) error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_game_aggregate_color_coded_teams_fourth_player(self):
+        """Create a trols_stats.Game() aggregate object: fourth player.
+        """
+        # Given a fixture details data structure
+        fixture = {
+            'competition': 'girls',
+            'section': 14,
+            'date': '7 Feb 15',
+            'match_round': 2,
+            'home_team': 'Watsonia Blue',
+            'away_team': 'Watsonia Red',
+        }
+
+        # and a match players data structure
+        players = [
+            (1, 'Lily Matt'),
+            (2, 'Isabella Markovski'),
+            (3, 'Maddison Hollyoak'),
+            (4, 'Eboni Amos'),
+            (5, 'Tara Watson'),
+            (6, 'Sallyanne Glover'),
+            (7, 'Grace Heaver'),
+            (8, 'Madeline Doyle')
+        ]
+
+        # and a teams data structure
+        teams = {'away_team': 'Watsonia Red', 'home_team': 'Watsonia Blue'}
+
+        # and a match stats structure
+        stats_data = {
+            2: [
+                {
+                    'opposition': (6, 8),
+                    'score_against': 2,
+                    'score_for': 6,
+                    'team_mate': 4
+                }
+            ]
+        }
+
+        # when I create the game aggregate
+        stats = trols_stats.Stats(players=dict(players),
+                                  teams=teams,
+                                  fixture=fixture)
+        stats.build_game_aggregate(stats_data)
+
+        # then I should receive a Game dictionary object
+        received = stats.games_cache[0]()
+        expected = COLOR_CODED_4TH_DOUBLES
         msg = 'Games aggregate (singles) error'
         self.assertDictEqual(received, expected, msg)
 

@@ -1,5 +1,6 @@
 import unittest2
 import os
+import json
 
 import trols_stats.model.entities as entities
 import trols_stats.model.aggregates
@@ -9,6 +10,11 @@ import trols_stats.model.tests.files.game_aggregates as game_aggregates
 class TestGame(unittest2.TestCase):
     @classmethod
     def setUpClass(cls):
+        cls.__files_dir = os.path.join('trols_stats',
+                                       'model',
+                                       'aggregates',
+                                       'tests',
+                                       'files')
         cls.__results_dir = os.path.join('trols_stats',
                                          'model',
                                          'aggregates',
@@ -119,6 +125,53 @@ class TestGame(unittest2.TestCase):
         msg = 'Opposition structure not one item'
         self.assertTrue(len(game.opposition) == 2, msg)
 
+    def test_player_equals(self):
+        """Match Game aggregate subset based on player instance.
+        """
+        # Given a Game instance
+        with open(os.path.join(self.__files_dir,
+                               'ise_home_st_marys.json')) as _fh:
+            game_source = json.loads(_fh.read())
+        game = trols_stats.model.aggregates.Game(**game_source)
+
+        # and a player instance
+        player = {
+            'section': 14,
+            'name': u'Isabella Markovski',
+            'team': u'Watsonia Blue'
+        }
+
+        # when I compare the game against a player instance
+        received = (game == player)
+
+        # then I should get a match
+        msg = 'Player instance not matched in Game aggregate'
+        self.assertTrue(received, msg)
+
+    def test_player_equals_no_match(self):
+        """Match Game aggregate subset based on player instance: no match.
+        """
+        # Given a Game instance
+        with open(os.path.join(self.__files_dir,
+                               'ise_home_st_marys.json')) as _fh:
+            game_source = json.loads(_fh.read())
+        game = trols_stats.model.aggregates.Game(**game_source)
+
+        # and an unmatched player instance
+        player = {
+            'section': 14,
+            'name': u'Eboni Amos',
+            'team': u'Watsonia Blue'
+        }
+
+        # when I compare the game against a player instance
+        received = (game == player)
+
+        # then I should get a match
+        msg = 'Player instance should not match Game aggregate'
+        self.assertFalse(received, msg)
+
     @classmethod
     def tearDownClass(cls):
+        cls.__files_dir = None
         cls.__results_dir = None

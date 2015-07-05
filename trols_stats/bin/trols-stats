@@ -112,10 +112,10 @@ def scrape(args, conf):
 
     tmp_games = []
     for game in loader.games:
-        tmp_games.append(game())
+        tmp_games.append(game)
 
     with open(args.dump, 'w') as games_fh:
-        games_fh.write(json.dumps(tmp_games,
+        games_fh.write(json.dumps([x() for x in tmp_games],
                                   sort_keys=True,
                                   indent=4,
                                   separators=(',', ': ')))

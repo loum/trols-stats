@@ -31,27 +31,41 @@ class Reporter(object):
             }
 
         """
-        log.debug('Name: %s', name)
+        log.info('Extracting all instances for player: "%s"', name)
 
-        def player_team(match):
-            return {
-                'name': match.get('player').get('name'),
-                'team': match.get('player').get('team'),
-                'section': match.get('fixture').get('section')
-            }
-
-        def player_match(match, name=name):
-            return match.get('player').get('name') == name
+        def player_compare(game, name=name):
+            return game.player.name == name
 
         db = self.db.connection['trols']
 
         matched = []
         if name is not None:
-            matched = [player_team(x) for x in db if player_match(x)]
+            matched = [x.player_id() for x in db if player_compare(x)]
         else:
-            matched = [player_team(x) for x in db]
+            matched = [x.player_id() for x in db]
 
-        # Uniquefy the dictionaries.
-        players = [dict(t) for t in set([tuple(d.items()) for d in matched])]
+        # Unique-ify the matched dictionaries.
+        uniq = [dict(t) for t in set([tuple(d.items()) for d in matched])]
 
-        return players
+        return uniq
+
+    def get_player_fixtures(self, name):
+        """Search for all of fixtures where player *name* participated.
+
+        *Args:*
+            *name*: name to filter DB against
+
+        *Returns*: list of all :class:`trols_stats.model.aggregate.Game`
+        objects that *name* was involved in
+
+        """
+        log.info('Extracting fixtures for player "%s"', name)
+
+        db = self.db.connection['trols']
+        player_instances = self.get_players(name)
+        fixtures = [x for x in db if x.player_id() in player_instances]
+
+        log.info('Total fixures found with player "%s": %d',
+                 name, len(fixtures))
+
+        return fixtures
