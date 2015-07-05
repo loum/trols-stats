@@ -50,7 +50,7 @@ class Reporter(object):
         return uniq
 
     def get_player_fixtures(self, name):
-        """Search for all of fixtures where player *name* participated.
+        """Search for all fixtures where player *name* participated.
 
         *Args:*
             *name*: name to filter DB against
@@ -69,3 +69,49 @@ class Reporter(object):
                  name, len(fixtures))
 
         return fixtures
+
+    def get_player_singles(self, name):
+        """Return list of singles games from all fixtures where player
+        *name* participated.
+
+        *Args:*
+            *name*: name to filter DB against
+
+        *Returns*: list of all singels
+        :class:`trols_stats.model.aggregate.Game`
+        objects that *name* was involved in
+
+        """
+        log.info('Extracting singles games for player "%s"', name)
+
+        fixtures = self.get_player_fixtures(name)
+
+        singles_games = [x for x in fixtures if x.is_singles()]
+
+        log.info('Total singles games found with player "%s": %d',
+                 name, len(singles_games))
+
+        return singles_games
+
+    def get_player_doubles(self, name):
+        """Return list of doubles games from all fixtures where player
+        *name* participated.
+
+        *Args:*
+            *name*: name to filter DB against
+
+        *Returns*: list of all doubles
+        :class:`trols_stats.model.aggregate.Game`
+        objects that *name* was involved in
+
+        """
+        log.info('Extracting doubles games for player "%s"', name)
+
+        fixtures = self.get_player_fixtures(name)
+
+        doubles_games = [x for x in fixtures if x.is_doubles()]
+
+        log.info('Total doubles games found with player "%s": %d',
+                 name, len(doubles_games))
+
+        return doubles_games

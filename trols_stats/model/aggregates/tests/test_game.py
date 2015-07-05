@@ -171,6 +171,70 @@ class TestGame(unittest2.TestCase):
         msg = 'Player instance should not match Game aggregate'
         self.assertFalse(received, msg)
 
+    def test_is_singles(self):
+        """Game aggregate singles check.
+        """
+        # Given a game data structure
+        game_data = game_aggregates.SINGLES
+
+        # when I create trols_stats.model.aggregate.Game object
+        game = trols_stats.model.aggregates.Game(**game_data)
+
+        # and check if it a singles match
+        received = game.is_singles()
+
+        # then I should receive True
+        msg = 'Game singles check should return True'
+        self.assertTrue(received, msg)
+
+    def test_singles_game_does_not_flag_as_doubles(self):
+        """Game aggregate singles check: double flag False.
+        """
+        # Given a game data structure
+        game_data = game_aggregates.SINGLES
+
+        # when I create trols_stats.model.aggregate.Game object
+        game = trols_stats.model.aggregates.Game(**game_data)
+
+        # and check if it a doubles match
+        received = game.is_doubles()
+
+        # then I should receive False
+        msg = 'Singles Game doubles check should return False'
+        self.assertFalse(received, msg)
+
+    def test_is_doubles(self):
+        """Game aggregate doubles check.
+        """
+        # Given a game data structure
+        game_data = game_aggregates.DOUBLES
+
+        # when I create trols_stats.model.aggregate.Game object
+        game = trols_stats.model.aggregates.Game(**game_data)
+
+        # and check if it a doubles match
+        received = game.is_doubles()
+
+        # then I should receive True
+        msg = 'Game doubles check should return True'
+        self.assertTrue(received, msg)
+
+    def test_doubles_game_does_not_flag_as_singles(self):
+        """Game aggregate doubles check: singles flag False.
+        """
+        # Given a game data structure
+        game_data = game_aggregates.DOUBLES
+
+        # when I create trols_stats.model.aggregate.Game object
+        game = trols_stats.model.aggregates.Game(**game_data)
+
+        # and check if it a singles match
+        received = game.is_singles()
+
+        # then I should received False
+        msg = 'Doubles Game singles check should return False'
+        self.assertFalse(received, msg)
+
     @classmethod
     def tearDownClass(cls):
         cls.__files_dir = None

@@ -116,7 +116,7 @@ class Game(trols_stats.model.Base):
         return player == other
 
     def player_id(self):
-        """Return a dictiony structure that attempts to uniquely
+        """Return a dictionary structure that attempts to uniquely
         identify a player.
 
         """
@@ -125,6 +125,22 @@ class Game(trols_stats.model.Base):
             'team': self.player.team,
             'section': self.fixture.section
         }
+
+    def is_singles(self):
+        """Helper method that checks if this game aggregate is
+        a singles fixture.
+
+        """
+        return (self.player.name is not None
+                and self.team_mate.name is None)
+
+    def is_doubles(self):
+        """Helper method that checks if this game aggregate is
+        a doubles fixture.
+
+        """
+        return (self.player.name is not None
+                and self.team_mate.name is not None)
 
     @staticmethod
     def set_opposition(data):
