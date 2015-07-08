@@ -123,7 +123,10 @@ class Game(trols_stats.model.Base):
         return {
             'name': self.player.name,
             'team': self.player.team,
-            'section': self.fixture.section
+            'section': self.fixture.section,
+            'token': '{}|{}|{}'.format(self.player.name,
+                                       self.player.team,
+                                       self.fixture.section)
         }
 
     def is_singles(self):

@@ -8,6 +8,7 @@ import trols_stats.interface as interface
 class TestReporter(unittest2.TestCase):
     @classmethod
     def setUpClass(cls):
+        cls.maxDiff = None
         shelve_dir = os.path.join('trols_stats',
                                   'interface',
                                   'tests',
@@ -38,7 +39,8 @@ class TestReporter(unittest2.TestCase):
             {
                 'name': 'Eboni Amos',
                 'section': 14,
-                'team': u'Watsonia Blue'
+                'team': u'Watsonia Blue',
+                'token': 'Eboni Amos|Watsonia Blue|14'
             },
         ]
         msg = 'Player cache mismatch'
@@ -153,6 +155,38 @@ class TestReporter(unittest2.TestCase):
             expected = _fh.read().strip()
         msg = 'Doubles games list error'
         self.assertEqual(received, expected, msg)
+
+    def test_get_player_stats(self):
+        """Get all game stats associated with a player.
+        """
+        # Given a player name
+        player = 'Kristen Fisher'
+
+        # when I calculate the player stats
+        received = self.__reporter.get_player_stats(player)
+
+        # then I should get a stats structure
+        expected = {
+            'Kristen Fisher|Eltham|1': {
+                'doubles': {
+                    'games_lost': 1,
+                    'games_played': 8,
+                    'games_won': 7,
+                    'score_against': 20,
+                    'score_for': 46},
+                'singles': {
+                    'games_lost': 0,
+                    'games_played': 4,
+                    'games_won': 4,
+                    'score_against': 7,
+                    'score_for': 24
+                }
+            }
+        }
+        msg = 'Player games stats error'
+        self.assertDictEqual(received, expected, msg)
+
+        received = self.__reporter.get_player_stats(player)
 
     @classmethod
     def tearDownClass(cls):

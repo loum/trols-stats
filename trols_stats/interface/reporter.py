@@ -11,9 +11,14 @@ class Reporter(object):
     def db(self, value):
         self.__db = value
 
+    @property
+    def statistics_cache(self):
+        return self.__statistics_cache
+
     def __init__(self, shelve=None):
         self.__db = trols_stats.DBSession(shelve=shelve)
         self.__db.connect()
+        self.__statistics_cache = {}
 
     def get_players(self, name=None):
         """Get all players from cache.
@@ -28,6 +33,7 @@ class Reporter(object):
                 'name': 'Isabella Markovski',
                 'section': 14,
                 'team': u'Watsonia Red'
+                'token': 'Isabella Markovski|Watsonia Red|14'
             }
 
         """
@@ -115,3 +121,52 @@ class Reporter(object):
                  name, len(doubles_games))
 
         return doubles_games
+
+    def get_player_stats(self, name):
+        """Calculates and returns match stats from all fixtures for all
+        or nominated players.
+
+        *Args:*
+            *name*: name to filter DB against
+
+        *Returns*:
+
+        """
+        log.info('Generating doubles stats for player "%s"', name)
+
+        db = self.db.connection['trols']
+        stats = {}
+        players = self.get_players(name)
+        player_count = len(players)
+        counter = 1
+        for player in players:
+            cached_stats = self.statistics_cache.get(player.get('token'))
+            if cached_stats is not None:
+                log.debug('Hit the stats cache for "%s"',
+                          player.get('token'))
+                stats.update({player.get('token'): cached_stats})
+                continue
+
+            singles_stats = trols_stats.Statistics('singles')
+            doubles_stats = trols_stats.Statistics('doubles')
+
+            games = [x for x in db if x.player_id() == player]
+            for game in games:
+                if game.is_singles():
+                    singles_stats.aggregate(game)
+                else:
+                    doubles_stats.aggregate(game)
+
+            stats[player.get('token')] = {
+                'singles': singles_stats().get('singles'),
+                'doubles': doubles_stats().get('doubles'),
+            }
+            self.__statistics_cache[player.get('token')] = {
+                'singles': singles_stats().get('singles'),
+                'doubles': doubles_stats().get('doubles'),
+            }
+            log.debug('Statistics generated for "%s": %d of %d',
+                      player.get('token'), counter, player_count)
+            counter += 1
+
+        return stats
