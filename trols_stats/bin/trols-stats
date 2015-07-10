@@ -69,14 +69,16 @@ def source(args, conf):
     loader = trols_stats.interface.Loader()
 
     # Load the competitions.
-    comps_html = loader.request(conf.main_results)
+    #
+    # TODO: Archived seasons have a "daytime" query parameter.
+    query_args = {'daytime': str()}
+    comps_html = loader.request(conf.main_results, query_args)
 
     comps_xpath = '//select[@id="section" and @name="section"]/option'
     comps_map = trols_stats.Scraper.scrape_competition_ids(comps_html,
                                                            comps_xpath)
 
     # Cycle through each competition and get the match codes.
-    uri = 'http://trols.org.au/nejta/results.php'
     match_xpath = '//a[contains(@onclick, "open_match")]'
     for code in comps_map.values():
         query_args = {
@@ -85,7 +87,7 @@ def source(args, conf):
             'daytime': 'AA',
             'section': code,
         }
-        matches_html = loader.request(uri, query_args)
+        matches_html = loader.request(conf.main_results, query_args)
         match_codes = trols_stats.Scraper.scrape_match_ids(matches_html,
                                                            match_xpath)
 

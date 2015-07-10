@@ -181,8 +181,7 @@ class Loader(object):
         value.
 
         """
-        log.info('Attempting to read URL "%s": args "%s"' %
-                 (url, request_args))
+        log.info('URL request "%s": args "%s"', url, request_args)
         request = urllib2.Request(url)
 
         if request_args is None:

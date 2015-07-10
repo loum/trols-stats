@@ -53,7 +53,7 @@ class Scraper(object):
 
         """
         comp_id = {element.text: element.attrib['value']}
-        log.debug('Competition ID extracted: %s' % comp_id)
+        log.debug('Competition ID extracted: %s', comp_id)
 
         return comp_id
 
@@ -85,12 +85,12 @@ class Scraper(object):
                 match_id = Scraper.get_match_id(attrs)
 
                 if match_id is None:
-                    log.warn('Unable to extract match ID from "%s"' % attrs)
+                    log.warn('Unable to extract match ID from "%s"', attrs)
                     continue
 
                 match_ids.append(match_id)
 
-        log.debug('List of match IDs extracted: "%s"' % match_ids)
+        log.debug('List of match IDs extracted: "%s"', match_ids)
 
         return match_ids
 
@@ -116,7 +116,7 @@ class Scraper(object):
             re_match = prog.match(attributes[1])
             if re_match:
                 match_id = re_match.group(1)
-                log.debug('Found match ID: %s' % match_id)
+                log.debug('Found match ID: %s', match_id)
 
         return match_id
 
@@ -139,7 +139,7 @@ class Scraper(object):
 
             color_xpath = xpath % team
 
-            log.debug('Team color xpath "%s"' % color_xpath)
+            log.debug('Team color xpath "%s"', color_xpath)
             tmp_colors = root.xpath(color_xpath)
 
             colors = []
@@ -165,7 +165,7 @@ class Scraper(object):
 
         teams = {}
         if len(raw_teams) != 2:
-            log.warn('Expecting two teams. Received %d' % len(raw_teams))
+            log.warn('Expecting two teams. Received %d', len(raw_teams))
         else:
             home_team = raw_teams[0].text
             away_team = raw_teams[1].text
@@ -183,7 +183,7 @@ class Scraper(object):
             teams['home_team'] = home_team.replace(u'\xa0', u' ')
             teams['away_team'] = away_team.replace(u'\xa0', u' ')
 
-        log.debug('Teams extracted: "%s"' % teams)
+        log.debug('Teams extracted: "%s"', teams)
 
         return teams
 
@@ -211,7 +211,7 @@ class Scraper(object):
         players = [(i, player_re.sub('', j)) for i, j in enumerate(elements,
                                                                    start=1)]
 
-        log.debug('Players extracted: %s' % players)
+        log.debug('Players extracted: %s', players)
         return players
 
     @staticmethod
@@ -244,13 +244,13 @@ class Scraper(object):
         preamble = root.xpath(xpath)[0]
         raw_preamble = preamble.replace(u'\xa0', u' ')
 
-        log.debug('Scraped preamble: "%s"' % raw_preamble)
+        log.debug('Scraped preamble: "%s"', raw_preamble)
 
         preamble = {}
 
         def competition(matchobj):
             match_competition = matchobj.group(1).lower()
-            log.debug('Match competition: "%s"' % match_competition)
+            log.debug('Match competition: "%s"', match_competition)
             preamble['competition'] = match_competition.encode('utf8')
 
             return matchobj.group(2)
@@ -260,7 +260,7 @@ class Scraper(object):
 
         def section(matchobj):
             match_section = int(matchobj.group(1))
-            log.debug('Match section: %d' % match_section)
+            log.debug('Match section: %d', match_section)
             preamble['section'] = match_section
 
             return matchobj.group(2)
@@ -272,7 +272,7 @@ class Scraper(object):
             match_date = ('%s %s %s' % (matchobj.group(1),
                                         matchobj.group(3),
                                         matchobj.group(4)))
-            log.debug('Match date: %s' % match_date)
+            log.debug('Match date: %s', match_date)
             preamble['date'] = match_date
 
             return matchobj.group(5)
@@ -282,7 +282,7 @@ class Scraper(object):
 
         def round_no(matchobj):
             match_round_no = int(matchobj.group(1))
-            log.debug('Match round: %d' % match_round_no)
+            log.debug('Match round: %d', match_round_no)
             preamble['match_round'] = match_round_no
 
             return matchobj.group(2)
@@ -302,7 +302,7 @@ class Scraper(object):
         raw_preamble = final_re.sub(final, raw_preamble)
 
         if len(raw_preamble):
-            log.warn('Match preamble string has unparsed tokens "%s"' %
+            log.warn('Match preamble string has unparsed tokens "%s"',
                      raw_preamble)
 
         return preamble
@@ -331,7 +331,7 @@ class Scraper(object):
             if count % 3 == 2:
                 continue
 
-            log.debug('score component: %s' % score.text)
+            log.debug('score component: %s', score.text)
 
             if score.text is None:
                 continue
@@ -342,7 +342,7 @@ class Scraper(object):
             if players:
                 active_players = (int(players.group(1)),
                                   int(players.group(2)))
-                log.debug('Players: %s' % (active_players,))
+                log.debug('Players: %s', (active_players,))
                 continue
 
             # Check for singles.
@@ -350,7 +350,7 @@ class Scraper(object):
             players = player_re.match(score.text)
             if players:
                 active_players = (int(players.group(1)), None)
-                log.debug('Player: %s' % (active_players,))
+                log.debug('Player: %s', (active_players,))
                 continue
 
             score_re = re.compile(r'^(\d+)\-(\d+)')
@@ -358,7 +358,7 @@ class Scraper(object):
             if scores:
                 active_scores = (int(scores.group(1)),
                                  int(scores.group(2)))
-                log.debug('Scores: %s' % (active_scores, ))
+                log.debug('Scores: %s', (active_scores, ))
 
                 if match_results.get(active_players[0]) is None:
                     match_results[active_players[0]] = []
