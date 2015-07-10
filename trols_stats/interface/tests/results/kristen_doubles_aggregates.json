@@ -75,6 +75,78 @@
         "fixture": {
             "away_team": "Eltham",
             "competition": "girls",
+            "date": "16 May 15",
+            "home_team": "St Lukes Blue",
+            "match_round": 12,
+            "section": 1,
+            "uid": null
+        },
+        "opposition": [
+            {
+                "name": "Natalia Poposka",
+                "team": "St Lukes Blue",
+                "uid": null
+            },
+            {
+                "name": "Jamie Lyons",
+                "team": "St Lukes Blue",
+                "uid": null
+            }
+        ],
+        "player": {
+            "name": "Kristen Fisher",
+            "team": "Eltham",
+            "uid": null
+        },
+        "score_against": 2,
+        "score_for": 6,
+        "team_mate": {
+            "name": "Julia Cinel",
+            "team": "Eltham",
+            "uid": null
+        },
+        "uid": null
+    },
+    {
+        "fixture": {
+            "away_team": "Eltham",
+            "competition": "girls",
+            "date": "16 May 15",
+            "home_team": "St Lukes Blue",
+            "match_round": 12,
+            "section": 1,
+            "uid": null
+        },
+        "opposition": [
+            {
+                "name": "Jamie Lyons",
+                "team": "St Lukes Blue",
+                "uid": null
+            },
+            {
+                "name": "Evie Loughnan",
+                "team": "St Lukes Blue",
+                "uid": null
+            }
+        ],
+        "player": {
+            "name": "Kristen Fisher",
+            "team": "Eltham",
+            "uid": null
+        },
+        "score_against": 3,
+        "score_for": 6,
+        "team_mate": {
+            "name": "Paris Batchelor",
+            "team": "Eltham",
+            "uid": null
+        },
+        "uid": null
+    },
+    {
+        "fixture": {
+            "away_team": "Eltham",
+            "competition": "girls",
             "date": "14 Mar 15",
             "home_team": "St Lukes Red",
             "match_round": 6,
@@ -210,78 +282,6 @@
         "score_for": 6,
         "team_mate": {
             "name": "Maddison Batchelor",
-            "team": "Eltham",
-            "uid": null
-        },
-        "uid": null
-    },
-    {
-        "fixture": {
-            "away_team": "Eltham",
-            "competition": "girls",
-            "date": "16 May 15",
-            "home_team": "St Lukes Blue",
-            "match_round": 12,
-            "section": 1,
-            "uid": null
-        },
-        "opposition": [
-            {
-                "name": "Natalia Poposka",
-                "team": "St Lukes Blue",
-                "uid": null
-            },
-            {
-                "name": "Jamie Lyons",
-                "team": "St Lukes Blue",
-                "uid": null
-            }
-        ],
-        "player": {
-            "name": "Kristen Fisher",
-            "team": "Eltham",
-            "uid": null
-        },
-        "score_against": 2,
-        "score_for": 6,
-        "team_mate": {
-            "name": "Julia Cinel",
-            "team": "Eltham",
-            "uid": null
-        },
-        "uid": null
-    },
-    {
-        "fixture": {
-            "away_team": "Eltham",
-            "competition": "girls",
-            "date": "16 May 15",
-            "home_team": "St Lukes Blue",
-            "match_round": 12,
-            "section": 1,
-            "uid": null
-        },
-        "opposition": [
-            {
-                "name": "Jamie Lyons",
-                "team": "St Lukes Blue",
-                "uid": null
-            },
-            {
-                "name": "Evie Loughnan",
-                "team": "St Lukes Blue",
-                "uid": null
-            }
-        ],
-        "player": {
-            "name": "Kristen Fisher",
-            "team": "Eltham",
-            "uid": null
-        },
-        "score_against": 3,
-        "score_for": 6,
-        "team_mate": {
-            "name": "Paris Batchelor",
             "team": "Eltham",
             "uid": null
         },

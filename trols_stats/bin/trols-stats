@@ -84,7 +84,7 @@ def source(args, conf):
         query_args = {
             'which': 1,
             'style': '',
-            'daytime': 'AA',
+            'daytime': str(),
             'section': code,
         }
         matches_html = loader.request(conf.main_results, query_args)
@@ -97,6 +97,7 @@ def source(args, conf):
                 'uri': match_uri,
                 'request_args': {
                     'matchid': match_code,
+                    'seasonid': str(),
                 },
                 'cache_dir':  conf.cache,
                 'force_cache': args.force
@@ -112,19 +113,24 @@ def scrape(args, conf):
         with open(html_file) as _fh:
             loader.build_game_map(_fh.read())
 
-    tmp_games = []
-    for game in loader.games:
-        tmp_games.append(game)
-
     with open(args.dump, 'w') as games_fh:
-        games_fh.write(json.dumps([x() for x in tmp_games],
+        games_fh.write(json.dumps([x() for x in loader.games],
                                   sort_keys=True,
                                   indent=4,
                                   separators=(',', ': ')))
 
+    # Optimise against player ID
+    player_id_games = {}
+    for game in loader.games:
+        token = game.player_id().get('token')
+        if player_id_games.get(token) is None:
+            player_id_games[token] = []
+
+        player_id_games[token].append(game)
+
     db = trols_stats.DBSession(shelve=conf.shelve)
     if db.connect():
-        db.connection['trols'] = tmp_games
+        db.connection['trols'] = player_id_games
         db.connection.close()
 
 if __name__ == '__main__':

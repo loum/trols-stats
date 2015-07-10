@@ -39,21 +39,15 @@ class Reporter(object):
         """
         log.info('Extracting all instances for player: "%s"', name)
 
-        def player_compare(game, name=name):
-            return game.player.name == name
-
         db = self.db.connection['trols']
 
         matched = []
         if name is not None:
-            matched = [x.player_id() for x in db if player_compare(x)]
+            matched = [x for x in db.keys() if x.split('|')[0] == name]
         else:
-            matched = [x.player_id() for x in db]
+            matched = [x for x in db.keys()]
 
-        # Unique-ify the matched dictionaries.
-        uniq = [dict(t) for t in set([tuple(d.items()) for d in matched])]
-
-        return uniq
+        return matched
 
     def get_player_fixtures(self, name):
         """Search for all fixtures where player *name* participated.
@@ -68,11 +62,16 @@ class Reporter(object):
         log.info('Extracting fixtures for player "%s"', name)
 
         db = self.db.connection['trols']
-        player_instances = self.get_players(name)
-        fixtures = [x for x in db if x.player_id() in player_instances]
+        # player_instances = self.get_players(name)
+        # fixtures = [x for x in db if x.player_id() in player_instances]
 
-        log.info('Total fixures found with player "%s": %d',
-                 name, len(fixtures))
+        #log.info('Total fixures found with player "%s": %d',
+        #         name, len(fixtures))
+
+        players = [k for k in db.keys() if k.split('|')[0] == name]
+        fixtures = []
+        for player in players:
+            fixtures.extend(db.get(player))
 
         return fixtures
 
@@ -132,7 +131,7 @@ class Reporter(object):
         *Returns*:
 
         """
-        log.info('Generating doubles stats for player "%s"', name)
+        log.info('Generating match stats for player "%s"', name)
 
         db = self.db.connection['trols']
         stats = {}
@@ -140,33 +139,24 @@ class Reporter(object):
         player_count = len(players)
         counter = 1
         for player in players:
-            cached_stats = self.statistics_cache.get(player.get('token'))
-            if cached_stats is not None:
-                log.debug('Hit the stats cache for "%s"',
-                          player.get('token'))
-                stats.update({player.get('token'): cached_stats})
-                continue
-
             singles_stats = trols_stats.Statistics('singles')
             doubles_stats = trols_stats.Statistics('doubles')
 
-            games = [x for x in db if x.player_id() == player]
+            games = db.get(player)
+            if games is None:
+                games = []
             for game in games:
                 if game.is_singles():
                     singles_stats.aggregate(game)
                 else:
                     doubles_stats.aggregate(game)
 
-            stats[player.get('token')] = {
-                'singles': singles_stats().get('singles'),
-                'doubles': doubles_stats().get('doubles'),
-            }
-            self.__statistics_cache[player.get('token')] = {
+            stats[player] = {
                 'singles': singles_stats().get('singles'),
                 'doubles': doubles_stats().get('doubles'),
             }
             log.debug('Statistics generated for "%s": %d of %d',
-                      player.get('token'), counter, player_count)
+                      player, counter, player_count)
             counter += 1
 
         return stats

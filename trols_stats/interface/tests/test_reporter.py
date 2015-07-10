@@ -35,14 +35,7 @@ class TestReporter(unittest2.TestCase):
         received = self.__reporter.get_players('Eboni Amos')
 
         # then I should get the player profile
-        expected = [
-            {
-                'name': 'Eboni Amos',
-                'section': 14,
-                'team': u'Watsonia Blue',
-                'token': 'Eboni Amos|Watsonia Blue|14'
-            },
-        ]
+        expected = ['Eboni Amos|Watsonia Blue|14']
         msg = 'Player cache mismatch'
         self.assertListEqual(received, expected, msg)
 
