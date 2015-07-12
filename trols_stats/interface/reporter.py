@@ -12,40 +12,63 @@ class Reporter(object):
         self.__db = value
 
     @property
-    def statistics_cache(self):
-        return self.__statistics_cache
+    def event(self):
+        return self.__event
 
-    def __init__(self, shelve=None):
-        self.__db = trols_stats.DBSession(shelve=shelve)
-        self.__db.connect()
-        self.__statistics_cache = {}
+    @event.setter
+    def event(self, value):
+        self.__event = value
 
-    def get_players(self, name=None):
+    def __init__(self, db, event='singles'):
+        self.__db = db
+        self.__event = event
+
+    def get_players(self,
+                    names=None,
+                    competition=None,
+                    team=None,
+                    section=None):
         """Get all players from cache.
 
         **Args:**
-            *name*: name to filter DB against
+            *names*: list of name to filter DB against
 
         **Returns:**
-            list of simplified player dictionaries if the form::
+            list of simplified player token IDs in the form::
 
-            {
-                'name': 'Isabella Markovski',
-                'section': 14,
-                'team': u'Watsonia Red'
-                'token': 'Isabella Markovski|Watsonia Red|14'
-            }
+            [
+                'Isabella Markovski|Watsonia Red|14',
+                ...
+            ]
 
         """
-        log.info('Extracting all instances for player: "%s"', name)
+        def token_match(token):
+            is_matched = False
 
-        db = self.db.connection['trols']
+            if names is not None:
+                if token.split('|')[0] in names:
+                    is_matched = True
+            elif team is not None:
+                if (token.split('|')[1] == team
+                        and token.split('|')[2] == str(section)):
+                    is_matched = True
+            elif names is None:
+                is_matched = True
 
-        matched = []
-        if name is not None:
-            matched = [x for x in db.keys() if x.split('|')[0] == name]
-        else:
-            matched = [x for x in db.keys()]
+            return is_matched
+
+        matched = self.db.keys()
+        if names is not None:
+            matched = [x for x in matched if x.split('|')[0] in names]
+
+        if team is not None:
+            matched = [x for x in matched if x.split('|')[1]  == team]
+
+        if section is not None:
+            matched = [x for x in matched if x.split('|')[2] == str(section)]
+
+        if competition is not None:
+            matched = [x for x in matched if x.split('|')[3] == competition]
 
         return matched
 
@@ -61,17 +84,10 @@ class Reporter(object):
         """
         log.info('Extracting fixtures for player "%s"', name)
 
-        db = self.db.connection['trols']
-        # player_instances = self.get_players(name)
-        # fixtures = [x for x in db if x.player_id() in player_instances]
-
-        #log.info('Total fixures found with player "%s": %d',
-        #         name, len(fixtures))
-
-        players = [k for k in db.keys() if k.split('|')[0] == name]
+        players = [k for k in self.db.keys() if k.split('|')[0] == name]
         fixtures = []
         for player in players:
-            fixtures.extend(db.get(player))
+            fixtures.extend(self.db.get(player))
 
         return fixtures
 
@@ -82,9 +98,10 @@ class Reporter(object):
         *Args:*
             *name*: name to filter DB against
 
-        *Returns*: list of all singels
+        *Returns*: dict of all singles
         :class:`trols_stats.model.aggregate.Game`
-        objects that *name* was involved in
+        objects that *name* was involved in.  Key is the
+        :meth:`trols_stats.model.aggregate.Game.get_player_id` `token`.
 
         """
         log.info('Extracting singles games for player "%s"', name)
@@ -121,42 +138,66 @@ class Reporter(object):
 
         return doubles_games
 
-    def get_player_stats(self, name):
+    def get_player_stats(self,
+                         names=None,
+                         competition=None,
+                         team=None,
+                         section=None):
         """Calculates and returns match stats from all fixtures for all
         or nominated players.
 
         *Args:*
-            *name*: name to filter DB against
+            *names*: list of names to filter DB against
 
         *Returns*:
 
         """
-        log.info('Generating match stats for player "%s"', name)
+        log.info('Generating match stats for player "%s"', names)
 
-        db = self.db.connection['trols']
         stats = {}
-        players = self.get_players(name)
-        player_count = len(players)
-        counter = 1
+        players = self.get_players(names, competition, team, section)
         for player in players:
-            singles_stats = trols_stats.Statistics('singles')
-            doubles_stats = trols_stats.Statistics('doubles')
+            statistics = trols_stats.Statistics(self.event)
 
-            games = db.get(player)
-            if games is None:
-                games = []
-            for game in games:
-                if game.is_singles():
-                    singles_stats.aggregate(game)
-                else:
-                    doubles_stats.aggregate(game)
+            games = self.db.get(player)
+            if games is not None:
+                for game in games:
+                    if ((game.is_singles() and self.event == 'singles')
+                            or (game.is_doubles() and self.event == 'doubles')):
+                        statistics.aggregate(game)
 
-            stats[player] = {
-                'singles': singles_stats().get('singles'),
-                'doubles': doubles_stats().get('doubles'),
-            }
-            log.debug('Statistics generated for "%s": %d of %d',
-                      player, counter, player_count)
-            counter += 1
+                stats[player] = statistics()
 
         return stats
+
+    def sort_stats(self,
+                   statistics,
+                   key='score_for',
+                   reverse=False,
+                   limit=None):
+        """Manipulate player *name* stats.
+
+        **Args:**
+            *key*: as the sort criteria
+
+            *reverse*: if ``True``, will reverse the sort order from lowest
+            to highest
+
+        """
+        def qualified(statistic):
+            is_qualified = False
+
+            games_played = statistic[1].get(self.event).get('games_played')
+            if games_played is not None and games_played > 3:
+                is_qualified = True
+
+            return is_qualified
+
+        sort_stats = sorted(statistics.iteritems(),
+                            key=lambda x: x[1][self.event][key],
+                            reverse=reverse)
+
+        if limit is not None:
+            sort_stats = [x for x in sort_stats if qualified(x)][:limit]
+
+        return sort_stats

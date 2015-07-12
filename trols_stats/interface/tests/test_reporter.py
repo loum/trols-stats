@@ -2,54 +2,105 @@ import unittest2
 import os
 import json
 
-import trols_stats.interface as interface
+import trols_stats
+import trols_stats.interface
 
 
 class TestReporter(unittest2.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.maxDiff = None
-        shelve_dir = os.path.join('trols_stats',
-                                  'interface',
-                                  'tests',
-                                  'files')
         cls.__results_dir = os.path.join('trols_stats',
                                          'interface',
                                          'tests',
                                          'results')
 
-        cls.__reporter = interface.Reporter(shelve=shelve_dir)
+        shelve_dir = os.path.join('trols_stats',
+                                  'interface',
+                                  'tests',
+                                  'files')
+        session = trols_stats.DBSession(shelve=shelve_dir)
+        session.connect()
+        cls.__db = session.connection['trols']
 
     def test_init(self):
-        """Initialise an interface.Reporter object
+        """Initialise an trols_stats.interface.Reporter object
         """
-        msg = 'Object is not a interface.Reporter'
-        self.assertIsInstance(self.__reporter, interface.Reporter, msg)
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        msg = 'Object is not a trols_stats.interface.Reporter'
+        self.assertIsInstance(reporter, trols_stats.interface.Reporter, msg)
 
-    def test_player_cache_player_match(self):
-        """Player cache: player match.
+    def test_get_players(self):
+        """Players lookup.
         """
-        # Given a Games store
+        # Given a player name
+        name = ['Eboni Amos']
 
         # when I query a player
-        received = self.__reporter.get_players('Eboni Amos')
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_players(name)
 
         # then I should get the player profile
         expected = ['Eboni Amos|Watsonia Blue|14']
-        msg = 'Player cache mismatch'
+        msg = 'Player instance mismatch'
         self.assertListEqual(received, expected, msg)
+
+    def test_get_players_team_and_section(self):
+        """Players lookup: team and section.
+        """
+        # Given a team name
+        team = 'Watsonia Blue'
+
+        # and a section
+        section = 14
+
+        # when I query the players
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_players(team=team, section=section)
+
+        # then I should get the player profile
+        expected = [
+            'Eboni Amos|Watsonia Blue|14',
+            'Isabella Markovski|Watsonia Blue|14',
+            'Lily Matt|Watsonia Blue|14',
+            'Maddison Hollyoak|Watsonia Blue|14',
+            'Stephanie Lia|Watsonia Blue|14',
+        ]
+        msg = 'Player instance mismatch'
+        self.assertListEqual(sorted(received), expected, msg)
+
+    def test_get_players_multiple(self):
+        """Players lookup: multiple.
+        """
+        # Given a player name
+        name = ['Eboni Amos', 'Zoe Allen']
+
+        # when I query a player
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_players(name)
+
+        # then I should get the player profile
+        expected = [
+            'Eboni Amos|Watsonia Blue|14',
+            'Zoe Allen|Eaglemont|10',
+            'Zoe Allen|Eaglemont|8',
+        ]
+        msg = 'Player instance (multiple) mismatch'
+        self.assertListEqual(sorted(received), expected, msg)
 
     def test_player_cache_match_all_players(self):
         """Player cache: all players.
         """
-        # Given a Games store
+        # Given the complete player dataset
+        names = None
 
         # when I query a player
-        received = len(self.__reporter.get_players())
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = len(reporter.get_players(names))
 
         # then I should get the player profile
         expected = 1905
-        msg = 'Player cache incorrect count'
+        msg = 'Player instance (all players) incorrect count'
         self.assertEqual(received, expected, msg)
 
     def test_get_player_fixtures(self):
@@ -59,7 +110,8 @@ class TestReporter(unittest2.TestCase):
         player = 'Isabella Markovski'
 
         # when I search for all of the player's fixtures
-        game_aggregates = self.__reporter.get_player_fixtures(player)
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        game_aggregates = reporter.get_player_fixtures(player)
 
         # then I should receive a list of fixtures that player was part of
         received = json.dumps([x() for x in game_aggregates],
@@ -79,7 +131,8 @@ class TestReporter(unittest2.TestCase):
         player = 'Isabella Markovski'
 
         # when I search for all of the player's singles games
-        received = self.__reporter.get_player_singles(player)
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_player_singles(player)
 
         # then I should receive a list of singles games that player was
         # part of
@@ -93,7 +146,8 @@ class TestReporter(unittest2.TestCase):
         player = 'Isabella Markovski'
 
         # when I search for all of the player's doubles games
-        doubles_games = self.__reporter.get_player_doubles(player)
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        doubles_games = reporter.get_player_doubles(player)
 
         # then I should receive a list of doubles games that player was
         # part of
@@ -114,7 +168,8 @@ class TestReporter(unittest2.TestCase):
         player = 'Kristen Fisher'
 
         # when I search for all of the player's singles games
-        singles_games = self.__reporter.get_player_singles(player)
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        singles_games = reporter.get_player_singles(player)
 
         # then I should receive a list of singles games that player was
         # part of
@@ -135,7 +190,8 @@ class TestReporter(unittest2.TestCase):
         player = 'Kristen Fisher'
 
         # when I search for all of the player's doubles games
-        doubles_games = self.__reporter.get_player_doubles(player)
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        doubles_games = reporter.get_player_doubles(player)
 
         # then I should receive a list of singles games that player was
         # part of
@@ -149,14 +205,45 @@ class TestReporter(unittest2.TestCase):
         msg = 'Doubles games list error'
         self.assertEqual(received, expected, msg)
 
-    def test_get_player_stats(self):
-        """Get all game stats associated with a player.
+    def test_get_player_stats_singles(self):
+        """Get all game stats associated with a player: singles.
         """
         # Given a player name
-        player = 'Kristen Fisher'
+        player = ['Kristen Fisher']
 
         # when I calculate the player stats
-        received = self.__reporter.get_player_stats(player)
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_player_stats(player)
+
+        # then I should get a stats structure
+        expected = {
+            'Kristen Fisher|Eltham|1': {
+                'singles': {
+                    'games_lost': 0,
+                    'games_played': 4,
+                    'games_won': 4,
+                    'score_against': 7,
+                    'score_for': 24,
+                    'percentage': 342.85714285714283
+                }
+            }
+        }
+        msg = 'Player games stats error: singles'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_get_player_stats_doubles(self):
+        """Get all game stats associated with a player: doubles.
+        """
+        # Given a player name
+        player = ['Kristen Fisher']
+
+        # and an "doubles" event specified
+        event = 'doubles'
+
+        # when I calculate the player stats
+        reporter = trols_stats.interface.Reporter(db=self.__db,
+                                                  event=event)
+        received = reporter.get_player_stats(player)
 
         # then I should get a stats structure
         expected = {
@@ -165,23 +252,647 @@ class TestReporter(unittest2.TestCase):
                     'games_lost': 1,
                     'games_played': 8,
                     'games_won': 7,
+                    'percentage': 229.99999999999997,
                     'score_against': 20,
-                    'score_for': 46},
-                'singles': {
-                    'games_lost': 0,
-                    'games_played': 4,
-                    'games_won': 4,
-                    'score_against': 7,
-                    'score_for': 24
+                    'score_for':46
                 }
             }
         }
-        msg = 'Player games stats error'
+        msg = 'Player games stats error: doubles'
         self.assertDictEqual(received, expected, msg)
 
-        received = self.__reporter.get_player_stats(player)
+    def test_sort_stats_singles_score_for(self):
+        """Get sorted stats: singles score for.
+        """
+        # Given the statistics for all players
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        statistics = reporter.get_player_stats(names=None)
+
+        # when I filter on the players game score for
+        key = 'score_for'
+
+        # limited to 5 players
+        limit = 5
+
+        # when I generate the player stats
+        received = reporter.sort_stats(statistics,
+                                       key=key,
+                                       reverse=True,
+                                       limit=limit)
+
+        # then I should get a list of ordered stats
+        expected = [
+            (
+                'Whitney Guan|Clifton|3',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 15,
+                        'games_won': 15,
+                        'score_against': 21,
+                        'score_for': 90,
+                        'percentage': 428.57142857142856
+                    }
+                }
+            ),
+            (
+                'Rachelle Papantuono|Clifton|3',
+                {
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 15,
+                        'games_won': 14,
+                        'score_against': 24,
+                        'score_for': 88,
+                        'percentage': 366.66666666666663
+                    }
+                }
+            ),
+            (
+                'Maeve Suter|Montmorency|5',
+                {
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 14,
+                        'games_won': 13,
+                        'score_against': 35,
+                        'score_for': 83,
+                        'percentage': 237.14285714285714
+                    }
+                }
+            ),
+            (
+                'Connor Salas|Rosanna|8',
+                {
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 14,
+                        'games_won': 13,
+                        'score_against': 32,
+                        'score_for': 83,
+                        'percentage': 259.375
+                    }
+                }
+            ),
+            (
+                'Ethan Turner|ECCA|5',
+                {
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 14,
+                        'games_won': 13,
+                        'score_against': 30,
+                        'score_for': 82,
+                        'percentage': 273.3333333333333
+                    }
+                }
+            )
+        ]
+        msg = 'Player games stats (score_for, sorted, singles) error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_sort_stats_singles_girls_score_for(self):
+        """Get sorted stats: singles girls score for.
+        """
+        # Given the statistics for all players
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        statistics = reporter.get_player_stats(competition='girls')
+
+        # when I filter on the players game score for
+        key = 'score_for'
+
+        # limited to 5 players
+        limit = 5
+
+        # when I generate the player stats
+        received = reporter.sort_stats(statistics,
+                                       key=key,
+                                       reverse=True,
+                                       limit=limit)
+
+        # then I should get a list of ordered stats
+        expected = [
+            (
+                'Whitney Guan|Clifton|3|girls',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 15,
+                        'games_won': 15,
+                        'score_against': 21,
+                        'score_for': 90,
+                        'percentage': 428.57142857142856
+                    }
+                }
+            ),
+            (
+                'Rachelle Papantuono|Clifton|3|girls',
+                {
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 15,
+                        'games_won': 14,
+                        'score_against': 24,
+                        'score_for': 88,
+                        'percentage': 366.66666666666663
+                    }
+                }
+            ),
+            (
+                'Maeve Suter|Montmorency|5|girls',
+                {
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 14,
+                        'games_won': 13,
+                        'score_against': 35,
+                        'score_for': 83,
+                        'percentage': 237.14285714285714
+                    }
+                }
+            ),
+            (
+                "Emily O'Connor|Clifton|3|girls",
+                {
+                    'singles': {
+                        'games_lost': 3,
+                        'games_played': 15,
+                        'games_won': 12,
+                        'percentage': 180.0,
+                        'score_against': 45,
+                        'score_for': 81
+                    }
+                }
+            ),
+            (
+                'Lauren Jones|Yallambie|4|girls',
+                {
+                    'singles': {
+                        'games_lost': 2,
+                        'games_played': 14,
+                        'games_won': 12,
+                        'percentage': 192.85714285714286,
+                        'score_against': 42,
+                        'score_for': 81
+                    }
+                }
+            )
+        ]
+        msg = 'Player games stats (score_for, sorted, singles) error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_sort_stats_singles_girls_14_percentage(self):
+        """Get sorted stats: singles girls score for.
+        """
+        # Given the statistics for all players
+        reporter = trols_stats.interface.Reporter(db=self.__db,
+                                                  event='doubles')
+        statistics = reporter.get_player_stats(section=14,
+                                               competition='girls')
+
+        # when I filter on the players game score for
+        key = 'percentage'
+
+        # limited to 5 players
+        limit = 5
+
+        # when I generate the player stats
+        received = reporter.sort_stats(statistics,
+                                       key=key,
+                                       reverse=False,
+                                       limit=limit)
+
+        # then I should get a list of ordered stats
+        expected = [
+            (
+                'Lucinda Ford|St Marys|14|girls',
+                {
+                    'doubles': {
+                        'games_lost': 3,
+                        'games_played': 20,
+                        'games_won': 17,
+                        'percentage': 181.66666666666666,
+                        'score_against': 60,
+                        'score_for': 109
+                    }
+                }
+            ),
+            (
+                'Emma German|Barry Road|14|girls',
+                {
+                    'doubles': {
+                        'games_lost': 5,
+                        'games_played': 20,
+                        'games_won': 15,
+                        'percentage': 169.84126984126985,
+                        'score_against': 63,
+                        'score_for': 107
+                    }
+                }
+            ),
+            (
+                'Ambra Selih|Barry Road|14|girls',
+                {
+                    'doubles': {
+                        'games_lost': 2,
+                        'games_played': 4,
+                        'games_won': 2,
+                        'percentage': 161.53846153846155,
+                        'score_against': 13,
+                        'score_for': 21
+                    }
+                }
+            ),
+            (
+                'Alicia Lazarovski|Bundoora|14|girls',
+                {
+                    'doubles': {
+                        'games_lost': 3,
+                        'games_played': 18,
+                        'games_won': 15,
+                        'percentage': 159.01639344262296,
+                        'score_against': 61,
+                        'score_for': 97
+                    }
+                }
+            ),
+            (
+                'Mia Bovalino|St Marys|14|girls',
+                {
+                    'doubles': {
+                        'games_lost': 4,
+                        'games_played': 20,
+                        'games_won': 16,
+                        'percentage': 157.35294117647058,
+                        'score_against': 68,
+                        'score_for': 107
+                    }
+                }
+            )
+        ]
+        msg = 'Player games stats (percentage girls/section/doubles) error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_sort_stats_singles_percentage(self):
+        """Get sorted stats: singles percentage.
+        """
+        # Given the statistics for all players
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        statistics = reporter.get_player_stats(names=None)
+
+        # when I filter on the players game score for
+        key = 'percentage'
+
+        # limited to 5 players
+        limit = 5
+
+        # when I generate the player stats
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.sort_stats(statistics,
+                                       key=key,
+                                       reverse=True,
+                                       limit=limit)
+
+        # then I should get a list of ordered stats
+        expected = [
+            (
+                'Abbey Goeldner|Bundoora|6',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 4,
+                        'games_won': 3,
+                        'percentage': 2000.0,
+                        'score_against': 1,
+                        'score_for': 20
+                    }
+                }
+            ),
+            (
+                'Marcus Newnham|Eaglemont|16',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 8,
+                        'games_won': 8,
+                        'percentage': 960.0,
+                        'score_against': 5,
+                        'score_for': 48
+                    }
+                }
+            ),
+            (
+                'Keane Chu|Mill Park|14',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 11,
+                        'games_won': 11,
+                        'percentage': 733.3333333333333,
+                        'score_against': 9,
+                        'score_for': 66
+                    }
+                }
+            ),
+            (
+                'Brynn Goddard|Eltham|10',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 12,
+                        'games_won': 12,
+                        'percentage': 553.8461538461538,
+                        'score_against': 13,
+                        'score_for': 72
+                    }
+                }
+            ),
+            (
+                'Jeevan Dhaliwal|Eaglemont|16',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 11,
+                        'games_won': 11,
+                        'percentage': 550.0,
+                        'score_against': 12,
+                        'score_for': 66
+                    }
+                }
+            )
+        ]
+        msg = 'Player games stats (score_for, sorted, singles) error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_sort_stats_doubles_percentage(self):
+        """Get sorted stats: doubles percentage.
+        """
+        # Given the statistics for all players
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        statistics = reporter.get_player_stats(names=None)
+
+        # when I filter on the players game percentage
+        key = 'percentage'
+
+        # limited to 5 players
+        limit = 5
+
+        # when I generate the player stats
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.sort_stats(statistics,
+                                       key=key,
+                                       reverse=True,
+                                       limit=limit)
+
+        # then I should get a list of ordered stats
+        expected = [
+            (
+                'Abbey Goeldner|Bundoora|6',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 4,
+                        'games_won': 3,
+                        'percentage': 2000.0,
+                        'score_against': 1,
+                        'score_for': 20
+                    }
+                }
+            ),
+            (
+                'Marcus Newnham|Eaglemont|16',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 8,
+                        'games_won': 8,
+                        'percentage': 960.0,
+                        'score_against': 5,
+                        'score_for': 48
+                    }
+                }
+            ),
+            (
+                'Keane Chu|Mill Park|14',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 11,
+                        'games_won': 11,
+                        'percentage': 733.3333333333333,
+                        'score_against': 9,
+                        'score_for': 66
+                    }
+                }
+            ),
+            (
+                'Brynn Goddard|Eltham|10',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 12,
+                        'games_won': 12,
+                        'percentage': 553.8461538461538,
+                        'score_against': 13,
+                        'score_for': 72
+                    }
+                }
+            ),
+            (
+                'Jeevan Dhaliwal|Eaglemont|16',
+                {
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 11,
+                        'games_won': 11,
+                        'percentage': 550.0,
+                        'score_against': 12,
+                        'score_for': 66
+                    }
+                }
+            )
+        ]
+        msg = 'Player games stats (score_for, sorted, doubles) error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_sort_stats_singles_score_against(self):
+        """Get sorted stats: singles score against.
+        """
+        # Given the statistics for all players
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        statistics = reporter.get_player_stats(names=None)
+
+        # when I filter on the player's game score against
+        key = 'score_against'
+
+        # limited to 5 players
+        limit = 5
+
+        # when I generate the player stats
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.sort_stats(statistics,
+                                       key=key,
+                                       reverse=True,
+                                       limit=limit)
+
+        # then I should get a list of ordered stats
+        expected = [
+            (
+                'Callum Northover|ECCA|5',
+                {
+                    'singles': {
+                        'games_lost': 11,
+                        'games_played': 14,
+                        'games_won': 3,
+                        'score_against': 78,
+                        'score_for': 48,
+                        'percentage': 61.53846153846154
+                    }
+                }
+            ),
+            (
+                'Aleesia Sotiropoulos|View Bank|5',
+                {
+                    'singles': {
+                        'games_lost': 11,
+                        'games_played': 13,
+                        'games_won': 2,
+                        'score_against': 75,
+                        'score_for': 44,
+                        'percentage': 58.666666666666664
+                    }
+                }
+            ),
+            (
+                'Adam Walter|Lalor Blue|2',
+                {
+                    'singles': {
+                        'games_lost': 11,
+                        'games_played': 14,
+                        'games_won': 3,
+                        'score_against': 73,
+                        'score_for': 49,
+                        'percentage': 67.12328767123287
+                    }
+                }
+            ),
+            (
+                'Celeste Argent|Montmorency|2',
+                {
+                    'singles': {
+                        'games_lost': 8,
+                        'games_played': 15,
+                        'games_won': 7,
+                        'score_against': 73,
+                        'score_for': 60,
+                        'percentage': 82.1917808219178
+                    }
+                }
+            ),
+            (
+                'Paige Smith|UCTC|4',
+                {
+                    'singles': {
+                        'games_lost': 12,
+                        'games_played': 13,
+                        'games_won': 1,
+                        'score_against': 72,
+                        'score_for': 29,
+                        'percentage': 40.27777777777778
+                    }
+                }
+            )
+        ]
+        msg = 'Player games stats (score_for, sorted, singles) error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_sort_stats_doubles_team_and_section(self):
+        """Get sorted stats: doubles team and section.
+        """
+        # Given the statistics for a sectionbased team
+        reporter = trols_stats.interface.Reporter(db=self.__db,
+                                                  event='doubles')
+        statistics = reporter.get_player_stats(team='Watsonia Blue',
+                                               section=14)
+
+        # and I filter on the players game win/loss percentages
+        key = 'percentage'
+
+        # when I generate the player doubles stats
+        received = reporter.sort_stats(statistics, key=key, reverse=True)
+
+        # then I should get a list of ordered stats
+        expected = [
+            (
+                'Isabella Markovski|Watsonia Blue|14',
+                {
+                    'doubles': {
+                        'games_lost': 8,
+                        'games_played': 22,
+                        'games_won': 14,
+                        'percentage': 152.7027027027027,
+                        'score_against': 74,
+                        'score_for': 113
+                    }
+                }
+            ),
+            (
+                'Stephanie Lia|Watsonia Blue|14',
+                {
+                    'doubles': {
+                        'games_lost': 10,
+                        'games_played': 22,
+                        'games_won': 12,
+                        'percentage': 122.98850574712642,
+                        'score_against': 87,
+                        'score_for': 107
+                    }
+                }
+            ),
+            (
+                'Eboni Amos|Watsonia Blue|14',
+                {
+                    'doubles': {
+                        'games_lost': 11,
+                        'games_played': 20,
+                        'games_won': 9,
+                        'percentage': 104.59770114942528,
+                        'score_against': 87,
+                        'score_for': 91
+                    }
+                }
+            ),
+            (
+                'Lily Matt|Watsonia Blue|14',
+                {
+                    'doubles': {
+                        'games_lost': 8,
+                        'games_played': 16,
+                        'games_won': 8,
+                        'percentage': 101.5625,
+                        'score_against': 64,
+                        'score_for': 65
+                    }
+                }
+            ),
+            (
+                'Maddison Hollyoak|Watsonia Blue|14',
+                {
+                    'doubles': {
+                        'games_lost': 13,
+                        'games_played': 16,
+                        'games_won': 3,
+                        'percentage': 59.09090909090909,
+                        'score_against': 88,
+                        'score_for': 52
+                    }
+                }
+            )
+        ]
+        msg = 'Player games stats (team/section/doubles percentage) error'
+        self.assertListEqual(received, expected, msg)
 
     @classmethod
     def tearDownClass(cls):
+        del cls.__db
         del cls.__results_dir
-        del cls.__reporter

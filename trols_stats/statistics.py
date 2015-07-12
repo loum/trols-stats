@@ -60,13 +60,18 @@ class Statistics(object):
         self.__games_lost = 0
 
     def __call__(self):
+        pc = 0.0
+        if self.score_against > 0:
+            pc = float(self.score_for) / float(self.score_against) * 100
+
         return {
             self.game_type: {
                 'games_lost': self.games_lost,
                 'games_played': self.games_played,
                 'games_won': self.games_won,
                 'score_against': self.score_against,
-                'score_for': self.score_for
+                'score_for': self.score_for,
+                'percentage': pc
             }
         }
 

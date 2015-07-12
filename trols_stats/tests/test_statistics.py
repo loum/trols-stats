@@ -40,6 +40,7 @@ class TestStatistics(unittest2.TestCase):
                 'games_lost': 8,
                 'games_played': 22,
                 'games_won': 14,
+                'percentage': 152.7027027027027,
                 'score_against': 74,
                 'score_for': 113
             }
