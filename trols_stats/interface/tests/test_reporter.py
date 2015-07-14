@@ -41,7 +41,7 @@ class TestReporter(unittest2.TestCase):
         received = reporter.get_players(name)
 
         # then I should get the player profile
-        expected = ['Eboni Amos|Watsonia Blue|14']
+        expected = ['Eboni Amos|Watsonia Blue|14|girls']
         msg = 'Player instance mismatch'
         self.assertListEqual(received, expected, msg)
 
@@ -60,11 +60,11 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Eboni Amos|Watsonia Blue|14',
-            'Isabella Markovski|Watsonia Blue|14',
-            'Lily Matt|Watsonia Blue|14',
-            'Maddison Hollyoak|Watsonia Blue|14',
-            'Stephanie Lia|Watsonia Blue|14',
+            'Eboni Amos|Watsonia Blue|14|girls',
+            'Isabella Markovski|Watsonia Blue|14|girls',
+            'Lily Matt|Watsonia Blue|14|girls',
+            'Maddison Hollyoak|Watsonia Blue|14|girls',
+            'Stephanie Lia|Watsonia Blue|14|girls',
         ]
         msg = 'Player instance mismatch'
         self.assertListEqual(sorted(received), expected, msg)
@@ -81,9 +81,9 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Eboni Amos|Watsonia Blue|14',
-            'Zoe Allen|Eaglemont|10',
-            'Zoe Allen|Eaglemont|8',
+            'Eboni Amos|Watsonia Blue|14|girls',
+            'Zoe Allen|Eaglemont|10|girls',
+            'Zoe Allen|Eaglemont|8|girls',
         ]
         msg = 'Player instance (multiple) mismatch'
         self.assertListEqual(sorted(received), expected, msg)
@@ -122,7 +122,7 @@ class TestReporter(unittest2.TestCase):
                                'ise_game_aggregates.json')) as _fh:
             expected = _fh.read().strip()
         msg = 'Player combined fixtures output as JSON error'
-        self.assertEqual(received, expected, msg)
+        self.assertEqual(sorted(received), sorted(expected), msg)
 
     def test_get_player_singles_games_no_games_played(self):
         """Get all singles games associated with a player: none played.
@@ -159,7 +159,7 @@ class TestReporter(unittest2.TestCase):
                                'ise_game_aggregates.json')) as _fh:
             expected = _fh.read().strip()
         msg = 'Player doubles games (all doubles played) error'
-        self.assertEqual(received, expected, msg)
+        self.assertEqual(sorted(received), sorted(expected), msg)
 
     def test_get_player_singles_games_played(self):
         """Get all singles games associated with a player.
@@ -181,7 +181,7 @@ class TestReporter(unittest2.TestCase):
                                'kristen_singles_aggregates.json')) as _fh:
             expected = _fh.read().strip()
         msg = 'Singles games list error'
-        self.assertEqual(received, expected, msg)
+        self.assertEqual(sorted(received), sorted(expected), msg)
 
     def test_get_player_doubles_games_played(self):
         """Get all doubles games associated with a player.
@@ -199,11 +199,14 @@ class TestReporter(unittest2.TestCase):
                               sort_keys=True,
                               indent=4,
                               separators=(',', ': '))
+        with open('xxx', 'w') as _fh:
+            _fh.write(received)
+
         with open(os.path.join(self.__results_dir,
                                'kristen_doubles_aggregates.json')) as _fh:
-            expected = _fh.read().strip()
+            expected = _fh.read().rstrip()
         msg = 'Doubles games list error'
-        self.assertEqual(received, expected, msg)
+        self.assertEqual(sorted(received), sorted(expected), msg)
 
     def test_get_player_stats_singles(self):
         """Get all game stats associated with a player: singles.
@@ -217,7 +220,7 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get a stats structure
         expected = {
-            'Kristen Fisher|Eltham|1': {
+            'Kristen Fisher|Eltham|1|girls': {
                 'singles': {
                     'games_lost': 0,
                     'games_played': 4,
@@ -247,7 +250,7 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get a stats structure
         expected = {
-            'Kristen Fisher|Eltham|1': {
+            'Kristen Fisher|Eltham|1|girls': {
                 'doubles': {
                     'games_lost': 1,
                     'games_played': 8,
@@ -283,7 +286,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Whitney Guan|Clifton|3',
+                'Whitney Guan|Clifton|3|girls',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -296,7 +299,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Rachelle Papantuono|Clifton|3',
+                'Rachelle Papantuono|Clifton|3|girls',
                 {
                     'singles': {
                         'games_lost': 1,
@@ -309,20 +312,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Maeve Suter|Montmorency|5',
-                {
-                    'singles': {
-                        'games_lost': 1,
-                        'games_played': 14,
-                        'games_won': 13,
-                        'score_against': 35,
-                        'score_for': 83,
-                        'percentage': 237.14285714285714
-                    }
-                }
-            ),
-            (
-                'Connor Salas|Rosanna|8',
+                'Connor Salas|Rosanna|8|boys',
                 {
                     'singles': {
                         'games_lost': 1,
@@ -335,7 +325,20 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Ethan Turner|ECCA|5',
+                'Maeve Suter|Montmorency|5|girls',
+                {
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 14,
+                        'games_won': 13,
+                        'score_against': 35,
+                        'score_for': 83,
+                        'percentage': 237.14285714285714
+                    }
+                }
+            ),
+            (
+                'Ethan Turner|ECCA|5|boys',
                 {
                     'singles': {
                         'games_lost': 1,
@@ -459,7 +462,7 @@ class TestReporter(unittest2.TestCase):
         # when I generate the player stats
         received = reporter.sort_stats(statistics,
                                        key=key,
-                                       reverse=False,
+                                       reverse=True,
                                        limit=limit)
 
         # then I should get a list of ordered stats
@@ -556,7 +559,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Abbey Goeldner|Bundoora|6',
+                'Abbey Goeldner|Bundoora|6|girls',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -569,7 +572,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Marcus Newnham|Eaglemont|16',
+                'Marcus Newnham|Eaglemont|16|boys',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -582,7 +585,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Keane Chu|Mill Park|14',
+                'Keane Chu|Mill Park|14|boys',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -595,7 +598,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Brynn Goddard|Eltham|10',
+                'Brynn Goddard|Eltham|10|boys',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -608,7 +611,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Jeevan Dhaliwal|Eaglemont|16',
+                'Jeevan Dhaliwal|Eaglemont|16|boys',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -647,7 +650,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Abbey Goeldner|Bundoora|6',
+                'Abbey Goeldner|Bundoora|6|girls',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -660,7 +663,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Marcus Newnham|Eaglemont|16',
+                'Marcus Newnham|Eaglemont|16|boys',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -673,7 +676,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Keane Chu|Mill Park|14',
+                'Keane Chu|Mill Park|14|boys',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -686,7 +689,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Brynn Goddard|Eltham|10',
+                'Brynn Goddard|Eltham|10|boys',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -699,7 +702,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Jeevan Dhaliwal|Eaglemont|16',
+                'Jeevan Dhaliwal|Eaglemont|16|boys',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -738,7 +741,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Callum Northover|ECCA|5',
+                'Callum Northover|ECCA|5|boys',
                 {
                     'singles': {
                         'games_lost': 11,
@@ -751,7 +754,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Aleesia Sotiropoulos|View Bank|5',
+                'Aleesia Sotiropoulos|View Bank|5|girls',
                 {
                     'singles': {
                         'games_lost': 11,
@@ -764,7 +767,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Adam Walter|Lalor Blue|2',
+                'Adam Walter|Lalor Blue|2|boys',
                 {
                     'singles': {
                         'games_lost': 11,
@@ -777,7 +780,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Celeste Argent|Montmorency|2',
+                'Celeste Argent|Montmorency|2|girls',
                 {
                     'singles': {
                         'games_lost': 8,
@@ -790,15 +793,15 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Paige Smith|UCTC|4',
+                'Emily Yates|View Bank|5|girls',
                 {
                     'singles': {
-                        'games_lost': 12,
-                        'games_played': 13,
-                        'games_won': 1,
+                        'games_won': 0,
                         'score_against': 72,
-                        'score_for': 29,
-                        'percentage': 40.27777777777778
+                        'score_for': 27,
+                        'games_played': 12,
+                        'percentage': 37.5,
+                        'games_lost': 12
                     }
                 }
             )
@@ -824,7 +827,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Isabella Markovski|Watsonia Blue|14',
+                'Isabella Markovski|Watsonia Blue|14|girls',
                 {
                     'doubles': {
                         'games_lost': 8,
@@ -837,7 +840,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Stephanie Lia|Watsonia Blue|14',
+                'Stephanie Lia|Watsonia Blue|14|girls',
                 {
                     'doubles': {
                         'games_lost': 10,
@@ -850,7 +853,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Eboni Amos|Watsonia Blue|14',
+                'Eboni Amos|Watsonia Blue|14|girls',
                 {
                     'doubles': {
                         'games_lost': 11,
@@ -863,7 +866,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Lily Matt|Watsonia Blue|14',
+                'Lily Matt|Watsonia Blue|14|girls',
                 {
                     'doubles': {
                         'games_lost': 8,
@@ -876,7 +879,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Maddison Hollyoak|Watsonia Blue|14',
+                'Maddison Hollyoak|Watsonia Blue|14|girls',
                 {
                     'doubles': {
                         'games_lost': 13,

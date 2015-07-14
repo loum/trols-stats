@@ -27,7 +27,8 @@ TEST=trols_stats.tests:TestScraper \
 	trols_stats.model.entities.tests:TestFixture \
 	trols_stats.model.aggregates.tests:TestGame \
 	trols_stats.tests:TestStatistics \
-	trols_stats.tests:TestConfig
+	trols_stats.tests:TestConfig \
+	trols_stats.exception.tests:TestTrolsStatsConfigError
 
 sdist:
 	$(PY) setup.py sdist
