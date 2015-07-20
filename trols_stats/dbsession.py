@@ -26,6 +26,11 @@ class DBSession(object):
         self.__connection = None
         self.__shelve_db = kwargs.get('shelve')
 
+    def __del__(self):
+        if self.connection is not None:
+            if self.shelve_db is not None:
+                self.close()
+
     def connect(self):
         """Create a database session connection based on class attributes.
 
@@ -44,8 +49,7 @@ class DBSession(object):
 
         return status
 
-    def __del__(self):
+    def close(self):
         if self.connection is not None:
-            if self.shelve_db is not None:
-                log.info('DB session (shelve): stopping ...')
-                self.connection.close()
+            log.info('DB session (shelve): stopping ...')
+            self.connection.close()

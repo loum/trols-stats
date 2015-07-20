@@ -42,27 +42,18 @@ class Reporter(object):
             ]
 
         """
-        def token_match(token):
-            is_matched = False
-
-            if names is not None:
-                if token.split('|')[0] in names:
-                    is_matched = True
-            elif team is not None:
-                if (token.split('|')[1] == team
-                        and token.split('|')[2] == str(section)):
-                    is_matched = True
-            elif names is None:
-                is_matched = True
-
-            return is_matched
+        def cmp_name(name, token):
+            return  name.lower() in x.split('|')[0].lower()
 
         matched = self.db.keys()
         if names is not None:
-            matched = [x for x in matched if x.split('|')[0] in names]
+            matched = [x for x in matched for n in names if cmp_name(n, x)]
+            seen = set()
+            seen_add = seen.add
+            matched = [x for x in matched if not (x in seen or seen_add(x))]
 
         if team is not None:
-            matched = [x for x in matched if x.split('|')[1]  == team]
+            matched = [x for x in matched if x.split('|')[1] == team]
 
         if section is not None:
             matched = [x for x in matched if x.split('|')[2] == str(section)]

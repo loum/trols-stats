@@ -45,6 +45,41 @@ class TestReporter(unittest2.TestCase):
         msg = 'Player instance mismatch'
         self.assertListEqual(received, expected, msg)
 
+    def test_get_players_lowercase(self):
+        """Players lookup: lower case.
+        """
+        # Given a player name with lower casing
+        name = ['eboni amos']
+
+        # when I query a player
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_players(names=name)
+
+        # then I should get the player profile
+        expected = ['Eboni Amos|Watsonia Blue|14|girls']
+        msg = 'Player instance mismatch'
+        self.assertListEqual(received, expected, msg)
+
+    def test_get_players_lowercase_multiple_part_names(self):
+        """Players lookup: lower case.
+        """
+        # Given a player part names
+        names = ['isabella', 'markovski']
+
+        # when I query a player
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_players(names=names)
+
+        # then I should get the player profile
+        expected = [
+            'Isabella Cotroneo|Keon Park|2|girls',
+            'Isabella Grant|Eaglemont|12|girls',
+            'Isabella Markovski|Watsonia Blue|14|girls',
+            'Joel Markovski|Watsonia|20|boys'
+        ]
+        msg = 'Part player name instance mismatch'
+        self.assertListEqual(sorted(received), expected, msg)
+
     def test_get_players_team_and_section(self):
         """Players lookup: team and section.
         """
@@ -199,9 +234,6 @@ class TestReporter(unittest2.TestCase):
                               sort_keys=True,
                               indent=4,
                               separators=(',', ': '))
-        with open('xxx', 'w') as _fh:
-            _fh.write(received)
-
         with open(os.path.join(self.__results_dir,
                                'kristen_doubles_aggregates.json')) as _fh:
             expected = _fh.read().rstrip()
