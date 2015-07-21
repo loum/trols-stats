@@ -102,6 +102,45 @@ class TestScraper(unittest2.TestCase):
         msg = 'Competition dictionary error'
         self.assertDictEqual(received, expected, msg)
 
+    def test_scrape_competition_name(self):
+        """Scrape_competition name.
+        """
+        # Given a TROLS competition|section results page
+        test_file = os.path.join(self.__files_dir, 'main_results.php')
+        with open(test_file) as html_fh:
+            html = html_fh.read()
+
+        # and an xpath definition to target the extraction
+        xpath = '//table/tr/td/select/option[@value="AA"]/text()'
+
+        # when I scrape the page for match competitions
+        received = trols_stats.Scraper.scrape_competition_name(html, xpath)
+
+        # then I should receive the competition name
+        expected = 'Saturday AM - Autumn 2015'
+        msg = 'Competition name extracted error'
+        self.assertEqual(received, expected, msg)
+
+    def test_scrape_competition_name_tokenised(self):
+        """Scrape_competition name: tokenised.
+        """
+        # Given a TROLS competition|section results page
+        test_file = os.path.join(self.__files_dir, 'main_results.php')
+        with open(test_file) as html_fh:
+            html = html_fh.read()
+
+        # and an xpath definition to target the extraction
+        xpath = '//table/tr/td/select/option[@value="AA"]/text()'
+
+        # when I scrape the page for match competitions
+        received = trols_stats.Scraper.scrape_competition_name(html,
+                                                               xpath,
+                                                               True)
+
+        # then I should receive the competition name
+        expected = 'saturday_am_autumn_2015'
+        msg = 'Competition name extracted (tokenised) error'
+        self.assertEqual(received, expected, msg)
 
     def test_scrape_match_ids(self):
         """Test scrape_match_ids.

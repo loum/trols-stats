@@ -74,6 +74,14 @@ def source(args, conf):
     query_args = {'daytime': str()}
     comps_html = loader.request(conf.main_results, query_args)
 
+    # Distinguish competions and seasons
+    comp_name_xpath = '//table/tr/td/select/option[@value="AA"]/text()'
+    comp_name = trols_stats.Scraper.scrape_competition_name(comps_html,
+                                                            comp_name_xpath,
+                                                            True)
+
+    # Each competition is made of sections.  For example, "BOYS 21".
+    # Each section is identified by a code.
     comps_xpath = '//select[@id="section" and @name="section"]/option'
     comps_map = trols_stats.Scraper.scrape_competition_ids(comps_html,
                                                            comps_xpath)
@@ -100,7 +108,8 @@ def source(args, conf):
                     'seasonid': str(),
                 },
                 'cache_dir':  conf.cache,
-                'force_cache': args.force
+                'force_cache': args.force,
+                'comp_token': comp_name
             }
             loader.request(**request_kwargs)
 
@@ -109,7 +118,7 @@ def scrape(args, conf):
     loader = trols_stats.interface.Loader()
 
     for html_file in get_directory_files(conf.cache,
-                                         file_filter=r'^match_.*.html'):
+                                         file_filter=r'.*.html$'):
         with open(html_file) as _fh:
             loader.build_game_map(_fh.read())
 

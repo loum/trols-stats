@@ -83,7 +83,11 @@ class Loader(object):
         self.games.extend(stats.games_cache)
 
     @staticmethod
-    def request(uri, request_args=None, cache_dir=None, force_cache=False):
+    def request(uri,
+                request_args=None,
+                cache_dir=None,
+                force_cache=False,
+                comp_token='match'):
         """Send a URL request to *uri*.  If *uri* is a file-type resource
         then an attempt will be made to open the file instead.
 
@@ -112,7 +116,8 @@ class Loader(object):
         target_file = None
         if match_id is not None and cache_dir is not None:
             target_file = os.path.join(cache_dir,
-                                       'match_{}.html'.format(match_id))
+                                       '{}_{}.html'.format(comp_token,
+                                                           match_id))
             log.debug('HTML response cache filename: "%s"', target_file)
 
         html = None
