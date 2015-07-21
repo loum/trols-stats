@@ -359,7 +359,7 @@ class TestScraper(unittest2.TestCase):
         #  'section': <section_no>,
         #  'date': <date>,
         #  'match_round': <round_no>}
-        expected = {'competition': 'girls',
+        expected = {'competition_type': 'girls',
                     'section': 14,
                     'date': '28 Feb 15',
                     'match_round': 5}
@@ -385,7 +385,7 @@ class TestScraper(unittest2.TestCase):
         #  'section': <section_no>,
         #  'date': <date>,
         #  'match_round': <round_no>}
-        expected = {'competition': 'girls',
+        expected = {'competition_type': 'girls',
                     'section': 14,
                     'match_round': 'Semi Final'}
         msg = 'Match preamble (semi-final) dictionary error'

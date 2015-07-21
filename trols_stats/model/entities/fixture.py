@@ -6,6 +6,7 @@ __all__ = ['Fixture']
 class Fixture(trols_stats.model.Base):
     """
     .. attribute:: match_round
+    .. attribute:: competition_type
     .. attribute:: competition
     .. attribute:: section
     .. attribute:: date
@@ -20,6 +21,14 @@ class Fixture(trols_stats.model.Base):
     @match_round.setter
     def match_round(self, value):
         self.__round = value
+
+    @property
+    def competition_type(self):
+        return self.__competition_type
+
+    @competition_type.setter
+    def competition_type(self, value):
+        self.__competition_type = value
 
     @property
     def competition(self):
@@ -64,6 +73,7 @@ class Fixture(trols_stats.model.Base):
     def __init__(self,
                  uid=None,
                  match_round=None,
+                 competition_type=None,
                  competition=None,
                  section=None,
                  date=None,
@@ -72,6 +82,7 @@ class Fixture(trols_stats.model.Base):
         super(Fixture, self).__init__(uid=uid)
 
         self.__round = match_round
+        self.__competition_type = competition_type
         self.__competition = competition
         self.__section = section
         self.__date = date
@@ -95,6 +106,7 @@ class Fixture(trols_stats.model.Base):
         if isinstance(other, dict):
             fixture = {
                 'competition': self.competition,
+                'competition_type': self.competition_type,
                 'section': self.section,
                 'date': self.date,
                 'match_round': self.match_round,

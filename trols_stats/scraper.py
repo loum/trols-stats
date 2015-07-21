@@ -261,7 +261,8 @@ class Scraper(object):
             dictionary structure representing components of the
             preamble in the form::
 
-                {'competition': <girls_or_boys>,
+                {'type': <girls_or_boys>,
+                 'competition_type': <girls|boys>,
                  'section': <section_no>,
                  'date': <date>,
                  'match_round': <round_no>}
@@ -278,7 +279,7 @@ class Scraper(object):
         def competition(matchobj):
             match_competition = matchobj.group(1).lower()
             log.debug('Match competition: "%s"', match_competition)
-            preamble['competition'] = match_competition.encode('utf8')
+            preamble['competition_type'] = match_competition.encode('utf8')
 
             return matchobj.group(2)
 

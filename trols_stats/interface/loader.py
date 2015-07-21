@@ -39,7 +39,7 @@ class Loader(object):
         self.__competition_map = {}
         self.__games = []
 
-    def build_game_map(self, html):
+    def build_game_map(self, html, source_file):
         """Scrape *html* game page and build a game map.
 
         Produces a list of :class:`trols_stats.model.aggregates.Games`
@@ -50,6 +50,11 @@ class Loader(object):
             *html* is typically a TROLS match results page.
 
         """
+        # Get the competition token.
+        comp_token = source_file.split('--')[0]
+        log.debug('Competition token parsed from filename: "%s"',
+                  comp_token)
+
         # Scrape match teams.
         xpath = '//table/tr/td/b'
         color_xpath = "//table/tr/td/b[contains(text(), '%s')]/span/text()"
@@ -73,6 +78,7 @@ class Loader(object):
         # Fixture needs the teams.
         fixture = preamble.copy()
         fixture.update(teams)
+        fixture.update({'competition': comp_token})
         log.debug('Fixture: %s' % fixture)
 
         # Build the Game aggregate object.
@@ -116,8 +122,8 @@ class Loader(object):
         target_file = None
         if match_id is not None and cache_dir is not None:
             target_file = os.path.join(cache_dir,
-                                       '{}_{}.html'.format(comp_token,
-                                                           match_id))
+                                       '{}--{}.html'.format(comp_token,
+                                                            match_id))
             log.debug('HTML response cache filename: "%s"', target_file)
 
         html = None

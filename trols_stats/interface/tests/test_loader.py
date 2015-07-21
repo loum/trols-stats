@@ -28,13 +28,13 @@ class TestLoader(unittest2.TestCase):
         """build_game_map of a game HTML page.
         """
         # Given a TROLS detailed match results page
-        match_file = 'match_AA039054.html'
+        match_file = 'saturday_am_autumn_2015--AA039054.html'
         with open(os.path.join(self.__test_dir, match_file)) as html_fh:
             html = html_fh.read()
 
         # when a scrape and load occurs
         loader = interface.Loader()
-        loader.build_game_map(html)
+        loader.build_game_map(html, 'saturday_am_autumn_2015')
         received = loader.games
 
         # then I should receive a list of Game objects
@@ -46,13 +46,13 @@ class TestLoader(unittest2.TestCase):
         """build_game_map of a game HTML page: color coded teams.
         """
         # Given a TROLS detailed match results page
-        match_file = 'match_AA039094.html'
+        match_file = 'saturday_am_autumn_2015--AA039094.html'
         with open(os.path.join(self.__test_dir, match_file)) as html_fh:
             html = html_fh.read()
 
         # when a scrape and load occurs
         loader = interface.Loader()
-        loader.build_game_map(html)
+        loader.build_game_map(html, 'saturday_am_autumn_2015')
 
         # then I should receive the properly color coded teams
         received = loader.games[0].fixture.home_team
@@ -75,14 +75,16 @@ class TestLoader(unittest2.TestCase):
         request_args = {'matchid': 'AA026044'}
 
         # when I make a TROLS request
-        match_file = 'match_AA026044.html'
+        match_file = 'saturday_am_autumn_2015--AA026044.html'
         with open(os.path.join(self.__test_dir, match_file)) as _fh:
             html = _fh.read()
 
         with mock.patch.object(interface.Loader,
                                '_request_url') as mock_request_url:
             mock_request_url.return_value = html
-            received = interface.Loader.request(uri, request_args)
+            received = interface.Loader.request(uri,
+                                                request_args,
+                                                comp_token='saturday_am_autumn_2015')
 
             # then I should receive a HTML string response
             expected = html
@@ -96,20 +98,25 @@ class TestLoader(unittest2.TestCase):
         uri = 'http://www.trols.org.au/nejta/match_popup.php'
 
         # and a payload
-        request_args = {'matchid': 'AA026044'}
+        request_args = {
+            'matchid': 'AA026044',
+        }
 
         # and specify a cache directory
         cache_dir = tempfile.mkdtemp()
 
         # when I make a TROLS request
-        match = 'match_AA026044.html'
+        match = 'saturday_am_autumn_2015--AA026044.html'
         with open(os.path.join(self.__test_dir, match)) as _fh:
             html = _fh.read()
 
         with mock.patch.object(interface.Loader,
                                '_request_url') as mock_request_url:
             mock_request_url.return_value = html
-            interface.Loader.request(uri, request_args, cache_dir)
+            interface.Loader.request(uri,
+                                     request_args,
+                                     cache_dir,
+                                     comp_token='saturday_am_autumn_2015')
 
         # then the HTML response should be saved in the cache
         cache_file = os.path.join(cache_dir, match)
@@ -133,12 +140,15 @@ class TestLoader(unittest2.TestCase):
         cache_dir = tempfile.mkdtemp()
 
         # and a copy of the request file already cached
-        match_file = 'match_AA026044.html'
+        match_file = 'saturday_am_autumn_2015--AA026044.html'
         html_file = os.path.join(self.__test_dir, match_file)
         copy_file(html_file, os.path.join(cache_dir, match_file))
 
         # when I make a TROLS request
-        received = interface.Loader.request(uri, request_args, cache_dir)
+        received = interface.Loader.request(uri,
+                                            request_args,
+                                             cache_dir,
+                                             comp_token='saturday_am_autumn_2015')
 
         # then I should receive a HTML string response
         with open(html_file) as _fh:
@@ -166,7 +176,7 @@ class TestLoader(unittest2.TestCase):
         force_cache = True
 
         # and an existing match popup exists
-        match_file = 'match_AA026044.html'
+        match_file = 'saturday_am_autumn_2015--AA026044.html'
         cache_file = os.path.join(cache_dir, match_file)
         with open(cache_file, 'w'):
             os.utime(cache_file, None)
@@ -181,7 +191,8 @@ class TestLoader(unittest2.TestCase):
             interface.Loader.request(uri,
                                      request_args,
                                      cache_dir,
-                                     force_cache)
+                                     force_cache,
+                                     comp_token='saturday_am_autumn_2015')
 
         # then the HTML response should be read from the cache
         msg = 'Cached HTML match popup not created'

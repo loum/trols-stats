@@ -120,7 +120,7 @@ def scrape(args, conf):
     for html_file in get_directory_files(conf.cache,
                                          file_filter=r'.*.html$'):
         with open(html_file) as _fh:
-            loader.build_game_map(_fh.read())
+            loader.build_game_map(_fh.read(), os.path.basename(html_file))
 
     with open(args.dump, 'w') as games_fh:
         games_fh.write(json.dumps([x() for x in loader.games],
