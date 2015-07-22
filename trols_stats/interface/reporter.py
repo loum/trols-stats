@@ -61,7 +61,7 @@ class Reporter(object):
         if competition is not None:
             matched = [x for x in matched if x.split('|')[3] == competition]
 
-        return matched
+        return sorted(matched)
 
     def get_player_fixtures(self, name):
         """Search for all fixtures where player *name* participated.
