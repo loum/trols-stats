@@ -261,11 +261,12 @@ class Scraper(object):
             dictionary structure representing components of the
             preamble in the form::
 
-                {'type': <girls_or_boys>,
-                 'competition_type': <girls|boys>,
-                 'section': <section_no>,
-                 'date': <date>,
-                 'match_round': <round_no>}
+                {
+                    'competition_type': <girls|boys>,
+                    'section': <section_no>,
+                    'date': <date>,
+                    'match_round': <round_no>
+                }
 
         """
         root = lxml.html.fromstring(html)
@@ -278,7 +279,7 @@ class Scraper(object):
 
         def competition(matchobj):
             match_competition = matchobj.group(1).lower()
-            log.debug('Match competition: "%s"', match_competition)
+            log.debug('Match competition_type: "%s"', match_competition)
             preamble['competition_type'] = match_competition.encode('utf8')
 
             return matchobj.group(2)

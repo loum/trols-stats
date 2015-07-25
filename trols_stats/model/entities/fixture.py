@@ -94,6 +94,7 @@ class Fixture(trols_stats.model.Base):
             'uid': self.uid,
             'match_round': self.match_round,
             'competition': self.competition,
+            'competition_type': self.competition_type,
             'section': self.section,
             'date': self.date,
             'home_team': self.home_team,

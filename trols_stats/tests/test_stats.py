@@ -128,7 +128,8 @@ class TestStats(unittest2.TestCase):
         """
         # Given a fixture details data structure
         fixture = {
-            'competition': 'girls',
+            'competition_type': 'girls',
+            'competition': 'saturday_am_autumn_2015',
             'section': 14,
             'date': '28 Feb 15',
             'match_round': 5,
@@ -180,7 +181,8 @@ class TestStats(unittest2.TestCase):
         """
         # Given a fixture details data structure
         fixture = {
-            'competition': 'girls',
+            'competition_type': 'girls',
+            'competition': 'saturday_am_autumn_2015',
             'section': 14,
             'date': '18 Apr 15',
             'match_round': 9,
@@ -232,7 +234,8 @@ class TestStats(unittest2.TestCase):
         """
         # Given a fixture details data structure
         fixture = {
-            'competition': 'girls',
+            'competition_type': 'girls',
+            'competition': 'saturday_am_autumn_2015',
             'section': 14,
             'date': '7 Feb 15',
             'match_round': 2,
@@ -284,7 +287,8 @@ class TestStats(unittest2.TestCase):
         """
         # Given a fixture details data structure
         fixture = {
-            'competition': 'girls',
+            'competition_type': 'girls',
+            'competition': 'saturday_am_autumn_2015',
             'section': 1,
             'date': '21 Feb 15',
             'match_round': 4,

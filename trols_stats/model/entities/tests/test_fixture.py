@@ -19,7 +19,8 @@ class TestFixture(unittest2.TestCase):
         # Given a fixture data structure
         fixture_data = {
             'uid': 1234,
-            'competition': 'girls',
+            'competition': 'saturday_am_autumn_2015',
+            'competition_type': 'girls',
             'section': 14,
             'date': '28 Feb 15',
             'match_round': 5,
@@ -34,6 +35,6 @@ class TestFixture(unittest2.TestCase):
         received = fixture.to_json()
 
         # then I should get a serialised JSON string
-        expected = '{"home_team": "Watsonia Red", "away_team": "St Marys", "uid": 1234, "section": 14, "competition": "girls", "date": "28 Feb 15", "match_round": 5}'
+        expected = '{"date": "28 Feb 15", "home_team": "Watsonia Red", "away_team": "St Marys", "uid": 1234, "competition_type": "girls", "section": 14, "competition": "saturday_am_autumn_2015", "match_round": 5}'
         msg = 'trols_stats.model.entities.Fixture() to JSON error'
         self.assertEqual(received, expected, msg)

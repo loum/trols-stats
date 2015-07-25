@@ -41,7 +41,10 @@ class TestReporter(unittest2.TestCase):
         received = reporter.get_players(name)
 
         # then I should get the player profile
-        expected = ['Eboni Amos|Watsonia Blue|14|girls']
+        expected = [
+            'Eboni Amos|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+            'Eboni Amos|Watsonia|12|girls|saturday_am_spring_2015'
+        ]
         msg = 'Player instance mismatch'
         self.assertListEqual(received, expected, msg)
 
@@ -56,7 +59,10 @@ class TestReporter(unittest2.TestCase):
         received = reporter.get_players(names=name)
 
         # then I should get the player profile
-        expected = ['Eboni Amos|Watsonia Blue|14|girls']
+        expected = [
+            'Eboni Amos|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+            'Eboni Amos|Watsonia|12|girls|saturday_am_spring_2015'
+        ]
         msg = 'Player instance mismatch'
         self.assertListEqual(received, expected, msg)
 
@@ -72,10 +78,13 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Isabella Cotroneo|Keon Park|2|girls',
-            'Isabella Grant|Eaglemont|12|girls',
-            'Isabella Markovski|Watsonia Blue|14|girls',
-            'Joel Markovski|Watsonia|20|boys'
+            'Isabella Chessler|Mill Park|11|girls|saturday_am_spring_2015',
+            'Isabella Cotroneo|Keon Park|2|girls|saturday_am_autumn_2015',
+            'Isabella Grant|Eaglemont|12|girls|saturday_am_autumn_2015',
+            'Isabella Markovski|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+            'Isabella Markovski|Watsonia|12|girls|saturday_am_spring_2015',
+            'Joel Markovski|Watsonia|20|boys|saturday_am_autumn_2015',
+            'Joel Markovski|Watsonia|21|boys|saturday_am_spring_2015',
         ]
         msg = 'Part player name instance mismatch'
         self.assertListEqual(sorted(received), expected, msg)
@@ -95,11 +104,11 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Eboni Amos|Watsonia Blue|14|girls',
-            'Isabella Markovski|Watsonia Blue|14|girls',
-            'Lily Matt|Watsonia Blue|14|girls',
-            'Maddison Hollyoak|Watsonia Blue|14|girls',
-            'Stephanie Lia|Watsonia Blue|14|girls',
+            'Eboni Amos|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+            'Isabella Markovski|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+            'Lily Matt|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+            'Maddison Hollyoak|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+            'Stephanie Lia|Watsonia Blue|14|girls|saturday_am_autumn_2015',
         ]
         msg = 'Player instance mismatch'
         self.assertListEqual(sorted(received), expected, msg)
@@ -116,9 +125,11 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Eboni Amos|Watsonia Blue|14|girls',
-            'Zoe Allen|Eaglemont|10|girls',
-            'Zoe Allen|Eaglemont|8|girls',
+            'Eboni Amos|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+            'Eboni Amos|Watsonia|12|girls|saturday_am_spring_2015',
+            'Zoe Allen|Eaglemont|10|girls|saturday_am_autumn_2015',
+            'Zoe Allen|Eaglemont|7|girls|saturday_am_spring_2015',
+            'Zoe Allen|Eaglemont|8|girls|saturday_am_autumn_2015',
         ]
         msg = 'Player instance (multiple) mismatch'
         self.assertListEqual(sorted(received), expected, msg)
@@ -134,7 +145,7 @@ class TestReporter(unittest2.TestCase):
         received = len(reporter.get_players(names))
 
         # then I should get the player profile
-        expected = 1905
+        expected = 3001
         msg = 'Player instance (all players) incorrect count'
         self.assertEqual(received, expected, msg)
 
@@ -142,7 +153,7 @@ class TestReporter(unittest2.TestCase):
         """Get all fixtures associated with a player.
         """
         # Given a player name
-        player = 'Isabella Markovski'
+        player = 'Isabella Markovski|Watsonia Blue|14|girls|saturday_am_autumn_2015'
 
         # when I search for all of the player's fixtures
         reporter = trols_stats.interface.Reporter(db=self.__db)
@@ -153,6 +164,7 @@ class TestReporter(unittest2.TestCase):
                               sort_keys=True,
                               indent=4,
                               separators=(',', ': '))
+
         with open(os.path.join(self.__results_dir,
                                'ise_game_aggregates.json')) as _fh:
             expected = _fh.read().strip()
@@ -178,7 +190,7 @@ class TestReporter(unittest2.TestCase):
         """Get all doubles games associated with a player: all doubles.
         """
         # Given a player name
-        player = 'Isabella Markovski'
+        player = 'Isabella Markovski|Watsonia Blue|14|girls|saturday_am_autumn_2015'
 
         # when I search for all of the player's doubles games
         reporter = trols_stats.interface.Reporter(db=self.__db)
@@ -200,7 +212,7 @@ class TestReporter(unittest2.TestCase):
         """Get all singles games associated with a player.
         """
         # Given a player name
-        player = 'Kristen Fisher'
+        player = 'Kristen Fisher|Eltham|1|girls|saturday_am_autumn_2015'
 
         # when I search for all of the player's singles games
         reporter = trols_stats.interface.Reporter(db=self.__db)
@@ -222,7 +234,7 @@ class TestReporter(unittest2.TestCase):
         """Get all doubles games associated with a player.
         """
         # Given a player name
-        player = 'Kristen Fisher'
+        player = 'Kristen Fisher|Eltham|1|girls|saturday_am_autumn_2015'
 
         # when I search for all of the player's doubles games
         reporter = trols_stats.interface.Reporter(db=self.__db)
@@ -244,7 +256,7 @@ class TestReporter(unittest2.TestCase):
         """Get all game stats associated with a player: singles.
         """
         # Given a player name
-        player = ['Kristen Fisher']
+        player = ['Kristen Fisher|Eltham|1|girls|saturday_am_autumn_2015']
 
         # when I calculate the player stats
         reporter = trols_stats.interface.Reporter(db=self.__db)
@@ -252,7 +264,7 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get a stats structure
         expected = {
-            'Kristen Fisher|Eltham|1|girls': {
+            'Kristen Fisher|Eltham|1|girls|saturday_am_autumn_2015': {
                 'singles': {
                     'games_lost': 0,
                     'games_played': 4,
@@ -269,8 +281,8 @@ class TestReporter(unittest2.TestCase):
     def test_get_player_stats_doubles(self):
         """Get all game stats associated with a player: doubles.
         """
-        # Given a player name
-        player = ['Kristen Fisher']
+        # Given a player token
+        player = ['Kristen Fisher|Eltham|1|girls|saturday_am_autumn_2015']
 
         # and an "doubles" event specified
         event = 'doubles'
@@ -282,7 +294,7 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get a stats structure
         expected = {
-            'Kristen Fisher|Eltham|1|girls': {
+            'Kristen Fisher|Eltham|1|girls|saturday_am_autumn_2015': {
                 'doubles': {
                     'games_lost': 1,
                     'games_played': 8,
@@ -301,7 +313,7 @@ class TestReporter(unittest2.TestCase):
         """
         # Given the statistics for all players
         reporter = trols_stats.interface.Reporter(db=self.__db)
-        statistics = reporter.get_player_stats(names=None)
+        stats = reporter.get_player_stats()
 
         # when I filter on the players game score for
         key = 'score_for'
@@ -310,7 +322,7 @@ class TestReporter(unittest2.TestCase):
         limit = 5
 
         # when I generate the player stats
-        received = reporter.sort_stats(statistics,
+        received = reporter.sort_stats(stats,
                                        key=key,
                                        reverse=True,
                                        limit=limit)
@@ -318,7 +330,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Whitney Guan|Clifton|3|girls',
+                'Whitney Guan|Clifton|3|girls|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -331,7 +343,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Rachelle Papantuono|Clifton|3|girls',
+                'Rachelle Papantuono|Clifton|3|girls|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 1,
@@ -344,7 +356,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Connor Salas|Rosanna|8|boys',
+                'Connor Salas|Rosanna|8|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 1,
@@ -357,7 +369,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Maeve Suter|Montmorency|5|girls',
+                'Maeve Suter|Montmorency|5|girls|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 1,
@@ -370,7 +382,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Ethan Turner|ECCA|5|boys',
+                'Ethan Turner|ECCA|5|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 1,
@@ -389,9 +401,10 @@ class TestReporter(unittest2.TestCase):
     def test_sort_stats_singles_girls_score_for(self):
         """Get sorted stats: singles girls score for.
         """
-        # Given the statistics for all players
+        # Given the statistics for all girl players
         reporter = trols_stats.interface.Reporter(db=self.__db)
-        statistics = reporter.get_player_stats(competition='girls')
+        girls = reporter.get_players(competition_type='girls')
+        statistics = reporter.get_player_stats(girls)
 
         # when I filter on the players game score for
         key = 'score_for'
@@ -408,7 +421,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Whitney Guan|Clifton|3|girls',
+                'Whitney Guan|Clifton|3|girls|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -421,7 +434,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Rachelle Papantuono|Clifton|3|girls',
+                'Rachelle Papantuono|Clifton|3|girls|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 1,
@@ -434,7 +447,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Maeve Suter|Montmorency|5|girls',
+                'Maeve Suter|Montmorency|5|girls|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 1,
@@ -447,7 +460,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                "Emily O'Connor|Clifton|3|girls",
+                "Emily O'Connor|Clifton|3|girls|saturday_am_autumn_2015",
                 {
                     'singles': {
                         'games_lost': 3,
@@ -460,7 +473,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Lauren Jones|Yallambie|4|girls',
+                'Lauren Jones|Yallambie|4|girls|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 2,
@@ -482,8 +495,9 @@ class TestReporter(unittest2.TestCase):
         # Given the statistics for all players
         reporter = trols_stats.interface.Reporter(db=self.__db,
                                                   event='doubles')
-        statistics = reporter.get_player_stats(section=14,
-                                               competition='girls')
+        girls = reporter.get_players(competition_type='girls',
+                                     section=14)
+        statistics = reporter.get_player_stats(girls)
 
         # when I filter on the players game score for
         key = 'percentage'
@@ -500,7 +514,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Lucinda Ford|St Marys|14|girls',
+                'Lucinda Ford|St Marys|14|girls|saturday_am_autumn_2015',
                 {
                     'doubles': {
                         'games_lost': 3,
@@ -513,7 +527,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Emma German|Barry Road|14|girls',
+                'Emma German|Barry Road|14|girls|saturday_am_autumn_2015',
                 {
                     'doubles': {
                         'games_lost': 5,
@@ -526,7 +540,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Ambra Selih|Barry Road|14|girls',
+                'Ambra Selih|Barry Road|14|girls|saturday_am_autumn_2015',
                 {
                     'doubles': {
                         'games_lost': 2,
@@ -539,7 +553,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Alicia Lazarovski|Bundoora|14|girls',
+                'Alicia Lazarovski|Bundoora|14|girls|saturday_am_autumn_2015',
                 {
                     'doubles': {
                         'games_lost': 3,
@@ -552,7 +566,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Mia Bovalino|St Marys|14|girls',
+                'Mia Bovalino|St Marys|14|girls|saturday_am_autumn_2015',
                 {
                     'doubles': {
                         'games_lost': 4,
@@ -573,7 +587,7 @@ class TestReporter(unittest2.TestCase):
         """
         # Given the statistics for all players
         reporter = trols_stats.interface.Reporter(db=self.__db)
-        statistics = reporter.get_player_stats(names=None)
+        statistics = reporter.get_player_stats()
 
         # when I filter on the players game score for
         key = 'percentage'
@@ -591,7 +605,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Abbey Goeldner|Bundoora|6|girls',
+                'Abbey Goeldner|Bundoora|6|girls|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -604,7 +618,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Marcus Newnham|Eaglemont|16|boys',
+                'Marcus Newnham|Eaglemont|16|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -617,7 +631,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Keane Chu|Mill Park|14|boys',
+                'Keane Chu|Mill Park|14|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -630,7 +644,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Brynn Goddard|Eltham|10|boys',
+                'Brynn Goddard|Eltham|10|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -643,7 +657,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Jeevan Dhaliwal|Eaglemont|16|boys',
+                'Jeevan Dhaliwal|Eaglemont|16|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -664,7 +678,7 @@ class TestReporter(unittest2.TestCase):
         """
         # Given the statistics for all players
         reporter = trols_stats.interface.Reporter(db=self.__db)
-        statistics = reporter.get_player_stats(names=None)
+        statistics = reporter.get_player_stats()
 
         # when I filter on the players game percentage
         key = 'percentage'
@@ -682,7 +696,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Abbey Goeldner|Bundoora|6|girls',
+                'Abbey Goeldner|Bundoora|6|girls|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -695,7 +709,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Marcus Newnham|Eaglemont|16|boys',
+                'Marcus Newnham|Eaglemont|16|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -708,7 +722,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Keane Chu|Mill Park|14|boys',
+                'Keane Chu|Mill Park|14|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -721,7 +735,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Brynn Goddard|Eltham|10|boys',
+                'Brynn Goddard|Eltham|10|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -734,7 +748,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Jeevan Dhaliwal|Eaglemont|16|boys',
+                'Jeevan Dhaliwal|Eaglemont|16|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 0,
@@ -755,13 +769,13 @@ class TestReporter(unittest2.TestCase):
         """
         # Given the statistics for all players
         reporter = trols_stats.interface.Reporter(db=self.__db)
-        statistics = reporter.get_player_stats(names=None)
+        statistics = reporter.get_player_stats()
 
         # when I filter on the player's game score against
         key = 'score_against'
 
         # limited to 5 players
-        limit = 5
+        limit = 4
 
         # when I generate the player stats
         reporter = trols_stats.interface.Reporter(db=self.__db)
@@ -773,7 +787,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Callum Northover|ECCA|5|boys',
+                'Callum Northover|ECCA|5|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 11,
@@ -786,7 +800,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Aleesia Sotiropoulos|View Bank|5|girls',
+                'Aleesia Sotiropoulos|View Bank|5|girls|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 11,
@@ -799,7 +813,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Adam Walter|Lalor Blue|2|boys',
+                'Adam Walter|Lalor Blue|2|boys|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 11,
@@ -812,7 +826,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Celeste Argent|Montmorency|2|girls',
+                'Celeste Argent|Montmorency|2|girls|saturday_am_autumn_2015',
                 {
                     'singles': {
                         'games_lost': 8,
@@ -824,19 +838,6 @@ class TestReporter(unittest2.TestCase):
                     }
                 }
             ),
-            (
-                'Emily Yates|View Bank|5|girls',
-                {
-                    'singles': {
-                        'games_won': 0,
-                        'score_against': 72,
-                        'score_for': 27,
-                        'games_played': 12,
-                        'percentage': 37.5,
-                        'games_lost': 12
-                    }
-                }
-            )
         ]
         msg = 'Player games stats (score_for, sorted, singles) error'
         self.assertListEqual(received, expected, msg)
@@ -844,11 +845,14 @@ class TestReporter(unittest2.TestCase):
     def test_sort_stats_doubles_team_and_section(self):
         """Get sorted stats: doubles team and section.
         """
-        # Given the statistics for a sectionbased team
+        # Given the players for a section based team
         reporter = trols_stats.interface.Reporter(db=self.__db,
                                                   event='doubles')
-        statistics = reporter.get_player_stats(team='Watsonia Blue',
-                                               section=14)
+        players = reporter.get_players(team='Watsonia Blue',
+                                       section=14)
+
+        # and their match statistics
+        statistics = reporter.get_player_stats(players)
 
         # and I filter on the players game win/loss percentages
         key = 'percentage'
@@ -859,7 +863,7 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Isabella Markovski|Watsonia Blue|14|girls',
+                'Isabella Markovski|Watsonia Blue|14|girls|saturday_am_autumn_2015',
                 {
                     'doubles': {
                         'games_lost': 8,
@@ -872,7 +876,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Stephanie Lia|Watsonia Blue|14|girls',
+                'Stephanie Lia|Watsonia Blue|14|girls|saturday_am_autumn_2015',
                 {
                     'doubles': {
                         'games_lost': 10,
@@ -885,7 +889,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Eboni Amos|Watsonia Blue|14|girls',
+                'Eboni Amos|Watsonia Blue|14|girls|saturday_am_autumn_2015',
                 {
                     'doubles': {
                         'games_lost': 11,
@@ -898,7 +902,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Lily Matt|Watsonia Blue|14|girls',
+                'Lily Matt|Watsonia Blue|14|girls|saturday_am_autumn_2015',
                 {
                     'doubles': {
                         'games_lost': 8,
@@ -911,7 +915,7 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Maddison Hollyoak|Watsonia Blue|14|girls',
+                'Maddison Hollyoak|Watsonia Blue|14|girls|saturday_am_autumn_2015',
                 {
                     'doubles': {
                         'games_lost': 13,

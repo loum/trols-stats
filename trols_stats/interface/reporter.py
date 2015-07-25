@@ -25,7 +25,7 @@ class Reporter(object):
 
     def get_players(self,
                     names=None,
-                    competition=None,
+                    competition_type=None,
                     team=None,
                     section=None):
         """Get all players from cache.
@@ -58,29 +58,29 @@ class Reporter(object):
         if section is not None:
             matched = [x for x in matched if x.split('|')[2] == str(section)]
 
-        if competition is not None:
-            matched = [x for x in matched if x.split('|')[3] == competition]
+        if competition_type is not None:
+            matched = [x for x in matched if x.split('|')[3] == competition_type]
 
         return sorted(matched)
 
-    def get_player_fixtures(self, name):
+    def get_player_fixtures(self, player_token):
         """Search for all fixtures where player *name* participated.
 
         *Args:*
-            *name*: name to filter DB against
+            *player_token*: player token ID to filter DB against.  For
+            example::
+
+                Joel Markovski|Watsonia|20|boys|saturday_am_autum_2015
 
         *Returns*: list of all :class:`trols_stats.model.aggregate.Game`
         objects that *name* was involved in
 
         """
-        log.info('Extracting fixtures for player "%s"', name)
+        game_aggregates = self.db.get(player_token)
+        if game_aggregates is None:
+            game_aggregates = []
 
-        players = [k for k in self.db.keys() if k.split('|')[0] == name]
-        fixtures = []
-        for player in players:
-            fixtures.extend(self.db.get(player))
-
-        return fixtures
+        return game_aggregates
 
     def get_player_singles(self, name):
         """Return list of singles games from all fixtures where player
@@ -129,35 +129,33 @@ class Reporter(object):
 
         return doubles_games
 
-    def get_player_stats(self,
-                         names=None,
-                         competition=None,
-                         team=None,
-                         section=None):
+    def get_player_stats(self, player_tokens=None):
         """Calculates and returns match stats from all fixtures for all
         or nominated players.
 
         *Args:*
-            *names*: list of names to filter DB against
+            *player_tokens*: list of player token ID to filter DB against.
+            For example::
+
+                Joel Markovski|Watsonia|20|boys|saturday_am_autum_2015
 
         *Returns*:
 
         """
-        log.info('Generating match stats for player "%s"', names)
-
+        log.info('Generating %s stats', self.event)
         stats = {}
-        players = self.get_players(names, competition, team, section)
-        for player in players:
+        if player_tokens is None:
+            player_tokens = self.db.keys()
+
+        for player_token in player_tokens:
             statistics = trols_stats.Statistics(self.event)
+            game_aggregates = self.get_player_fixtures(player_token)
+            for game in game_aggregates:
+                if ((game.is_singles() and self.event == 'singles')
+                        or (game.is_doubles() and self.event == 'doubles')):
+                    statistics.aggregate(game)
 
-            games = self.db.get(player)
-            if games is not None:
-                for game in games:
-                    if ((game.is_singles() and self.event == 'singles')
-                            or (game.is_doubles() and self.event == 'doubles')):
-                        statistics.aggregate(game)
-
-                stats[player] = statistics()
+            stats[player_token] = statistics()
 
         return stats
 

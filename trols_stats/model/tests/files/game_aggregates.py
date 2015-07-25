@@ -6,7 +6,8 @@ SINGLES = {
         'away_team': 'Eltham',
         'uid': None,
         'section': 1,
-        'competition': 'girls',
+        'competition_type': 'girls',
+        'competition': 'saturday_am_autumn_2015',
         'date': '21 Feb 15',
         'match_round': 4
     },
@@ -28,7 +29,8 @@ SINGLES = {
 DOUBLES = {
     'fixture': {
         'away_team': 'St Marys',
-        'competition': 'girls',
+        'competition_type': 'girls',
+        'competition': 'saturday_am_autumn_2015',
         'date': '28 Feb 15',
         'home_team': 'Watsonia Red',
         'match_round': 5,
@@ -65,7 +67,8 @@ DOUBLES = {
 COLOR_CODED_DOUBLES = {
     'fixture': {
         'away_team': 'Watsonia Blue',
-        'competition': 'girls',
+        'competition_type': 'girls',
+        'competition': 'saturday_am_autumn_2015',
         'date': '18 Apr 15',
         'home_team': 'Watsonia Red',
         'match_round': 9,
@@ -102,7 +105,8 @@ COLOR_CODED_DOUBLES = {
 COLOR_CODED_4TH_DOUBLES = {
     'fixture': {
         'away_team': 'Watsonia Red',
-        'competition': 'girls',
+        'competition_type': 'girls',
+        'competition': 'saturday_am_autumn_2015',
         'date': '7 Feb 15',
         'home_team': 'Watsonia Blue',
         'match_round': 2,
