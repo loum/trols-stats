@@ -4,14 +4,6 @@ __all__ = ['Statistics']
 class Statistics(object):
 
     @property
-    def game_type(self):
-        return self.__game_type
-
-    @game_type.setter
-    def game_type(self, value):
-        self.__game_type = value
-
-    @property
     def score_for(self):
         return self.__score_for
 
@@ -51,8 +43,7 @@ class Statistics(object):
     def games_lost(self, value):
         self.__games_lost = value
 
-    def __init__(self, game_type):
-        self.__game_type = game_type
+    def __init__(self):
         self.__score_for = 0
         self.__score_against = 0
         self.__games_played = 0
@@ -65,14 +56,12 @@ class Statistics(object):
             pc = float(self.score_for) / float(self.score_against) * 100
 
         return {
-            self.game_type: {
-                'games_lost': self.games_lost,
-                'games_played': self.games_played,
-                'games_won': self.games_won,
-                'score_against': self.score_against,
-                'score_for': self.score_for,
-                'percentage': pc
-            }
+            'games_lost': self.games_lost,
+            'games_played': self.games_played,
+            'games_won': self.games_won,
+            'score_against': self.score_against,
+            'score_for': self.score_for,
+            'percentage': pc
         }
 
     def aggregate(self, game):

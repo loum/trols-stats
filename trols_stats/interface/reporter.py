@@ -11,17 +11,8 @@ class Reporter(object):
     def db(self, value):
         self.__db = value
 
-    @property
-    def event(self):
-        return self.__event
-
-    @event.setter
-    def event(self, value):
-        self.__event = value
-
-    def __init__(self, db, event='singles'):
+    def __init__(self, db):
         self.__db = db
-        self.__event = event
 
     def get_players(self,
                     names=None,
@@ -43,7 +34,7 @@ class Reporter(object):
 
         """
         def cmp_name(name, token):
-            return  name.lower() in x.split('|')[0].lower()
+            return  name.lower() in token.split('|')[0].lower()
 
         matched = self.db.keys()
         if names is not None:
@@ -142,31 +133,40 @@ class Reporter(object):
         *Returns*:
 
         """
-        log.info('Generating %s stats', self.event)
-        stats = {}
         if player_tokens is None:
             player_tokens = self.db.keys()
 
+        stats = {}
         for player_token in player_tokens:
-            statistics = trols_stats.Statistics(self.event)
+            singles_stats = trols_stats.Statistics()
+            doubles_stats = trols_stats.Statistics()
+
             game_aggregates = self.get_player_fixtures(player_token)
             for game in game_aggregates:
-                if ((game.is_singles() and self.event == 'singles')
-                        or (game.is_doubles() and self.event == 'doubles')):
-                    statistics.aggregate(game)
+                if game.is_singles():
+                    singles_stats.aggregate(game)
+                elif game.is_doubles():
+                    doubles_stats.aggregate(game)
 
-            stats[player_token] = statistics()
+            stats[player_token] = {
+                'singles': singles_stats(),
+                'doubles': doubles_stats(),
+            }
 
         return stats
 
     def sort_stats(self,
                    statistics,
+                   event='singles',
                    key='score_for',
                    reverse=False,
                    limit=None):
         """Manipulate player *name* stats.
 
         **Args:**
+            *statistics*:
+
+        **Kwargs:**
             *key*: as the sort criteria
 
             *reverse*: if ``True``, will reverse the sort order from lowest
@@ -176,14 +176,14 @@ class Reporter(object):
         def qualified(statistic):
             is_qualified = False
 
-            games_played = statistic[1].get(self.event).get('games_played')
+            games_played = statistic[1].get(event).get('games_played')
             if games_played is not None and games_played > 3:
                 is_qualified = True
 
             return is_qualified
 
         sort_stats = sorted(statistics.iteritems(),
-                            key=lambda x: x[1][self.event][key],
+                            key=lambda x: x[1][event][key],
                             reverse=reverse)
 
         if limit is not None:

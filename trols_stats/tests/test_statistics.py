@@ -14,7 +14,7 @@ class TestStatistics(unittest2.TestCase):
     def test_init(self):
         """Initialise a trols_stats.Statistics object.
         """
-        statistics = trols_stats.Statistics('singles')
+        statistics = trols_stats.Statistics()
         msg = 'Object is not a trols_stats.Statistics'
         self.assertIsInstance(statistics, trols_stats.Statistics, msg)
 
@@ -29,21 +29,19 @@ class TestStatistics(unittest2.TestCase):
         games = [trols_stats.model.aggregates.Game(**x) for x in games_raw]
 
         # when I aggregate the game results
-        statistics = trols_stats.Statistics('doubles')
+        statistics = trols_stats.Statistics()
         for game in games:
             statistics.aggregate(game)
 
         # then I should get a statistics data structure
         received = statistics()
         expected = {
-            'doubles': {
-                'games_lost': 8,
-                'games_played': 22,
-                'games_won': 14,
-                'percentage': 152.7027027027027,
-                'score_against': 74,
-                'score_for': 113
-            }
+            'games_lost': 8,
+            'games_played': 22,
+            'games_won': 14,
+            'percentage': 152.7027027027027,
+            'score_against': 74,
+            'score_for': 113
         }
         msg = 'Player aggregate statistics error'
         self.assertDictEqual(received, expected, msg)
