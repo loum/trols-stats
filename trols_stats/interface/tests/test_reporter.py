@@ -42,8 +42,8 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Eboni Amos|Watsonia Blue|14|girls|saturday_am_autumn_2015',
-            'Eboni Amos|Watsonia|12|girls|saturday_am_spring_2015'
+            'Eboni Amos~Watsonia Blue~14~girls~saturday_am_autumn_2015',
+            'Eboni Amos~Watsonia~12~girls~saturday_am_spring_2015'
         ]
         msg = 'Player instance mismatch'
         self.assertListEqual(received, expected, msg)
@@ -60,8 +60,8 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Eboni Amos|Watsonia Blue|14|girls|saturday_am_autumn_2015',
-            'Eboni Amos|Watsonia|12|girls|saturday_am_spring_2015'
+            'Eboni Amos~Watsonia Blue~14~girls~saturday_am_autumn_2015',
+            'Eboni Amos~Watsonia~12~girls~saturday_am_spring_2015'
         ]
         msg = 'Player instance mismatch'
         self.assertListEqual(received, expected, msg)
@@ -78,13 +78,15 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Isabella Chessler|Mill Park|11|girls|saturday_am_spring_2015',
-            'Isabella Cotroneo|Keon Park|2|girls|saturday_am_autumn_2015',
-            'Isabella Grant|Eaglemont|12|girls|saturday_am_autumn_2015',
-            'Isabella Markovski|Watsonia Blue|14|girls|saturday_am_autumn_2015',
-            'Isabella Markovski|Watsonia|12|girls|saturday_am_spring_2015',
-            'Joel Markovski|Watsonia|20|boys|saturday_am_autumn_2015',
-            'Joel Markovski|Watsonia|21|boys|saturday_am_spring_2015',
+            'Isabella Chessler~Mill Park~11~girls~saturday_am_spring_2015',
+            'Isabella Cotroneo~Keon Park~2~girls~saturday_am_autumn_2015',
+            'Isabella Cotroneo~Keon Park~2~girls~saturday_am_spring_2015',
+            'Isabella Grant~Eaglemont~12~girls~saturday_am_autumn_2015',
+            'Isabella Ilkanovski~Cranross~1~girls~saturday_am_spring_2015',
+            'Isabella Markovski~Watsonia Blue~14~girls~saturday_am_autumn_2015',
+            'Isabella Markovski~Watsonia~12~girls~saturday_am_spring_2015',
+            'Joel Markovski~Watsonia~20~boys~saturday_am_autumn_2015',
+            'Joel Markovski~Watsonia~21~boys~saturday_am_spring_2015',
         ]
         msg = 'Part player name instance mismatch'
         self.assertListEqual(sorted(received), expected, msg)
@@ -104,13 +106,35 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Eboni Amos|Watsonia Blue|14|girls|saturday_am_autumn_2015',
-            'Isabella Markovski|Watsonia Blue|14|girls|saturday_am_autumn_2015',
-            'Lily Matt|Watsonia Blue|14|girls|saturday_am_autumn_2015',
-            'Maddison Hollyoak|Watsonia Blue|14|girls|saturday_am_autumn_2015',
-            'Stephanie Lia|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+            'Eboni Amos~Watsonia Blue~14~girls~saturday_am_autumn_2015',
+            'Isabella Markovski~Watsonia Blue~14~girls~saturday_am_autumn_2015',
+            'Lily Matt~Watsonia Blue~14~girls~saturday_am_autumn_2015',
+            'Maddison Hollyoak~Watsonia Blue~14~girls~saturday_am_autumn_2015',
+            'Stephanie Lia~Watsonia Blue~14~girls~saturday_am_autumn_2015',
         ]
         msg = 'Player instance mismatch'
+        self.assertListEqual(sorted(received), expected, msg)
+
+    def test_get_players_name_and_competition(self):
+        """Players lookup: name and compeition.
+        """
+        # Given a player name
+        names = ['markovski']
+
+        # and a competition
+        competition = 'saturday_am_spring_2015'
+
+        # when I query the players
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_players(names=names,
+                                        competition=competition)
+
+        # then I should get the player profile
+        expected = [
+            'Isabella Markovski~Watsonia~12~girls~saturday_am_spring_2015',
+            'Joel Markovski~Watsonia~21~boys~saturday_am_spring_2015',
+        ]
+        msg = 'Player instance mismatch (name, competition)'
         self.assertListEqual(sorted(received), expected, msg)
 
     def test_get_players_multiple(self):
@@ -125,11 +149,11 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Eboni Amos|Watsonia Blue|14|girls|saturday_am_autumn_2015',
-            'Eboni Amos|Watsonia|12|girls|saturday_am_spring_2015',
-            'Zoe Allen|Eaglemont|10|girls|saturday_am_autumn_2015',
-            'Zoe Allen|Eaglemont|7|girls|saturday_am_spring_2015',
-            'Zoe Allen|Eaglemont|8|girls|saturday_am_autumn_2015',
+            'Eboni Amos~Watsonia Blue~14~girls~saturday_am_autumn_2015',
+            'Eboni Amos~Watsonia~12~girls~saturday_am_spring_2015',
+            'Zoe Allen~Eaglemont~10~girls~saturday_am_autumn_2015',
+            'Zoe Allen~Eaglemont~7~girls~saturday_am_spring_2015',
+            'Zoe Allen~Eaglemont~8~girls~saturday_am_autumn_2015',
         ]
         msg = 'Player instance (multiple) mismatch'
         self.assertListEqual(sorted(received), expected, msg)
@@ -145,7 +169,7 @@ class TestReporter(unittest2.TestCase):
         received = len(reporter.get_players(names))
 
         # then I should get the player profile
-        expected = 3001
+        expected = 3411
         msg = 'Player instance (all players) incorrect count'
         self.assertEqual(received, expected, msg)
 
@@ -153,7 +177,8 @@ class TestReporter(unittest2.TestCase):
         """Get all fixtures associated with a player.
         """
         # Given a player name
-        player = 'Isabella Markovski|Watsonia Blue|14|girls|saturday_am_autumn_2015'
+        player = ('Isabella Markovski~Watsonia Blue~14~'
+                  'girls~saturday_am_autumn_2015')
 
         # when I search for all of the player's fixtures
         reporter = trols_stats.interface.Reporter(db=self.__db)
@@ -190,7 +215,8 @@ class TestReporter(unittest2.TestCase):
         """Get all doubles games associated with a player: all doubles.
         """
         # Given a player name
-        player = 'Isabella Markovski|Watsonia Blue|14|girls|saturday_am_autumn_2015'
+        player = ('Isabella Markovski~Watsonia Blue~14~'
+                  'girls~saturday_am_autumn_2015')
 
         # when I search for all of the player's doubles games
         reporter = trols_stats.interface.Reporter(db=self.__db)
@@ -212,7 +238,7 @@ class TestReporter(unittest2.TestCase):
         """Get all singles games associated with a player.
         """
         # Given a player name
-        player = 'Kristen Fisher|Eltham|1|girls|saturday_am_autumn_2015'
+        player = 'Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015'
 
         # when I search for all of the player's singles games
         reporter = trols_stats.interface.Reporter(db=self.__db)
@@ -234,7 +260,7 @@ class TestReporter(unittest2.TestCase):
         """Get all doubles games associated with a player.
         """
         # Given a player name
-        player = 'Kristen Fisher|Eltham|1|girls|saturday_am_autumn_2015'
+        player = 'Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015'
 
         # when I search for all of the player's doubles games
         reporter = trols_stats.interface.Reporter(db=self.__db)
@@ -256,19 +282,20 @@ class TestReporter(unittest2.TestCase):
         """Get all game stats associated with a player: doubles.
         """
         # Given a player token
-        player = ['Kristen Fisher|Eltham|1|girls|saturday_am_autumn_2015']
-
-        # and an "doubles" event specified
-        event = 'doubles'
+        player = ['Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015']
 
         # when I calculate the player stats
         reporter = trols_stats.interface.Reporter(db=self.__db)
-                                                  
         received = reporter.get_player_stats(player)
 
         # then I should get a stats structure
         expected = {
-            'Kristen Fisher|Eltham|1|girls|saturday_am_autumn_2015': {
+            'Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015': {
+                'name': 'Kristen Fisher',
+                'team': 'Eltham',
+                'section': '1',
+                'comp_type': 'girls',
+                'comp': 'saturday_am_autumn_2015',
                 'doubles': {
                     'games_lost': 1,
                     'games_played': 8,
@@ -290,12 +317,17 @@ class TestReporter(unittest2.TestCase):
         msg = 'Player games stats error: doubles'
         self.assertDictEqual(received, expected, msg)
 
-    def test_sort_stats_singles_score_for(self):
-        """Get sorted stats: singles score for.
+    def test_sort_stats_girls_singles_score_for(self):
+        """Get sorted stats: girls singles score for.
         """
-        # Given the statistics for all players
+        # Given the players NEJTA Autumn 2015
         reporter = trols_stats.interface.Reporter(db=self.__db)
-        stats = reporter.get_player_stats()
+        kwargs = {
+            'competition': 'saturday_am_autumn_2015',
+            'competition_type': 'girls'
+        }
+        player_tokens = reporter.get_players(**kwargs)
+        statistics = reporter.get_player_stats(player_tokens)
 
         # when I filter on the players game score for
         key = 'score_for'
@@ -304,7 +336,7 @@ class TestReporter(unittest2.TestCase):
         limit = 5
 
         # when I generate the player stats
-        received = reporter.sort_stats(stats,
+        received = reporter.sort_stats(statistics,
                                        event='singles',
                                        key=key,
                                        reverse=True,
@@ -313,8 +345,13 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Whitney Guan|Clifton|3|girls|saturday_am_autumn_2015',
+                'Whitney Guan~Clifton~3~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Whitney Guan',
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 7,
                         'games_played': 30,
@@ -334,8 +371,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Rachelle Papantuono|Clifton|3|girls|saturday_am_autumn_2015',
+                'Rachelle Papantuono~Clifton~3~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Rachelle Papantuono',
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 30,
@@ -355,29 +397,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Connor Salas|Rosanna|8|boys|saturday_am_autumn_2015',
+                'Maeve Suter~Montmorency~5~girls~saturday_am_autumn_2015',
                 {
-                    'doubles': {
-                        'games_lost': 2,
-                        'games_played': 28,
-                        'games_won': 26,
-                        'percentage': 165.65656565656565,
-                        'score_against': 99,
-                        'score_for': 164
-                    },
-                    'singles': {
-                        'games_lost': 1,
-                        'games_played': 14,
-                        'games_won': 13,
-                        'percentage': 259.375,
-                        'score_against': 32,
-                        'score_for': 83
-                    }
-                }
-            ),
-            (
-                'Maeve Suter|Montmorency|5|girls|saturday_am_autumn_2015',
-                {
+                    'name': 'Maeve Suter',
+                    'team': 'Montmorency',
+                    'section': '5',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 28,
@@ -385,7 +411,7 @@ class TestReporter(unittest2.TestCase):
                         'percentage': 195.06172839506172,
                         'score_against': 81,
                         'score_for': 158
-                     },
+                    },
                     'singles': {
                         'games_lost': 1,
                         'games_played': 14,
@@ -397,23 +423,54 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Ethan Turner|ECCA|5|boys|saturday_am_autumn_2015',
+                "Emily O'Connor~Clifton~3~girls~saturday_am_autumn_2015",
                 {
+                    'name': "Emily O'Connor",
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
-                        'games_lost': 10,
-                        'games_played': 28,
-                        'games_won': 18,
-                        'percentage': 136.7924528301887,
-                        'score_against': 106,
-                        'score_for': 145
+                        'games_lost': 6,
+                        'games_played': 30,
+                        'games_won': 24,
+                        'percentage': 177.77777777777777,
+                        'score_against': 90,
+                        'score_for': 160
                     },
                     'singles': {
-                        'games_lost': 1,
+                        'games_lost': 3,
+                        'games_played': 15,
+                        'games_won': 12,
+                        'percentage': 180.0,
+                        'score_against': 45,
+                        'score_for': 81
+                    }
+                }
+            ),
+            (
+                'Lauren Jones~Yallambie~4~girls~saturday_am_autumn_2015',
+                {
+                    'name': 'Lauren Jones',
+                    'team': 'Yallambie',
+                    'section': '4',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 8,
+                        'games_played': 28,
+                        'games_won': 20,
+                        'percentage': 150.0,
+                        'score_against': 100,
+                        'score_for': 150
+                    },
+                    'singles': {
+                        'games_lost': 2,
                         'games_played': 14,
-                        'games_won': 13,
-                        'percentage': 273.3333333333333,
-                        'score_against': 30,
-                        'score_for': 82
+                        'games_won': 12,
+                        'percentage': 192.85714285714286,
+                        'score_against': 42,
+                        'score_for': 81
                     }
                 }
             )
@@ -445,8 +502,13 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Whitney Guan|Clifton|3|girls|saturday_am_autumn_2015',
+                'Whitney Guan~Clifton~3~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Whitney Guan',
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 7,
                         'games_played': 30,
@@ -466,8 +528,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Rachelle Papantuono|Clifton|3|girls|saturday_am_autumn_2015',
+                'Rachelle Papantuono~Clifton~3~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Rachelle Papantuono',
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 30,
@@ -487,8 +554,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Maeve Suter|Montmorency|5|girls|saturday_am_autumn_2015',
+                'Maeve Suter~Montmorency~5~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Maeve Suter',
+                    'team': 'Montmorency',
+                    'section': '5',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 28,
@@ -508,8 +580,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                "Emily O'Connor|Clifton|3|girls|saturday_am_autumn_2015",
+                "Emily O'Connor~Clifton~3~girls~saturday_am_autumn_2015",
                 {
+                    'name': "Emily O'Connor",
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 6,
                         'games_played': 30,
@@ -529,8 +606,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Lauren Jones|Yallambie|4|girls|saturday_am_autumn_2015',
+                'Lauren Jones~Yallambie~4~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Lauren Jones',
+                    'team': 'Yallambie',
+                    'section': '4',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 8,
                         'games_played': 28,
@@ -558,9 +640,13 @@ class TestReporter(unittest2.TestCase):
         """
         # Given the statistics for all players
         reporter = trols_stats.interface.Reporter(db=self.__db)
-        girls = reporter.get_players(competition_type='girls',
-                                     section=14)
-        statistics = reporter.get_player_stats(girls)
+        kwargs = {
+            'competition': 'saturday_am_autumn_2015',
+            'competition_type': 'girls',
+            'section': 14
+        }
+        player_tokens = reporter.get_players(**kwargs)
+        statistics = reporter.get_player_stats(player_tokens)
 
         # when I filter on the players game score for
         key = 'percentage'
@@ -578,8 +664,13 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Lucinda Ford|St Marys|14|girls|saturday_am_autumn_2015',
+                'Lucinda Ford~St Marys~14~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Lucinda Ford',
+                    'team': 'St Marys',
+                    'section': '14',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 20,
@@ -599,8 +690,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Emma German|Barry Road|14|girls|saturday_am_autumn_2015',
+                'Emma German~Barry Road~14~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Emma German',
+                    'team': 'Barry Road',
+                    'section': '14',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 5,
                         'games_played': 20,
@@ -620,8 +716,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Ambra Selih|Barry Road|14|girls|saturday_am_autumn_2015',
+                'Ambra Selih~Barry Road~14~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Ambra Selih',
+                    'team': 'Barry Road',
+                    'section': '14',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 2,
                         'games_played': 4,
@@ -641,8 +742,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Alicia Lazarovski|Bundoora|14|girls|saturday_am_autumn_2015',
+                'Alicia Lazarovski~Bundoora~14~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Alicia Lazarovski',
+                    'team': 'Bundoora',
+                    'section': '14',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 18,
@@ -662,8 +768,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Mia Bovalino|St Marys|14|girls|saturday_am_autumn_2015',
+                'Mia Bovalino~St Marys~14~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Mia Bovalino',
+                    'team': 'St Marys',
+                    'section': '14',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 4,
                         'games_played': 20,
@@ -710,8 +821,13 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Abbey Goeldner|Bundoora|6|girls|saturday_am_autumn_2015',
+                'Abbey Goeldner~Bundoora~6~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Abbey Goeldner',
+                    'team': 'Bundoora',
+                    'section': '6',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 7,
@@ -731,8 +847,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Marcus Newnham|Eaglemont|16|boys|saturday_am_autumn_2015',
+                'Marcus Newnham~Eaglemont~16~boys~saturday_am_autumn_2015',
                 {
+                    'name': 'Marcus Newnham',
+                    'team': 'Eaglemont',
+                    'section': '16',
+                    'comp_type': 'boys',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 16,
@@ -752,8 +873,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Keane Chu|Mill Park|14|boys|saturday_am_autumn_2015',
+                'Keane Chu~Mill Park~14~boys~saturday_am_autumn_2015',
                 {
+                    'name': 'Keane Chu',
+                    'team': 'Mill Park',
+                    'section': '14',
+                    'comp_type': 'boys',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 2,
                         'games_played': 22,
@@ -773,8 +899,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Brynn Goddard|Eltham|10|boys|saturday_am_autumn_2015',
+                'Brynn Goddard~Eltham~10~boys~saturday_am_autumn_2015',
                 {
+                    'name': 'Brynn Goddard',
+                    'team': 'Eltham',
+                    'section': '10',
+                    'comp_type': 'boys',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 6,
                         'games_played': 24,
@@ -794,8 +925,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Jeevan Dhaliwal|Eaglemont|16|boys|saturday_am_autumn_2015',
+                'Jeevan Dhaliwal~Eaglemont~16~boys~saturday_am_autumn_2015',
                 {
+                    'name': 'Jeevan Dhaliwal',
+                    'team': 'Eaglemont',
+                    'section': '16',
+                    'comp_type': 'boys',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 22,
@@ -821,9 +957,13 @@ class TestReporter(unittest2.TestCase):
     def test_sort_stats_doubles_percentage(self):
         """Get sorted stats: doubles percentage.
         """
-        # Given the statistics for all players
+        # Given the players NEJTA Autumn 2015
         reporter = trols_stats.interface.Reporter(db=self.__db)
-        statistics = reporter.get_player_stats()
+        kwargs = {
+            'competition': 'saturday_am_autumn_2015'
+        }
+        player_tokens = reporter.get_players(**kwargs)
+        statistics = reporter.get_player_stats(player_tokens)
 
         # when I filter on the players game percentage
         key = 'percentage'
@@ -842,8 +982,13 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Harrison Ponton|Mill Park|14|boys|saturday_am_autumn_2015',
+                'Harrison Ponton~Mill Park~14~boys~saturday_am_autumn_2015',
                 {
+                    'name': 'Harrison Ponton',
+                    'team': 'Mill Park',
+                    'section': '14',
+                    'comp_type': 'boys',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 22,
@@ -863,8 +1008,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Aaron Mathews|Mill Park|14|boys|saturday_am_autumn_2015',
+                'Aaron Mathews~Mill Park~14~boys~saturday_am_autumn_2015',
                 {
+                    'name': 'Aaron Mathews',
+                    'team': 'Mill Park',
+                    'section': '14',
+                    'comp_type': 'boys',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 22,
@@ -884,8 +1034,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Max Scuderi|Lalor|23|boys|saturday_am_autumn_2015',
+                'Max Scuderi~Lalor~23~boys~saturday_am_autumn_2015',
                 {
+                    'name': 'Max Scuderi',
+                    'team': 'Lalor',
+                    'section': '23',
+                    'comp_type': 'boys',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 22,
@@ -905,8 +1060,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Joel Cutajar|Regent|24|boys|saturday_am_autumn_2015',
+                'Joel Cutajar~Regent~24~boys~saturday_am_autumn_2015',
                 {
+                    'name': 'Joel Cutajar',
+                    'team': 'Regent',
+                    'section': '24',
+                    'comp_type': 'boys',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 0,
                         'games_played': 12,
@@ -926,8 +1086,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Matthew Kinglsey|Barry Road|25|boys|saturday_am_autumn_2015',
+                'Matthew Kinglsey~Barry Road~25~boys~saturday_am_autumn_2015',
                 {
+                    'name': 'Matthew Kinglsey',
+                    'team': 'Barry Road',
+                    'section': '25',
+                    'comp_type': 'boys',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 12,
@@ -974,8 +1139,13 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Callum Northover|ECCA|5|boys|saturday_am_autumn_2015',
+                'Callum Northover~ECCA~5~boys~saturday_am_autumn_2015',
                 {
+                    'name': 'Callum Northover',
+                    'team': 'ECCA',
+                    'section': '5',
+                    'comp_type': 'boys',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 17,
                         'games_played': 27,
@@ -995,8 +1165,14 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Aleesia Sotiropoulos|View Bank|5|girls|saturday_am_autumn_2015',
+                'Aleesia Sotiropoulos~View Bank~5~'
+                'girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Aleesia Sotiropoulos',
+                    'team': 'View Bank',
+                    'section': '5',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 22,
                         'games_played': 26,
@@ -1016,8 +1192,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Adam Walter|Lalor Blue|2|boys|saturday_am_autumn_2015',
+                'Adam Walter~Lalor Blue~2~boys~saturday_am_autumn_2015',
                 {
+                    'name': 'Adam Walter',
+                    'team': 'Lalor Blue',
+                    'section': '2',
+                    'comp_type': 'boys',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 13,
                         'games_played': 28,
@@ -1037,8 +1218,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Celeste Argent|Montmorency|2|girls|saturday_am_autumn_2015',
+                'Celeste Argent~Montmorency~2~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Celeste Argent',
+                    'team': 'Montmorency',
+                    'section': '2',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 15,
                         'games_played': 30,
@@ -1083,8 +1269,14 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Isabella Markovski|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+                'Isabella Markovski~Watsonia Blue~14~'
+                'girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Isabella Markovski',
+                    'team': 'Watsonia Blue',
+                    'section': '14',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 8,
                         'games_played': 22,
@@ -1104,8 +1296,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Stephanie Lia|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+                'Stephanie Lia~Watsonia Blue~14~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Stephanie Lia',
+                    'team': 'Watsonia Blue',
+                    'section': '14',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 10,
                         'games_played': 22,
@@ -1125,8 +1322,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Eboni Amos|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+                'Eboni Amos~Watsonia Blue~14~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Eboni Amos',
+                    'team': 'Watsonia Blue',
+                    'section': '14',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 11,
                         'games_played': 20,
@@ -1146,8 +1348,13 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Lily Matt|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+                'Lily Matt~Watsonia Blue~14~girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Lily Matt',
+                    'team': 'Watsonia Blue',
+                    'section': '14',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 8,
                         'games_played': 16,
@@ -1167,8 +1374,14 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Maddison Hollyoak|Watsonia Blue|14|girls|saturday_am_autumn_2015',
+                'Maddison Hollyoak~Watsonia Blue~14~'
+                'girls~saturday_am_autumn_2015',
                 {
+                    'name': 'Maddison Hollyoak',
+                    'team': 'Watsonia Blue',
+                    'section': '14',
+                    'comp_type': 'girls',
+                    'comp': 'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 13,
                         'games_played': 16,

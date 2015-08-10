@@ -120,17 +120,21 @@ class Game(trols_stats.model.Base):
         identify a player.
 
         """
+        args = (
+            self.player.name,
+            self.player.team,
+            self.fixture.section,
+            self.fixture.competition_type,
+            self.fixture.competition
+        )
+
         return {
             'name': self.player.name,
             'team': self.player.team,
             'section': self.fixture.section,
             'competition_type': self.fixture.competition_type,
             'competition': self.fixture.competition,
-            'token': '{}|{}|{}|{}|{}'.format(self.player.name,
-                                             self.player.team,
-                                             self.fixture.section,
-                                             self.fixture.competition_type,
-                                             self.fixture.competition)
+            'token': '{}~{}~{}~{}~{}'.format(*args)
         }
 
     def is_singles(self):

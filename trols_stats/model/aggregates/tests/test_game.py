@@ -235,6 +235,31 @@ class TestGame(unittest2.TestCase):
         msg = 'Doubles Game singles check should return False'
         self.assertFalse(received, msg)
 
+    def test_player_id(self):
+        """Player ID unique identifier.
+        """
+        # Given a game data structure
+        game_data = game_aggregates.SINGLES
+
+        # when I create trols_stats.model.aggregate.Game object
+        game = trols_stats.model.aggregates.Game(**game_data)
+
+        # and extract the game's unique player identifier
+        received = game.player_id()
+
+        # then I should get the player ID structure
+        expected = {
+            'competition': 'saturday_am_autumn_2015',
+            'competition_type': 'girls',
+            'name': 'Kristen Fisher',
+            'section': 1,
+            'team': 'Eltham',
+            'token':
+                'Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015'
+        }
+        msg = 'Game player ID structure error'
+        self.assertDictEqual(received, expected, msg)
+
     @classmethod
     def tearDownClass(cls):
         cls.__files_dir = None

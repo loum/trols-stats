@@ -16,6 +16,7 @@ class Reporter(object):
 
     def get_players(self,
                     names=None,
+                    competition=None,
                     competition_type=None,
                     team=None,
                     section=None):
@@ -28,13 +29,25 @@ class Reporter(object):
             list of simplified player token IDs in the form::
 
             [
-                'Isabella Markovski|Watsonia Red|14',
+                'Isabella Markovski~Watsonia Red~14~girls~saturday_...',
                 ...
             ]
 
         """
         def cmp_name(name, token):
-            return  name.lower() in token.split('|')[0].lower()
+            return  name.lower() in token.split('~')[0].lower()
+
+        def cmp_team(team, token):
+            return token.split('~')[1] == team
+
+        def cmp_section(section, token):
+            return token.split('~')[2] == str(section)
+
+        def cmp_comp_type(competition_type, token):
+            return token.split('~')[3] == competition_type
+
+        def cmp_comp(competition, token):
+            return token.split('~')[4] == str(competition)
 
         matched = self.db.keys()
         if names is not None:
@@ -44,13 +57,16 @@ class Reporter(object):
             matched = [x for x in matched if not (x in seen or seen_add(x))]
 
         if team is not None:
-            matched = [x for x in matched if x.split('|')[1] == team]
+            matched = [x for x in matched if cmp_team(team, x)]
 
         if section is not None:
-            matched = [x for x in matched if x.split('|')[2] == str(section)]
+            matched = [x for x in matched if cmp_section(section, x)]
 
         if competition_type is not None:
-            matched = [x for x in matched if x.split('|')[3] == competition_type]
+            matched = [x for x in matched if cmp_comp_type(competition_type, x)]
+
+        if competition is not None:
+            matched = [x for x in matched if cmp_comp(competition, x)]
 
         return sorted(matched)
 
@@ -61,7 +77,7 @@ class Reporter(object):
             *player_token*: player token ID to filter DB against.  For
             example::
 
-                Joel Markovski|Watsonia|20|boys|saturday_am_autum_2015
+                Joel Markovski~Watsonia~20~boys~saturday_am_autum_2015
 
         *Returns*: list of all :class:`trols_stats.model.aggregate.Game`
         objects that *name* was involved in
@@ -128,7 +144,7 @@ class Reporter(object):
             *player_tokens*: list of player token ID to filter DB against.
             For example::
 
-                Joel Markovski|Watsonia|20|boys|saturday_am_autum_2015
+                Joel Markovski~Watsonia~20~boys~saturday_am_autum_2015
 
         *Returns*:
 
@@ -148,7 +164,13 @@ class Reporter(object):
                 elif game.is_doubles():
                     doubles_stats.aggregate(game)
 
+            (name, team, section, comp_type, comp) = player_token.split('~')
             stats[player_token] = {
+                'name': name,
+                'team': team,
+                'section': section,
+                'comp_type': comp_type,
+                'comp': comp,
                 'singles': singles_stats(),
                 'doubles': doubles_stats(),
             }
