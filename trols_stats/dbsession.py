@@ -42,7 +42,7 @@ class DBSession(object):
             if create_dir(self.shelve_db):
                 shelve_path = os.path.join(self.shelve_db,
                                            'trols_stats.db')
-                self.connection = shelve.open(shelve_path)
+                self.connection = shelve.open(shelve_path, flag='r')
                 status = True
 
         log.info('DB (shelve) connection status: %s', status)

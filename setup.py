@@ -56,7 +56,7 @@ def find_data_files(srcdir, *wildcards, **kw):
 
     return file_list
 
-# find_data_files('trols_stats/conf/', '*.conf', version=VERSION)
+find_data_files('trols_stats/conf/', '*.conf', version=VERSION)
 
 setup(name='python-trols-stats',
       version=VERSION,
@@ -66,5 +66,8 @@ setup(name='python-trols-stats',
       url='',
       scripts=['trols_stats/bin/trols-stats'],
       packages=['trols_stats',
+                'trols_stats.model',
+                'trols_stats.model.entities',
+                'trols_stats.model.aggregates',
                 'trols_stats.interface'],
       package_data={'trols_stats': ['conf/*.conf.[0-9]*.[0-9]*.[0-9]*']})
