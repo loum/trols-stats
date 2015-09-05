@@ -22,16 +22,25 @@ class Reporter(object):
                     section=None):
         """Get all players from cache.
 
-        **Args:**
-            *names*: list of name to filter DB against
+        **Kwargs:**
+            *competition*: the competition identifier.  For example::
+
+                'saturday_am_spring_2015'
+
+            *competition_type*: 'girls' or 'boys'.  (``None`` includes both)
+
+            *section*: section level.  (``None`` includes all sections)
 
         **Returns:**
             list of simplified player token IDs in the form::
 
-            [
-                'Isabella Markovski~Watsonia Red~14~girls~saturday_...',
-                ...
-            ]
+                [
+                    'Bundoora',
+                    'Eaglemont',
+                    ...
+                    'Watsonia',
+                    'Yallambie'
+                ]
 
         """
         def cmp_name(name, token):
@@ -69,6 +78,36 @@ class Reporter(object):
             matched = [x for x in matched if cmp_comp(competition, x)]
 
         return sorted(matched)
+
+    def get_teams(self,
+                  competition='saturday_am_spring_2015',
+                  competition_type=None,
+                  section=None):
+        """Filter teams based on *competition*, *competition_type*
+        and *section*.
+
+        **Kwargs:**
+            *names*: list of name to filter DB against
+
+        **Returns:**
+            sorted list of team names of the form::
+
+            [
+                'Isabella Markovski~Watsonia Red~14~girls~saturday_...',
+                ...
+            ]
+
+        """
+        kwargs = {
+            'competition': competition,
+            'competition_type': competition_type,
+            'section': section
+        }
+        tokens = self.get_players(**kwargs)
+
+        teams = set(x.split('~')[1] for x in tokens)
+
+        return sorted(teams)
 
     def get_player_fixtures(self, player_token):
         """Search for all fixtures where player *name* participated.
@@ -177,8 +216,8 @@ class Reporter(object):
 
         return stats
 
-    def sort_stats(self,
-                   statistics,
+    @staticmethod
+    def sort_stats(statistics,
                    event='singles',
                    key='score_for',
                    reverse=False,

@@ -28,7 +28,9 @@ class TestReporter(unittest2.TestCase):
         """
         reporter = trols_stats.interface.Reporter(db=self.__db)
         msg = 'Object is not a trols_stats.interface.Reporter'
-        self.assertIsInstance(reporter, trols_stats.interface.Reporter, msg)
+        self.assertIsInstance(reporter,
+                              trols_stats.interface.Reporter,
+                              msg)
 
     def test_get_players(self):
         """Players lookup.
@@ -157,6 +159,49 @@ class TestReporter(unittest2.TestCase):
         ]
         msg = 'Player instance (multiple) mismatch'
         self.assertListEqual(sorted(received), expected, msg)
+
+    def test_get_teams(self):
+        """Get unique list of sorted teams.
+        """
+        # When I scan for a unique list of teams
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_teams()
+
+        # then I should get a list of ordered teams
+        expected = u'Watsonia'
+        msg = 'Team scan error'
+        self.assertEqual(received[54], expected, msg)
+
+    def test_get_teams_girls_12(self):
+        """Get unique list of sorted teams: girls section 12.
+        """
+        # Given a "girls" competition type
+        competition_type = 'girls'
+
+        # and a "section" number 12
+        section = 12
+
+        # when I scan for a unique list of teams
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        kwargs = {
+            'competition_type': competition_type,
+            'section': section
+        }
+        received = reporter.get_teams(**kwargs)
+
+        # then I should get a list of ordered teams
+        expected = [
+            'Bundoora',
+            'Eaglemont',
+            'Mill Park',
+            'Rosanna',
+            'SJCTC',
+            'St Marys',
+            'Watsonia',
+            'Yallambie'
+        ]
+        msg = 'Team scan error: girls section 12 (saturday_am_spring_2015)'
+        self.assertListEqual(received, expected, msg)
 
     def test_player_cache_match_all_players(self):
         """Player cache: all players.
