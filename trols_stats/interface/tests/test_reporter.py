@@ -203,6 +203,54 @@ class TestReporter(unittest2.TestCase):
         msg = 'Team scan error: girls section 12 (saturday_am_spring_2015)'
         self.assertListEqual(received, expected, msg)
 
+    def test_get_sections_girls(self):
+        """Get unique list of sorted sections: girls.
+        """
+        # Given a "girls" competition type
+        competition_type = 'girls'
+
+        # when I scan for a unique list of teams
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        kwargs = {'competition_type': competition_type}
+        received = reporter.get_sections(**kwargs)
+
+        # then I should get a list of ordered teams
+        expected = range(1, 15)
+        msg = 'Section scan error: girls (saturday_am_spring_2015)'
+        self.assertListEqual(received, expected, msg)
+
+    def test_get_sections_boys(self):
+        """Get unique list of sorted sections: boys.
+        """
+        # Given a "boys" competition type
+        competition_type = 'boys'
+
+        # when I scan for a unique list of teams
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        kwargs = {'competition_type': competition_type}
+        received = reporter.get_sections(**kwargs)
+
+        # then I should get a list of ordered teams
+        expected = range(1, 27)
+        msg = 'Section scan error: boys (saturday_am_spring_2015)'
+        self.assertListEqual(received, expected, msg)
+
+    def test_get_sections_default(self):
+        """Get unique list of sorted sections: default.
+        """
+        # Given a default competition type
+        competition_type = None
+
+        # when I scan for a unique list of teams
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        kwargs = {'competition_type': competition_type}
+        received = reporter.get_sections(**kwargs)
+
+        # then I should get a list of ordered teams
+        expected = range(1, 27)
+        msg = 'Section scan error: default (saturday_am_spring_2015)'
+        self.assertListEqual(received, expected, msg)
+
     def test_player_cache_match_all_players(self):
         """Player cache: all players.
         """

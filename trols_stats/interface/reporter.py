@@ -109,6 +109,31 @@ class Reporter(object):
 
         return sorted(teams)
 
+    def get_sections(self,
+                     competition='saturday_am_spring_2015',
+                     competition_type=None):
+        """Filter sections based on *competition* and *competition_type*.
+
+        **Kwargs:**
+            *competition*: the competiton code (default
+            ``saturday_am_spring_2015``)
+
+            *competition_type*: either ``boys``, ``girls`` or ``None``
+
+        **Returns:**
+            sorted list of integer section numbers
+
+        """
+        kwargs = {
+            'competition': competition,
+            'competition_type': competition_type
+        }
+        tokens = self.get_players(**kwargs)
+
+        sections = set(x.split('~')[2] for x in tokens)
+
+        return sorted([int(x) for x in sections])
+
     def get_player_fixtures(self, player_token):
         """Search for all fixtures where player *name* participated.
 
