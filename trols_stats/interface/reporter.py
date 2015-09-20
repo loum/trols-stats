@@ -141,7 +141,7 @@ class Reporter(object):
             *player_token*: player token ID to filter DB against.  For
             example::
 
-                Joel Markovski~Watsonia~20~boys~saturday_am_autum_2015
+                Joel Markovski~Watsonia~20~boys~saturday_am_autumn_2015
 
         *Returns*: list of all :class:`trols_stats.model.aggregate.Game`
         objects that *name* was involved in
@@ -152,6 +152,35 @@ class Reporter(object):
             game_aggregates = []
 
         return game_aggregates
+
+    @staticmethod
+    def last_fixture_played(games):
+        """Sort through the list of *games* and identify the last
+        fixture played.
+
+        *Args:*
+            *games*: list of :class:`trols_stata.model.aggregates.Games`
+            model instances
+
+        *Returns:*
+            list of games that were played last
+
+        """
+        sorted_games = sorted(games, key=lambda x: x.fixture.match_round)
+        rounds = [x.fixture.match_round for x in sorted_games]
+
+        last_fixture = []
+        if rounds:
+            if 'Grand Final' in rounds:
+                last_round = 'Grand Final'
+            elif 'Semi Final' in rounds:
+                last_round = 'Semi Final'
+            else:
+                last_round = rounds[-1]
+
+        last_fixture = [x for x in games if x.fixture.match_round == last_round]
+
+        return last_fixture
 
     def get_player_singles(self, name):
         """Return list of singles games from all fixtures where player
@@ -200,7 +229,7 @@ class Reporter(object):
 
         return doubles_games
 
-    def get_player_stats(self, player_tokens=None):
+    def get_player_stats(self, player_tokens=None, last_fixture=False):
         """Calculates and returns match stats from all fixtures for all
         or nominated players.
 
@@ -210,7 +239,24 @@ class Reporter(object):
 
                 Joel Markovski~Watsonia~20~boys~saturday_am_autum_2015
 
+        *Kwargs:*
+            *last_fixture* boolean flag to indicate if the last fixture
+            played with the associated player_token shoule be included
+
         *Returns*:
+            dictionary of player statistics where the key is the
+            player token ID and the values take the form::
+
+                {
+                    'name': name,
+                    'team': team,
+                    'section': section,
+                    'comp_type': comp_type,
+                    'comp': comp,
+                    'singles': singles_stats(),
+                    'doubles': doubles_stats(),
+                    'last_fixture': last_fixture_played(),
+                }
 
         """
         if player_tokens is None:
@@ -238,6 +284,13 @@ class Reporter(object):
                 'singles': singles_stats(),
                 'doubles': doubles_stats(),
             }
+
+            if last_fixture:
+                fixture = self.last_fixture_played(game_aggregates)
+                if fixture:
+                    fixture = [x() for x in fixture]
+
+                stats[player_token]['last_fixture'] = fixture
 
         return stats
 
