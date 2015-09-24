@@ -289,6 +289,30 @@ class TestReporter(unittest2.TestCase):
         msg = 'Player combined fixtures output as JSON error'
         self.assertEqual(received, expected, msg)
 
+    def test_get_player_fixtures_filtered_doubles(self):
+        """Get all fixtures associated with a player: doubles.
+        """
+        # Given a player name
+        player = ('Isabella Markovski~Watsonia Blue~14~'
+                  'girls~saturday_am_autumn_2015')
+
+        # when I search for all of the player's doubles fixtures
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        game_aggregates = reporter.get_player_fixtures(player,
+                                                       event="doubles")
+
+        # then I should receive a list of fixtures that player was part of
+        received = json.dumps([x() for x in game_aggregates],
+                              sort_keys=True,
+                              indent=4,
+                              separators=(',', ': '))
+
+        with open(os.path.join(self.__results_dir,
+                               'ise_game_aggregates.json')) as _fh:
+            expected = _fh.read().strip()
+        msg = 'Player combined fixtures output as JSON error'
+        self.assertEqual(received, expected, msg)
+
     def test_last_fixture_played_grand_final(self):
         """Get the last fixtures associated with a player: grand final.
         """
@@ -490,8 +514,46 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get a stats structure
         with open(os.path.join(self.__results_dir,
-                               'kristen_doubles_stats_with_last_fixture.json')) as _fh:
+                               'kristen_stats_with_last_fixture.json')) as _fh:
             expected = json.loads(_fh.read().strip())
+        msg = 'Player stats with last fixture'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_get_player_stats_with_last_doubles_fixture(self):
+        """Get all game stats associated with a player: doubles last fixture.
+        """
+        # Given a player token
+        player = ['Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015']
+
+        # when I calculate the player stats
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_player_stats(player,
+                                             last_fixture=True,
+                                             event='doubles')
+
+        # then I should get a stats structure
+        with open(os.path.join(self.__results_dir,
+                               'kristen_stats_with_last_doubles_fixture.json')) as _fh:
+            expected = json.loads(_fh.read().strip())
+        msg = 'Player stats with last fixture'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_get_player_stats_with_last_singles_fixture(self):
+        """Get game stats associated with a player: singles last fixture.
+        """
+        # Given a player token
+        player = ['Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015']
+
+        # when I calculate the player stats
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_player_stats(player,
+                                             last_fixture=True,
+                                             event='singles')
+
+        # then I should get a stats structure
+        with open(os.path.join(self.__results_dir,
+                               'kristen_stats_with_last_singles_fixture.json')) as _fh:
+            expected = json.loads(_fh.read())
         msg = 'Player stats with last fixture'
         self.assertDictEqual(received, expected, msg)
 

@@ -134,7 +134,7 @@ class Reporter(object):
 
         return sorted([int(x) for x in sections])
 
-    def get_player_fixtures(self, player_token):
+    def get_player_fixtures(self, player_token, event=None):
         """Search for all fixtures where player *name* participated.
 
         *Args:*
@@ -142,6 +142,10 @@ class Reporter(object):
             example::
 
                 Joel Markovski~Watsonia~20~boys~saturday_am_autumn_2015
+
+        *Kwargs:*
+            event: filter on event type "singles" or "doubles".
+            Default is no filtering
 
         *Returns*: list of all :class:`trols_stats.model.aggregate.Game`
         objects that *name* was involved in
@@ -229,7 +233,10 @@ class Reporter(object):
 
         return doubles_games
 
-    def get_player_stats(self, player_tokens=None, last_fixture=False):
+    def get_player_stats(self,
+                         player_tokens=None,
+                         last_fixture=False,
+                         event=None):
         """Calculates and returns match stats from all fixtures for all
         or nominated players.
 
@@ -237,7 +244,7 @@ class Reporter(object):
             *player_tokens*: list of player token ID to filter DB against.
             For example::
 
-                Joel Markovski~Watsonia~20~boys~saturday_am_autum_2015
+                Joel Markovski~Watsonia~20~boys~saturday_am_autumn_2015
 
         *Kwargs:*
             *last_fixture* boolean flag to indicate if the last fixture
@@ -286,7 +293,13 @@ class Reporter(object):
             }
 
             if last_fixture:
-                fixture = self.last_fixture_played(game_aggregates)
+                event_aggregates = list(game_aggregates)
+                if event is not None and event == "singles":
+                    event_aggregates = self.get_player_singles(player_token)
+                elif event is not None and event == "doubles":
+                    event_aggregates = self.get_player_doubles(player_token)
+
+                fixture = self.last_fixture_played(event_aggregates)
                 if fixture:
                     fixture = [x() for x in fixture]
 
