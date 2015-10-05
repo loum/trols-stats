@@ -154,6 +154,9 @@ class Reporter(object):
         game_aggregates = self.db.get(player_token)
         if game_aggregates is None:
             game_aggregates = []
+        else:
+            game_aggregates = sorted(game_aggregates,
+                                     key=lambda x: x.fixture.match_round)
 
         return game_aggregates
 
@@ -170,8 +173,7 @@ class Reporter(object):
             list of games that were played last
 
         """
-        sorted_games = sorted(games, key=lambda x: x.fixture.match_round)
-        rounds = [x.fixture.match_round for x in sorted_games]
+        rounds = [x.fixture.match_round for x in games]
 
         last_fixture = []
         if rounds:
