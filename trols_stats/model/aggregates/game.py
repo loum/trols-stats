@@ -23,6 +23,10 @@ class Game(trols_stats.model.Base):
     def fixture(self):
         return self.__fixture
 
+    @property
+    def fixture_round(self):
+        return self.__fixture.match_round
+
     @fixture.setter
     def fixture(self, value):
         self.__fixture = Game.set_fixture(value)
@@ -103,6 +107,34 @@ class Game(trols_stats.model.Base):
             game['team_mate'] = self.__team_mate()
 
         return game
+
+    def compact_match(self):
+        """Returns a simple, compact representation of the object instance.
+
+        """
+        # Cater for singles where player 2 is None.
+        opposition = [self.opposition[0].name]
+        if len(self.opposition) == 2 and self.opposition[1] is not None:
+            opposition.append(self.opposition[1].name)
+
+        fixture = {
+            'match_type': 'singles' if self.is_singles() else 'doubles',
+            'match_round': self.fixture.match_round,
+            'date_played': self.fixture.comvert_match_date(),
+            'home_team': self.fixture.home_team,
+            'away_team': self.fixture.away_team,
+            'player': self.player.name,
+            'player_team': self.player.team,
+            'opposition': opposition,
+            'score_for': self.score_for,
+            'score_against': self.score_against,
+            'player_won': True if self.score_for == 6 else False
+        }
+
+        if self.is_doubles():
+            fixture['team_mate'] = self.team_mate.name
+
+        return fixture
 
     def __str__(self):
         return str(self.__dict__)

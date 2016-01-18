@@ -1,4 +1,6 @@
 import trols_stats.model
+import time
+import datetime
 
 __all__ = ['Fixture']
 
@@ -119,3 +121,21 @@ class Fixture(trols_stats.model.Base):
             is_same = self.__dict__ == other.__dict__
 
         return is_same
+
+    def comvert_match_date(self):
+        """Convert a NETJA date format to a more human readable form.
+
+        **Args:**
+            *date*: NEJTA date in the form DD MM YY.  For example,
+            "30 Nov 00"
+
+        **Returns**:
+            :mod:`datetime.datetime` object representation
+
+        """
+        dt = None
+        if self.date is not None:
+            time_struct = time.strptime(self.date, "%d %b %y")
+            dt = datetime.datetime.fromtimestamp(time.mktime(time_struct))
+
+        return dt

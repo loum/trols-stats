@@ -27,7 +27,8 @@ class Reporter(object):
 
                 'saturday_am_spring_2015'
 
-            *competition_type*: 'girls' or 'boys'.  (``None`` includes both)
+            *competition_type*: 'girls' or 'boys'.  (``None`` includes
+            both)
 
             *section*: section level.  (``None`` includes all sections)
 
@@ -134,7 +135,7 @@ class Reporter(object):
 
         return sorted([int(x) for x in sections])
 
-    def get_player_fixtures(self, player_token, event=None):
+    def get_player_fixtures(self, player_token):
         """Search for all fixtures where player *name* participated.
 
         *Args:*
@@ -143,22 +144,18 @@ class Reporter(object):
 
                 Joel Markovski~Watsonia~20~boys~saturday_am_autumn_2015
 
-        *Kwargs:*
-            event: filter on event type "singles" or "doubles".
-            Default is no filtering
-
         *Returns*: list of all :class:`trols_stats.model.aggregate.Game`
         objects that *name* was involved in
 
         """
-        game_aggregates = self.db.get(player_token)
-        if game_aggregates is None:
-            game_aggregates = []
+        match_aggregates = self.db.get(player_token)
+        if match_aggregates is None:
+            match_aggregates = []
         else:
-            game_aggregates = sorted(game_aggregates,
-                                     key=lambda x: x.fixture.match_round)
+            match_aggregates = sorted(match_aggregates,
+                                      key=lambda x: x.fixture.match_round)
 
-        return game_aggregates
+        return match_aggregates
 
     @staticmethod
     def last_fixture_played(games):
@@ -344,3 +341,59 @@ class Reporter(object):
             sort_stats = [x for x in sort_stats if qualified(x)][:limit]
 
         return sort_stats
+
+    def get_player_results_compact(self, player_tokens):
+        """Get all singles and doubles results associated with
+        *player_token*.
+
+        .. note::
+
+            Fixtures are returned in order of match rounds, "Semi Final"
+            and then "Grand Final" with singles before doubles events.
+
+        *Args:*
+            *player_tokens*: list of player token ID to filter DB against.
+            For example::
+
+                Joel Markovski~Watsonia~20~boys~saturday_am_autumn_2015
+
+        *Returns*: dict of all singles in a compact format for
+        presentation in web templates.  For example:
+
+        {
+            'Isabella Markovski~Watsonia~14~girls~'
+            'saturday_am_autumn_2015': [
+                {
+                    'match_type': 'doubles',
+                    'match_round': 5,
+                    'date_played':
+                        datetime.datetime(2015, 2, 28, 0, 0),
+                    'home_team': 'Watsonia Red',
+                    'away_team': 'St Marys',
+                    'player': 'Madeline Doyle',
+                    'opposition': ['Lauren Amsing', 'Mia Bovalino'],
+                    'score_for': 3,
+                    'score_against': 6,
+                    'team_mate': 'Tara Watson',
+                    'player_won': False,
+                },
+            ],
+        }
+
+        """
+        results = {}
+
+        for player_token in player_tokens:
+            player_matches = self.get_player_fixtures(player_token)
+
+            stash = results[player_token] = {}
+            stash['rounds'] = {}
+
+            events = ['is_singles', 'is_doubles']
+            for event in events:
+                for m in [x for x in player_matches if getattr(x, event)()]:
+                    if stash['rounds'].get(m.fixture_round) is None:
+                        stash['rounds'][m.fixture_round] = []
+                    stash['rounds'][m.fixture_round].append(m.compact_match())
+
+        return results

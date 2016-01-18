@@ -1,6 +1,7 @@
 import unittest2
 import os
 import json
+import datetime
 
 import trols_stats
 import trols_stats.interface
@@ -116,6 +117,27 @@ class TestReporter(unittest2.TestCase):
         ]
         msg = 'Player instance mismatch'
         self.assertListEqual(sorted(received), expected, msg)
+
+    def test_get_players_team(self):
+        """Players lookup: team.
+        """
+        # Given a team name
+        team = 'Watsonia'
+
+        # when I query the players
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_players(team=team)
+
+        # then I should get the player profile
+        expected = [
+            'Aaron Grant~Watsonia~6~boys~saturday_am_autumn_2015',
+            'Alexis McIntosh~Watsonia~13~girls~saturday_am_spring_2015',
+            'Arth Mishra~Watsonia~3~boys~saturday_am_autumn_2015',
+            'Austin Ulmer~Watsonia~13~boys~saturday_am_autumn_2015',
+            'Austin Ulmer~Watsonia~17~boys~saturday_am_autumn_2015'
+        ]
+        msg = 'Player instance (team search) mismatch'
+        self.assertListEqual(sorted(received)[:5], expected, msg)
 
     def test_get_players_name_and_competition(self):
         """Players lookup: name and compeition.
@@ -276,30 +298,6 @@ class TestReporter(unittest2.TestCase):
         # when I search for all of the player's fixtures
         reporter = trols_stats.interface.Reporter(db=self.__db)
         game_aggregates = reporter.get_player_fixtures(player)
-
-        # then I should receive a list of fixtures that player was part of
-        received = json.dumps([x() for x in game_aggregates],
-                              sort_keys=True,
-                              indent=4,
-                              separators=(',', ': '))
-
-        with open(os.path.join(self.__results_dir,
-                               'ise_game_aggregates.json')) as _fh:
-            expected = _fh.read().strip()
-        msg = 'Player combined fixtures output as JSON error'
-        self.assertEqual(received, expected, msg)
-
-    def test_get_player_fixtures_filtered_doubles(self):
-        """Get all fixtures associated with a player: doubles.
-        """
-        # Given a player name
-        player = ('Isabella Markovski~Watsonia Blue~14~'
-                  'girls~saturday_am_autumn_2015')
-
-        # when I search for all of the player's doubles fixtures
-        reporter = trols_stats.interface.Reporter(db=self.__db)
-        game_aggregates = reporter.get_player_fixtures(player,
-                                                       event="doubles")
 
         # then I should receive a list of fixtures that player was part of
         received = json.dumps([x() for x in game_aggregates],
@@ -532,8 +530,8 @@ class TestReporter(unittest2.TestCase):
                                              event='doubles')
 
         # then I should get a stats structure
-        with open(os.path.join(self.__results_dir,
-                               'kristen_stats_with_last_doubles_fixture.json')) as _fh:
+        filename = 'kristen_stats_with_last_doubles_fixture.json'
+        with open(os.path.join(self.__results_dir, filename)) as _fh:
             expected = json.loads(_fh.read().strip())
         msg = 'Player stats with last fixture'
         self.assertDictEqual(received, expected, msg)
@@ -551,8 +549,8 @@ class TestReporter(unittest2.TestCase):
                                              event='singles')
 
         # then I should get a stats structure
-        with open(os.path.join(self.__results_dir,
-                               'kristen_stats_with_last_singles_fixture.json')) as _fh:
+        filename = 'kristen_stats_with_last_singles_fixture.json'
+        with open(os.path.join(self.__results_dir, filename)) as _fh:
             expected = json.loads(_fh.read())
         msg = 'Player stats with last fixture'
         self.assertDictEqual(received, expected, msg)
@@ -1643,6 +1641,47 @@ class TestReporter(unittest2.TestCase):
         ]
         msg = 'Player games stats (team/section/doubles percentage) error'
         self.assertListEqual(received, expected, msg)
+
+    def test_get_player_results_compact(self):
+        """Get all match results associated with a player.
+        """
+        # Given a player name
+        player = ['Isabella Markovski~Watsonia Blue~14~girls~'
+                  'saturday_am_autumn_2015']
+
+        # when I search for all of the player's results
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_player_results_compact(player)
+
+        # then I should receive a dict of results that player was
+        # part of
+        expected = [
+            1, 2, 4, 7, 8, 9, 10, 12, 14, 'Semi Final', 'Grand Final'
+        ]
+        msg = 'Match results error'
+        self.assertListEqual([x.keys() for x in received.values()][0],
+                             expected,
+                             msg)
+
+    def test_get_player_results_compact_no_match(self):
+        """Get all match results associated with a player: no match.
+        """
+        # Given a player name
+        player = ['Isabella Markovski~Watsonia~14~girls~'
+                  'saturday_am_autumn_2015']
+
+        # when I search for all of the player's results
+        reporter = trols_stats.interface.Reporter(db=self.__db)
+        received = reporter.get_player_results_compact(player)
+
+        # then I should receive a dict of results that player was
+        # part of
+        expected = {
+            'Isabella Markovski~Watsonia~14~'
+            'girls~saturday_am_autumn_2015': {}
+        }
+        msg = 'Match results error'
+        self.assertDictEqual(received, expected, msg)
 
     @classmethod
     def tearDownClass(cls):

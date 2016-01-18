@@ -1,6 +1,7 @@
 import unittest2
 import os
 import json
+import datetime
 
 import trols_stats.model.entities as entities
 import trols_stats.model.aggregates
@@ -10,6 +11,7 @@ import trols_stats.model.tests.files.game_aggregates as game_aggregates
 class TestGame(unittest2.TestCase):
     @classmethod
     def setUpClass(cls):
+        cls.maxDiff = None
         cls.__files_dir = os.path.join('trols_stats',
                                        'model',
                                        'aggregates',
@@ -258,6 +260,65 @@ class TestGame(unittest2.TestCase):
                 'Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015'
         }
         msg = 'Game player ID structure error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_compact_match_for_singles(self):
+        """Conpact match representation: singles.
+        """
+        # Given a singles match data structure
+        game_data = game_aggregates.SINGLES
+
+        # when I create trols_stats.model.aggregate.Game object
+        game = trols_stats.model.aggregates.Game(**game_data)
+
+        # and extract the match's details in compact format
+        received = game.compact_match()
+
+        # then I should get the player ID structure
+        expected = {
+            'match_type': 'singles',
+            'match_round': 4,
+            'date_played': datetime.datetime(2015, 2, 21, 0, 0),
+            'home_team': 'Norris Bank',
+            'away_team': 'Eltham',
+            'player': 'Kristen Fisher',
+            'player_team': 'Eltham',
+            'opposition': ['Indiana Pisasale'],
+            'score_for': 6,
+            'score_against': 3,
+            'player_won': True,
+        }
+        msg = 'Compact match format error: singles'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_compact_match_for_doubles(self):
+        """Conpact match representation: doubles.
+        """
+        # Given a singles match data structure
+        game_data = game_aggregates.DOUBLES
+
+        # when I create trols_stats.model.aggregate.Game object
+        game = trols_stats.model.aggregates.Game(**game_data)
+
+        # and extract the match's details in compact format
+        received = game.compact_match()
+
+        # then I should get the player ID structure
+        expected = {
+            'match_type': 'doubles',
+            'match_round': 5,
+            'date_played': datetime.datetime(2015, 2, 28, 0, 0),
+            'home_team': 'Watsonia Red',
+            'away_team': 'St Marys',
+            'player': 'Madeline Doyle',
+            'player_team': 'Watsonia Red',
+            'opposition': ['Lauren Amsing', 'Mia Bovalino'],
+            'score_for': 3,
+            'score_against': 6,
+            'team_mate': 'Tara Watson',
+            'player_won': False,
+        }
+        msg = 'Compact match format error: singles'
         self.assertDictEqual(received, expected, msg)
 
     @classmethod
