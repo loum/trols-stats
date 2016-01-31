@@ -2,6 +2,7 @@
     "Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015": {
         "comp": "saturday_am_autumn_2015",
         "comp_type": "girls",
+        "comp_string": "Saturday AM Autumn 2015",
         "doubles": {
             "games_lost": 1,
             "games_played": 8,
@@ -123,6 +124,7 @@
             "score_against": 7,
             "score_for": 24
         },
-        "team": "Eltham"
+        "team": "Eltham",
+        "token": "Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015"
     }
 }

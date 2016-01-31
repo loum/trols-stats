@@ -1,0 +1,91 @@
+[
+    {
+        "name": "Joel Markovski",
+        "comp_type": "boys",
+        "section": "20",
+        "comp_string": "Saturday AM Autumn 2015",
+        "token":
+            "Joel Markovski~Watsonia~20~boys~saturday_am_autumn_2015",
+        "team": "Watsonia",
+        "comp": "saturday_am_autumn_2015"
+    },
+    {
+        "name": "Isabella Cotroneo",
+        "comp_type": "girls",
+        "section": "2",
+        "comp_string": "Saturday AM Autumn 2015",
+        "token":
+            "Isabella Cotroneo~Keon Park~2~girls~saturday_am_autumn_2015",
+        "team": "Keon Park",
+        "comp": "saturday_am_autumn_2015"
+    },
+    {
+        "name": "Isabella Grant",
+        "comp_type": "girls",
+        "section": "12",
+        "comp_string": "Saturday AM Autumn 2015",
+        "token":
+            "Isabella Grant~Eaglemont~12~girls~saturday_am_autumn_2015",
+        "team": "Eaglemont",
+        "comp": "saturday_am_autumn_2015"
+    },
+    {
+        "name": "Isabella Markovski",
+        "comp_type": "girls",
+        "section": "14",
+        "comp_string": "Saturday AM Autumn 2015",
+        "token":
+            "Isabella Markovski~Watsonia Blue~14~girls~saturday_am_autumn_2015",
+        "team": "Watsonia Blue",
+        "comp": "saturday_am_autumn_2015"
+    },
+    {
+        "name": "Joel Markovski",
+        "comp_type": "boys",
+        "section": "21",
+        "comp_string": "Saturday AM Spring 2015",
+        "token": "Joel Markovski~Watsonia~21~boys~saturday_am_spring_2015",
+        "team": "Watsonia",
+        "comp": "saturday_am_spring_2015"
+    },
+    {
+        "name": "Isabella Chessler",
+        "comp_type": "girls",
+        "section": "11",
+        "comp_string": "Saturday AM Spring 2015",
+        "token":
+            "Isabella Chessler~Mill Park~11~girls~saturday_am_spring_2015",
+        "team": "Mill Park",
+        "comp": "saturday_am_spring_2015"
+    },
+    {
+        "name": "Isabella Cotroneo",
+        "comp_type": "girls",
+        "section": "2",
+        "comp_string": "Saturday AM Spring 2015",
+        "token":
+            "Isabella Cotroneo~Keon Park~2~girls~saturday_am_spring_2015",
+        "team": "Keon Park",
+        "comp": "saturday_am_spring_2015"
+    },
+    {
+        "name": "Isabella Ilkanovski",
+        "comp_type": "girls",
+        "section": "1",
+        "comp_string": "Saturday AM Spring 2015",
+        "token":
+            "Isabella Ilkanovski~Cranross~1~girls~saturday_am_spring_2015",
+        "team": "Cranross",
+        "comp": "saturday_am_spring_2015"
+    },
+    {
+        "name": "Isabella Markovski",
+        "comp_type": "girls",
+        "section": "12",
+        "comp_string": "Saturday AM Spring 2015",
+        "token":
+            "Isabella Markovski~Watsonia~12~girls~saturday_am_spring_2015",
+        "team": "Watsonia",
+        "comp": "saturday_am_spring_2015"
+    }
+]

@@ -45,8 +45,26 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Eboni Amos~Watsonia Blue~14~girls~saturday_am_autumn_2015',
-            'Eboni Amos~Watsonia~12~girls~saturday_am_spring_2015'
+            {
+                'comp': 'saturday_am_autumn_2015',
+                'comp_string': 'Saturday AM Autumn 2015',
+                'comp_type': 'girls',
+                'name': 'Eboni Amos',
+                'section': '14',
+                'team': 'Watsonia Blue',
+                'token': 'Eboni Amos~Watsonia Blue~14~girls~'
+                         'saturday_am_autumn_2015'
+            },
+            {
+                'comp': 'saturday_am_spring_2015',
+                'comp_string': 'Saturday AM Spring 2015',
+                'comp_type': 'girls',
+                'name': 'Eboni Amos',
+                'section': '12',
+                'team': 'Watsonia',
+                'token': 'Eboni Amos~Watsonia~12~girls~'
+                         'saturday_am_spring_2015'
+            }
         ]
         msg = 'Player instance mismatch'
         self.assertListEqual(received, expected, msg)
@@ -63,8 +81,26 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Eboni Amos~Watsonia Blue~14~girls~saturday_am_autumn_2015',
-            'Eboni Amos~Watsonia~12~girls~saturday_am_spring_2015'
+            {
+                'comp': 'saturday_am_autumn_2015',
+                'comp_string': 'Saturday AM Autumn 2015',
+                'comp_type': 'girls',
+                'name': 'Eboni Amos',
+                'section': '14',
+                'team': 'Watsonia Blue',
+                'token': 'Eboni Amos~Watsonia Blue~14~girls~'
+                         'saturday_am_autumn_2015'
+            },
+            {
+                'comp': 'saturday_am_spring_2015',
+                'comp_string': 'Saturday AM Spring 2015',
+                'comp_type': 'girls',
+                'name': 'Eboni Amos',
+                'section': '12',
+                'team': 'Watsonia',
+                'token': 'Eboni Amos~Watsonia~12~girls~'
+                         'saturday_am_spring_2015'
+            }
         ]
         msg = 'Player instance mismatch'
         self.assertListEqual(received, expected, msg)
@@ -80,18 +116,10 @@ class TestReporter(unittest2.TestCase):
         received = reporter.get_players(names=names)
 
         # then I should get the player profile
-        expected = [
-            'Isabella Chessler~Mill Park~11~girls~saturday_am_spring_2015',
-            'Isabella Cotroneo~Keon Park~2~girls~saturday_am_autumn_2015',
-            'Isabella Cotroneo~Keon Park~2~girls~saturday_am_spring_2015',
-            'Isabella Grant~Eaglemont~12~girls~saturday_am_autumn_2015',
-            'Isabella Ilkanovski~Cranross~1~girls~saturday_am_spring_2015',
-            'Isabella Markovski~Watsonia Blue~14~girls~saturday_am_autumn_2015',
-            'Isabella Markovski~Watsonia~12~girls~saturday_am_spring_2015',
-            'Joel Markovski~Watsonia~20~boys~saturday_am_autumn_2015',
-            'Joel Markovski~Watsonia~21~boys~saturday_am_spring_2015',
-        ]
-        msg = 'Part player name instance mismatch'
+        with open(os.path.join(self.__results_dir,
+                               'players_multi_part_name.json')) as _fh:
+            expected = json.loads(_fh.read().strip())
+        msg = 'Players multi part query error'
         self.assertListEqual(sorted(received), expected, msg)
 
     def test_get_players_team_and_section(self):
@@ -108,13 +136,9 @@ class TestReporter(unittest2.TestCase):
         received = reporter.get_players(team=team, section=section)
 
         # then I should get the player profile
-        expected = [
-            'Eboni Amos~Watsonia Blue~14~girls~saturday_am_autumn_2015',
-            'Isabella Markovski~Watsonia Blue~14~girls~saturday_am_autumn_2015',
-            'Lily Matt~Watsonia Blue~14~girls~saturday_am_autumn_2015',
-            'Maddison Hollyoak~Watsonia Blue~14~girls~saturday_am_autumn_2015',
-            'Stephanie Lia~Watsonia Blue~14~girls~saturday_am_autumn_2015',
-        ]
+        with open(os.path.join(self.__results_dir,
+                               'players_team_and_section.json')) as _fh:
+            expected = json.loads(_fh.read().strip())
         msg = 'Player instance mismatch'
         self.assertListEqual(sorted(received), expected, msg)
 
@@ -129,15 +153,8 @@ class TestReporter(unittest2.TestCase):
         received = reporter.get_players(team=team)
 
         # then I should get the player profile
-        expected = [
-            'Aaron Grant~Watsonia~6~boys~saturday_am_autumn_2015',
-            'Alexis McIntosh~Watsonia~13~girls~saturday_am_spring_2015',
-            'Arth Mishra~Watsonia~3~boys~saturday_am_autumn_2015',
-            'Austin Ulmer~Watsonia~13~boys~saturday_am_autumn_2015',
-            'Austin Ulmer~Watsonia~17~boys~saturday_am_autumn_2015'
-        ]
-        msg = 'Player instance (team search) mismatch'
-        self.assertListEqual(sorted(received)[:5], expected, msg)
+        msg = 'Player instance (team search) count error'
+        self.assertEqual(len(received), 106, msg)
 
     def test_get_players_name_and_competition(self):
         """Players lookup: name and compeition.
@@ -155,8 +172,26 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         expected = [
-            'Isabella Markovski~Watsonia~12~girls~saturday_am_spring_2015',
-            'Joel Markovski~Watsonia~21~boys~saturday_am_spring_2015',
+            {
+                'comp': 'saturday_am_spring_2015',
+                'comp_string': 'Saturday AM Spring 2015',
+                'comp_type': 'boys',
+                'name': 'Joel Markovski',
+                'section': '21',
+                'team': 'Watsonia',
+                'token': 'Joel Markovski~Watsonia~21~boys~'
+                         'saturday_am_spring_2015'
+            },
+            {
+                'comp': 'saturday_am_spring_2015',
+                'comp_string': 'Saturday AM Spring 2015',
+                'comp_type': 'girls',
+                'name': 'Isabella Markovski',
+                'section': '12',
+                'team': 'Watsonia',
+                'token': 'Isabella Markovski~Watsonia~12~girls~'
+                         'saturday_am_spring_2015'
+            }
         ]
         msg = 'Player instance mismatch (name, competition)'
         self.assertListEqual(sorted(received), expected, msg)
@@ -172,14 +207,10 @@ class TestReporter(unittest2.TestCase):
         received = reporter.get_players(name)
 
         # then I should get the player profile
-        expected = [
-            'Eboni Amos~Watsonia Blue~14~girls~saturday_am_autumn_2015',
-            'Eboni Amos~Watsonia~12~girls~saturday_am_spring_2015',
-            'Zoe Allen~Eaglemont~10~girls~saturday_am_autumn_2015',
-            'Zoe Allen~Eaglemont~7~girls~saturday_am_spring_2015',
-            'Zoe Allen~Eaglemont~8~girls~saturday_am_autumn_2015',
-        ]
-        msg = 'Player instance (multiple) mismatch'
+        with open(os.path.join(self.__results_dir,
+                               'players_multiple_names.json')) as _fh:
+            expected = json.loads(_fh.read().strip())
+        msg = 'Players lookup (multiple name query) mismatch'
         self.assertListEqual(sorted(received), expected, msg)
 
     def test_get_teams(self):
@@ -474,11 +505,9 @@ class TestReporter(unittest2.TestCase):
         # then I should get a stats structure
         expected = {
             'Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015': {
-                'name': 'Kristen Fisher',
-                'team': 'Eltham',
-                'section': '1',
-                'comp_type': 'girls',
                 'comp': 'saturday_am_autumn_2015',
+                'comp_string': 'Saturday AM Autumn 2015',
+                'comp_type': 'girls',
                 'doubles': {
                     'games_lost': 1,
                     'games_played': 8,
@@ -487,6 +516,8 @@ class TestReporter(unittest2.TestCase):
                     'score_against': 20,
                     'score_for':46
                 },
+                'name': 'Kristen Fisher',
+                'section': '1',
                 'singles': {
                     'games_lost': 0,
                     'games_played': 4,
@@ -494,7 +525,9 @@ class TestReporter(unittest2.TestCase):
                     'percentage': 342.85714285714283,
                     'score_against': 7,
                     'score_for': 24
-                }
+                },
+                'team': 'Eltham',
+                'token': 'Kristen Fisher~Eltham~1~girls~saturday_am_autumn_2015',
             }
         }
         msg = 'Player games stats error: doubles'
@@ -534,7 +567,9 @@ class TestReporter(unittest2.TestCase):
         with open(os.path.join(self.__results_dir, filename)) as _fh:
             expected = json.loads(_fh.read().strip())
         msg = 'Player stats with last fixture'
-        self.assertDictEqual(received, expected, msg)
+        self.assertListEqual(sorted(received.values()[0].keys()),
+                             sorted(expected.values()[0].keys()),
+                             msg)
 
     def test_get_player_stats_with_last_singles_fixture(self):
         """Get game stats associated with a player: singles last fixture.
@@ -564,7 +599,8 @@ class TestReporter(unittest2.TestCase):
             'competition': 'saturday_am_autumn_2015',
             'competition_type': 'girls'
         }
-        player_tokens = reporter.get_players(**kwargs)
+        players = reporter.get_players(**kwargs)
+        player_tokens = [x.get('token') for x in players]
         statistics = reporter.get_player_stats(player_tokens)
 
         # when I filter on the players game score for
@@ -590,6 +626,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '3',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Whitney Guan~Clifton~3~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 7,
                         'games_played': 30,
@@ -609,13 +648,17 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Rachelle Papantuono~Clifton~3~girls~saturday_am_autumn_2015',
+                'Rachelle Papantuono~Clifton~3~girls~'
+                'saturday_am_autumn_2015',
                 {
                     'name': 'Rachelle Papantuono',
                     'team': 'Clifton',
                     'section': '3',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Rachelle Papantuono~Clifton~3~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 30,
@@ -642,6 +685,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '5',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Maeve Suter~Montmorency~5~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 28,
@@ -668,6 +714,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '3',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': "Emily O'Connor~Clifton~3~girls~"
+                             "saturday_am_autumn_2015",
                     'doubles': {
                         'games_lost': 6,
                         'games_played': 30,
@@ -694,6 +743,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '4',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Lauren Jones~Yallambie~4~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 8,
                         'games_played': 28,
@@ -721,8 +773,9 @@ class TestReporter(unittest2.TestCase):
         """
         # Given the statistics for all girl players
         reporter = trols_stats.interface.Reporter(db=self.__db)
-        girls = reporter.get_players(competition_type='girls')
-        statistics = reporter.get_player_stats(girls)
+        players = reporter.get_players(competition_type='girls')
+        player_tokens = [x.get('token') for x in players]
+        statistics = reporter.get_player_stats(player_tokens)
 
         # when I filter on the players game score for
         key = 'score_for'
@@ -747,6 +800,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '3',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Whitney Guan~Clifton~3~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 7,
                         'games_played': 30,
@@ -766,13 +822,17 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Rachelle Papantuono~Clifton~3~girls~saturday_am_autumn_2015',
+                'Rachelle Papantuono~Clifton~3~girls~'
+                'saturday_am_autumn_2015',
                 {
                     'name': 'Rachelle Papantuono',
                     'team': 'Clifton',
                     'section': '3',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Rachelle Papantuono~Clifton~3~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 30,
@@ -799,6 +859,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '5',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Maeve Suter~Montmorency~5~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 28,
@@ -825,6 +888,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '3',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': "Emily O'Connor~Clifton~3~girls~"
+                             "saturday_am_autumn_2015",
                     'doubles': {
                         'games_lost': 6,
                         'games_played': 30,
@@ -851,6 +917,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '4',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Lauren Jones~Yallambie~4~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 8,
                         'games_played': 28,
@@ -883,7 +952,8 @@ class TestReporter(unittest2.TestCase):
             'competition_type': 'girls',
             'section': 14
         }
-        player_tokens = reporter.get_players(**kwargs)
+        players = reporter.get_players(**kwargs)
+        player_tokens = [x.get('token') for x in players]
         statistics = reporter.get_player_stats(player_tokens)
 
         # when I filter on the players game score for
@@ -909,6 +979,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '14',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Lucinda Ford~St Marys~14~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 20,
@@ -935,6 +1008,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '14',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Emma German~Barry Road~14~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 5,
                         'games_played': 20,
@@ -961,6 +1037,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '14',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Ambra Selih~Barry Road~14~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 2,
                         'games_played': 4,
@@ -980,13 +1059,17 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Alicia Lazarovski~Bundoora~14~girls~saturday_am_autumn_2015',
+                'Alicia Lazarovski~Bundoora~14~girls~'
+                'saturday_am_autumn_2015',
                 {
                     'name': 'Alicia Lazarovski',
                     'team': 'Bundoora',
                     'section': '14',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Alicia Lazarovski~Bundoora~14~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 18,
@@ -1013,6 +1096,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '14',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Mia Bovalino~St Marys~14~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 4,
                         'games_played': 20,
@@ -1066,6 +1152,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '6',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Abbey Goeldner~Bundoora~6~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 7,
@@ -1092,6 +1181,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '16',
                     'comp_type': 'boys',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Marcus Newnham~Eaglemont~16~boys~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 16,
@@ -1118,6 +1210,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '14',
                     'comp_type': 'boys',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Keane Chu~Mill Park~14~boys~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 2,
                         'games_played': 22,
@@ -1144,6 +1239,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '10',
                     'comp_type': 'boys',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Brynn Goddard~Eltham~10~boys~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 6,
                         'games_played': 24,
@@ -1163,13 +1261,17 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Jeevan Dhaliwal~Eaglemont~16~boys~saturday_am_autumn_2015',
+                'Jeevan Dhaliwal~Eaglemont~16~boys~'
+                'saturday_am_autumn_2015',
                 {
                     'name': 'Jeevan Dhaliwal',
                     'team': 'Eaglemont',
                     'section': '16',
                     'comp_type': 'boys',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Jeevan Dhaliwal~Eaglemont~16~boys~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 3,
                         'games_played': 22,
@@ -1200,7 +1302,8 @@ class TestReporter(unittest2.TestCase):
         kwargs = {
             'competition': 'saturday_am_autumn_2015'
         }
-        player_tokens = reporter.get_players(**kwargs)
+        players = reporter.get_players(**kwargs)
+        player_tokens = [x.get('token') for x in players]
         statistics = reporter.get_player_stats(player_tokens)
 
         # when I filter on the players game percentage
@@ -1220,13 +1323,17 @@ class TestReporter(unittest2.TestCase):
         # then I should get a list of ordered stats
         expected = [
             (
-                'Harrison Ponton~Mill Park~14~boys~saturday_am_autumn_2015',
+                'Harrison Ponton~Mill Park~14~boys~'
+                'saturday_am_autumn_2015',
                 {
                     'name': 'Harrison Ponton',
                     'team': 'Mill Park',
                     'section': '14',
                     'comp_type': 'boys',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Harrison Ponton~Mill Park~14~boys~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 22,
@@ -1253,6 +1360,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '14',
                     'comp_type': 'boys',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Aaron Mathews~Mill Park~14~boys~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 22,
@@ -1279,6 +1389,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '23',
                     'comp_type': 'boys',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Max Scuderi~Lalor~23~boys~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 22,
@@ -1305,6 +1418,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '24',
                     'comp_type': 'boys',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Joel Cutajar~Regent~24~boys~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 0,
                         'games_played': 12,
@@ -1324,13 +1440,17 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Matthew Kinglsey~Barry Road~25~boys~saturday_am_autumn_2015',
+                'Matthew Kinglsey~Barry Road~25~boys~'
+                'saturday_am_autumn_2015',
                 {
                     'name': 'Matthew Kinglsey',
                     'team': 'Barry Road',
                     'section': '25',
                     'comp_type': 'boys',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Matthew Kinglsey~Barry Road~25~boys~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 1,
                         'games_played': 12,
@@ -1384,6 +1504,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '5',
                     'comp_type': 'boys',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Callum Northover~ECCA~5~boys~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 17,
                         'games_played': 27,
@@ -1411,6 +1534,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '5',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Aleesia Sotiropoulos~View Bank~5~'
+                             'girls~saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 22,
                         'games_played': 26,
@@ -1437,6 +1563,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '2',
                     'comp_type': 'boys',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Adam Walter~Lalor Blue~2~boys~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 13,
                         'games_played': 28,
@@ -1456,13 +1585,17 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Celeste Argent~Montmorency~2~girls~saturday_am_autumn_2015',
+                'Celeste Argent~Montmorency~2~girls~'
+                'saturday_am_autumn_2015',
                 {
                     'name': 'Celeste Argent',
                     'team': 'Montmorency',
                     'section': '2',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Celeste Argent~Montmorency~2~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 15,
                         'games_played': 30,
@@ -1492,9 +1625,10 @@ class TestReporter(unittest2.TestCase):
         reporter = trols_stats.interface.Reporter(db=self.__db)
         players = reporter.get_players(team='Watsonia Blue',
                                        section=14)
+        player_tokens = [x.get('token') for x in players]
 
         # and their match statistics
-        statistics = reporter.get_player_stats(players)
+        statistics = reporter.get_player_stats(player_tokens)
 
         # and I filter on the players game win/loss percentages
         key = 'percentage'
@@ -1515,6 +1649,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '14',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Isabella Markovski~Watsonia Blue~14~'
+                             'girls~saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 8,
                         'games_played': 22,
@@ -1534,13 +1671,17 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Stephanie Lia~Watsonia Blue~14~girls~saturday_am_autumn_2015',
+                'Stephanie Lia~Watsonia Blue~14~girls~'
+                'saturday_am_autumn_2015',
                 {
                     'name': 'Stephanie Lia',
                     'team': 'Watsonia Blue',
                     'section': '14',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Stephanie Lia~Watsonia Blue~14~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 10,
                         'games_played': 22,
@@ -1560,13 +1701,17 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Eboni Amos~Watsonia Blue~14~girls~saturday_am_autumn_2015',
+                'Eboni Amos~Watsonia Blue~14~girls~'
+                'saturday_am_autumn_2015',
                 {
                     'name': 'Eboni Amos',
                     'team': 'Watsonia Blue',
                     'section': '14',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Eboni Amos~Watsonia Blue~14~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 11,
                         'games_played': 20,
@@ -1586,13 +1731,17 @@ class TestReporter(unittest2.TestCase):
                 }
             ),
             (
-                'Lily Matt~Watsonia Blue~14~girls~saturday_am_autumn_2015',
+                'Lily Matt~Watsonia Blue~14~girls~'
+                'saturday_am_autumn_2015',
                 {
                     'name': 'Lily Matt',
                     'team': 'Watsonia Blue',
                     'section': '14',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Lily Matt~Watsonia Blue~14~girls~'
+                             'saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 8,
                         'games_played': 16,
@@ -1620,6 +1769,9 @@ class TestReporter(unittest2.TestCase):
                     'section': '14',
                     'comp_type': 'girls',
                     'comp': 'saturday_am_autumn_2015',
+                    'comp_string': 'Saturday AM Autumn 2015',
+                    'token': 'Maddison Hollyoak~Watsonia Blue~14~'
+                             'girls~saturday_am_autumn_2015',
                     'doubles': {
                         'games_lost': 13,
                         'games_played': 16,
@@ -1655,13 +1807,12 @@ class TestReporter(unittest2.TestCase):
 
         # then I should receive a dict of results that player was
         # part of
+        received = [x.get('rounds').keys() for x in received.values()][0]
         expected = [
             1, 2, 4, 7, 8, 9, 10, 12, 14, 'Semi Final', 'Grand Final'
         ]
         msg = 'Match results error'
-        self.assertListEqual([x.keys() for x in received.values()][0],
-                             expected,
-                             msg)
+        self.assertListEqual(received, expected, msg)
 
     def test_get_player_results_compact_no_match(self):
         """Get all match results associated with a player: no match.
@@ -1678,10 +1829,50 @@ class TestReporter(unittest2.TestCase):
         # part of
         expected = {
             'Isabella Markovski~Watsonia~14~'
-            'girls~saturday_am_autumn_2015': {}
+            'girls~saturday_am_autumn_2015': {
+                'rounds': {}
+            }
         }
         msg = 'Match results error'
         self.assertDictEqual(received, expected, msg)
+
+    def test_player_ids_dict(self):
+        """Test player_ids_dict.
+        """
+        # Given a list of player IDs
+        players = [
+            "John Guanzon~Epping~3~boys~saturday_am_spring_2015",
+            "Whitney Guan~Clifton~2~girls~saturday_am_spring_2015",
+        ]
+
+        # when I convert to a dictionary structure
+        received = trols_stats.interface.Reporter.player_ids_dict(players)
+
+        # then I should receive the correct list of dictionaries
+        expected = [
+            {
+                'comp': 'saturday_am_spring_2015',
+                'comp_string': 'Saturday AM Spring 2015',
+                'comp_type': 'boys',
+                'name': 'John Guanzon',
+                'section': '3',
+                'team': 'Epping',
+                'token':
+                    'John Guanzon~Epping~3~boys~saturday_am_spring_2015'
+            },
+            {
+                'comp': 'saturday_am_spring_2015',
+                'comp_string': 'Saturday AM Spring 2015',
+                'comp_type': 'girls',
+                'name': 'Whitney Guan',
+                'section': '2',
+                'team': 'Clifton',
+                'token':
+                    'Whitney Guan~Clifton~2~girls~saturday_am_spring_2015'
+            }
+        ]
+        msg = 'Player IDs to dict conversion error'
+        self.assertListEqual(received, expected, msg)
 
     @classmethod
     def tearDownClass(cls):

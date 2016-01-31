@@ -1,0 +1,47 @@
+[
+    {
+        "name": "Eboni Amos",
+        "comp_type": "girls",
+        "section": "14",
+        "team": "Watsonia Blue",
+        "comp_string": "Saturday AM Autumn 2015",
+        "token":
+            "Eboni Amos~Watsonia Blue~14~girls~saturday_am_autumn_2015",
+        "comp": "saturday_am_autumn_2015"
+    },
+    {
+        "name": "Zoe Allen",
+        "comp_type": "girls",
+        "section": "10",
+        "team": "Eaglemont",
+        "comp_string": "Saturday AM Autumn 2015",
+        "token": "Zoe Allen~Eaglemont~10~girls~saturday_am_autumn_2015",
+        "comp": "saturday_am_autumn_2015"
+    },
+    {
+        "name": "Zoe Allen",
+        "comp_type": "girls",
+        "section": "8",
+        "team": "Eaglemont",
+        "comp_string": "Saturday AM Autumn 2015",
+        "token": "Zoe Allen~Eaglemont~8~girls~saturday_am_autumn_2015",
+        "comp": "saturday_am_autumn_2015"},
+    {
+        "name": "Eboni Amos",
+        "comp_type": "girls",
+        "section": "12",
+        "team": "Watsonia",
+        "comp_string": "Saturday AM Spring 2015",
+        "token": "Eboni Amos~Watsonia~12~girls~saturday_am_spring_2015",
+        "comp": "saturday_am_spring_2015"
+    },
+    {
+        "name": "Zoe Allen",
+        "comp_type": "girls",
+        "section": "7",
+        "team": "Eaglemont",
+        "comp_string": "Saturday AM Spring 2015",
+        "token": "Zoe Allen~Eaglemont~7~girls~saturday_am_spring_2015",
+        "comp": "saturday_am_spring_2015"
+    }
+]

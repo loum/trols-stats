@@ -35,14 +35,6 @@ class Reporter(object):
         **Returns:**
             list of simplified player token IDs in the form::
 
-                [
-                    'Bundoora',
-                    'Eaglemont',
-                    ...
-                    'Watsonia',
-                    'Yallambie'
-                ]
-
         """
         def cmp_name(name, token):
             return  name.lower() in token.split('~')[0].lower()
@@ -78,7 +70,7 @@ class Reporter(object):
         if competition is not None:
             matched = [x for x in matched if cmp_comp(competition, x)]
 
-        return sorted(matched)
+        return sorted(self.player_ids_dict(matched))
 
     def get_teams(self,
                   competition='saturday_am_spring_2015',
@@ -106,7 +98,7 @@ class Reporter(object):
         }
         tokens = self.get_players(**kwargs)
 
-        teams = set(x.split('~')[1] for x in tokens)
+        teams = set(x.get('token').split('~')[1] for x in tokens)
 
         return sorted(teams)
 
@@ -131,7 +123,7 @@ class Reporter(object):
         }
         tokens = self.get_players(**kwargs)
 
-        sections = set(x.split('~')[2] for x in tokens)
+        sections = set(x.get('token').split('~')[2] for x in tokens)
 
         return sorted([int(x) for x in sections])
 
@@ -280,16 +272,12 @@ class Reporter(object):
                 elif game.is_doubles():
                     doubles_stats.aggregate(game)
 
-            (name, team, section, comp_type, comp) = player_token.split('~')
             stats[player_token] = {
-                'name': name,
-                'team': team,
-                'section': section,
-                'comp_type': comp_type,
-                'comp': comp,
                 'singles': singles_stats(),
                 'doubles': doubles_stats(),
             }
+            player_details = self.player_ids_dict([player_token])
+            stats[player_token].update(player_details[0])
 
             if last_fixture:
                 event_aggregates = list(game_aggregates)
@@ -358,27 +346,27 @@ class Reporter(object):
                 Joel Markovski~Watsonia~20~boys~saturday_am_autumn_2015
 
         *Returns*: dict of all singles in a compact format for
-        presentation in web templates.  For example:
+        presentation in web templates.  For example::
 
-        {
-            'Isabella Markovski~Watsonia~14~girls~'
-            'saturday_am_autumn_2015': [
-                {
-                    'match_type': 'doubles',
-                    'match_round': 5,
-                    'date_played':
-                        datetime.datetime(2015, 2, 28, 0, 0),
-                    'home_team': 'Watsonia Red',
-                    'away_team': 'St Marys',
-                    'player': 'Madeline Doyle',
-                    'opposition': ['Lauren Amsing', 'Mia Bovalino'],
-                    'score_for': 3,
-                    'score_against': 6,
-                    'team_mate': 'Tara Watson',
-                    'player_won': False,
-                },
-            ],
-        }
+            {
+                'Isabella Markovski~Watsonia~14~girls~'
+                'saturday_am_autumn_2015': [
+                    {
+                        'match_type': 'doubles',
+                        'match_round': 5,
+                        'date_played':
+                            datetime.datetime(2015, 2, 28, 0, 0),
+                        'home_team': 'Watsonia Red',
+                        'away_team': 'St Marys',
+                        'player': 'Madeline Doyle',
+                        'opposition': ['Lauren Amsing', 'Mia Bovalino'],
+                        'score_for': 3,
+                        'score_against': 6,
+                        'team_mate': 'Tara Watson',
+                        'player_won': False,
+                    },
+                ],
+            }
 
         """
         results = {}
@@ -397,3 +385,36 @@ class Reporter(object):
                     stash['rounds'][m.fixture_round].append(m.compact_match())
 
         return results
+
+    @staticmethod
+    def player_ids_dict(player_ids):
+        """Helper method that splits the components of the token index
+        from *player_ids* list into separate parts.  For example::
+
+        >>> from trols_munder_ui.utils import player_ids_dict
+        >>> token = ('Isabella Markovski~Watsonia~12~girls~'
+        ...          'saturday_am_spring_2015')
+        >>> player_ids_dict([token])
+        [{'name': 'Isabella Markovski', 'comp_type': 'girls', 'section': '12',
+        'team': 'Watsonia', 'token': 'Isabella Markovski~Watsonia~12~girls~sa
+        turday_am_spring_2015', 'comp': 'saturday_am_spring_2015'}]
+
+        """
+        def player_id_struct(player_id):
+            (name, team, section, comp_type, comp) = player_id.split('~')
+            comp_parts = comp.split('_')
+            comp_string = '{} {} {} {}'.format(comp_parts[0].title(),
+                                               comp_parts[1].upper(),
+                                               comp_parts[2].title(),
+                                               comp_parts[3])
+            return {
+                'name': name,
+                'team': team,
+                'section': section,
+                'comp_type': comp_type,
+                'comp': comp,
+                'comp_string': comp_string,
+                'token': player_id,
+            }
+
+        return [player_id_struct(x) for x in player_ids]
