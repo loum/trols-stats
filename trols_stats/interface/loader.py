@@ -52,8 +52,8 @@ class Loader(object):
         """
         # Get the competition token.
         comp_token = source_file.split('--')[0]
-        log.debug('Competition token parsed from filename: "%s"',
-                  comp_token)
+        log.debug('Competition token "%s" parsed from filename: "%s"',
+                  source_file, comp_token)
 
         # Scrape match teams.
         xpath = '//table/tr/td/b'
@@ -79,7 +79,7 @@ class Loader(object):
         fixture = preamble.copy()
         fixture.update(teams)
         fixture.update({'competition': comp_token})
-        log.debug('Fixture: %s' % fixture)
+        log.debug('Fixture: %s', fixture)
 
         # Build the Game aggregate object.
         stats = trols_stats.Stats(players=dict(players),
@@ -176,7 +176,7 @@ class Loader(object):
             HTML response string of the *path*
 
         """
-        log.info('Attempting to read file resource "%s"' % path)
+        log.info('Attempting to read file resource "%s"', path)
         html = None
 
         with open(path) as file_h:

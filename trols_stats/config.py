@@ -1,23 +1,23 @@
 __all__ = ['Config']
 
 import configa
-from configa.setter import set_scalar
+from configa.setter import set_scalar, set_dict
 
 
 class Config(configa.Config):
     def __init__(self, config_file=None):
-        self.__main_results = None
+        self.__trols_urls = {}
         self.__cache = None
         self.__shelve = None
 
         configa.Config.__init__(self, config_file)
 
     @property
-    def main_results(self):
-        return self.__main_results
+    def trols_urls(self):
+        return self.__trols_urls
 
-    @set_scalar
-    def set_main_results(self, value):
+    @set_dict
+    def set_trols_urls(self, values=None):
         pass
 
     @property
@@ -43,10 +43,6 @@ class Config(configa.Config):
 
         kwargs = [
             {
-                'section': 'trols_urls',
-                'option': 'main_results',
-            },
-            {
                 'section': 'directories',
                 'option': 'cache',
             },
@@ -58,3 +54,12 @@ class Config(configa.Config):
 
         for kwarg in kwargs:
             self.parse_scalar_config(**kwarg)
+
+        dict_kwargs = [
+            {
+                'section': 'trols_urls',
+            },
+        ]
+
+        for kwarg in dict_kwargs:
+            self.parse_dict_config(**kwarg)

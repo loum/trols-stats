@@ -1,24 +1,24 @@
 [
     {
         "fixture": {
-            "away_team": "Mill Park",
-            "competition": "saturday_am_spring_2015",
+            "away_team": "Bundoora",
+            "competition": "nejta_saturday_am_spring_2015",
             "competition_type": "girls",
-            "date": "25 Jul 15",
+            "date": null,
             "home_team": "Watsonia",
-            "match_round": 2,
+            "match_round": "Semi Final",
             "section": 12,
             "uid": null
         },
         "opposition": [
             {
-                "name": "Chloe Gravina",
-                "team": "Mill Park",
+                "name": "Olivia Ferraro",
+                "team": "Bundoora",
                 "uid": null
             },
             {
-                "name": "Abriana Brancato",
-                "team": "Mill Park",
+                "name": "Tahlia Wheatley",
+                "team": "Bundoora",
                 "uid": null
             }
         ],
@@ -27,10 +27,10 @@
             "team": "Watsonia",
             "uid": null
         },
-        "score_against": 1,
-        "score_for": 6,
+        "score_against": 6,
+        "score_for": 2,
         "team_mate": {
-            "name": "Stephanie Lia",
+            "name": "Lily Matt",
             "team": "Watsonia",
             "uid": null
         },
@@ -38,24 +38,24 @@
     },
     {
         "fixture": {
-            "away_team": "Mill Park",
-            "competition": "saturday_am_spring_2015",
+            "away_team": "Bundoora",
+            "competition": "nejta_saturday_am_spring_2015",
             "competition_type": "girls",
-            "date": "25 Jul 15",
+            "date": null,
             "home_team": "Watsonia",
-            "match_round": 2,
+            "match_round": "Semi Final",
             "section": 12,
             "uid": null
         },
         "opposition": [
             {
-                "name": "Abriana Brancato",
-                "team": "Mill Park",
+                "name": "Tahlia Wheatley",
+                "team": "Bundoora",
                 "uid": null
             },
             {
-                "name": "Alanna Thwaites",
-                "team": "Mill Park",
+                "name": "Nishita Maharaj",
+                "team": "Bundoora",
                 "uid": null
             }
         ],
@@ -64,10 +64,10 @@
             "team": "Watsonia",
             "uid": null
         },
-        "score_against": 1,
+        "score_against": 2,
         "score_for": 6,
         "team_mate": {
-            "name": "Eboni Amos",
+            "name": "Maddison Hollyoak",
             "team": "Watsonia",
             "uid": null
         },

@@ -17,18 +17,20 @@ class TestConfig(unittest2.TestCase):
         msg = 'Object is not a trols_stats.Config'
         self.assertIsInstance(conf, trols_stats.Config, msg)
 
-    def test_parse_config_main_results(self):
-        """Parse main_results from the config.
+    def test_parse_config_trols_urls(self):
+        """Parse leagues from the config.
         """
         # Given a TROLS Stats config instance
         conf = trols_stats.Config(self.__conf_path)
 
-        # when I reference the main_results attribute
-        received = conf.main_results
+        # when I reference the leagues attribute
+        received = conf.trols_urls
 
         # then I should get the expected URL
-        expected = 'http://trols.org.au/nejta/results.php'
-        msg = 'trols_stats.Config.main_results error'
+        expected = {
+            'nejta': 'http://trols.org.au/nejta/results.php',
+        }
+        msg = 'trols_stats.Config.trols_urls error'
         self.assertEqual(received, expected, msg)
 
     def test_parse_config_cache(self):

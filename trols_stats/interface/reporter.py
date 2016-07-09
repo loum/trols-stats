@@ -25,7 +25,7 @@ class Reporter(object):
         **Kwargs:**
             *competition*: the competition identifier.  For example::
 
-                'saturday_am_spring_2015'
+                'nejta_saturday_am_spring_2015'
 
             *competition_type*: 'girls' or 'boys'.  (``None`` includes
             both)
@@ -73,7 +73,7 @@ class Reporter(object):
         return sorted(self.player_ids_dict(matched))
 
     def get_teams(self,
-                  competition='saturday_am_spring_2015',
+                  competition='nejta_saturday_am_spring_2015',
                   competition_type=None,
                   section=None):
         """Filter teams based on *competition*, *competition_type*
@@ -103,13 +103,13 @@ class Reporter(object):
         return sorted(teams)
 
     def get_sections(self,
-                     competition='saturday_am_spring_2015',
+                     competition='nejta_saturday_am_spring_2015',
                      competition_type=None):
         """Filter sections based on *competition* and *competition_type*.
 
         **Kwargs:**
             *competition*: the competiton code (default
-            ``saturday_am_spring_2015``)
+            ``nejta_saturday_am_spring_2015``)
 
             *competition_type*: either ``boys``, ``girls`` or ``None``
 
@@ -403,10 +403,11 @@ class Reporter(object):
         def player_id_struct(player_id):
             (name, team, section, comp_type, comp) = player_id.split('~')
             comp_parts = comp.split('_')
-            comp_string = '{} {} {} {}'.format(comp_parts[0].title(),
-                                               comp_parts[1].upper(),
-                                               comp_parts[2].title(),
-                                               comp_parts[3])
+            comp_string = '{} {} {} {} {}'.format(comp_parts[0].upper(),
+                                                  comp_parts[1].title(),
+                                                  comp_parts[2].upper(),
+                                                  comp_parts[3].title(),
+                                                  comp_parts[4])
             return {
                 'name': name,
                 'team': team,

@@ -9,7 +9,7 @@ __all__ = ['Scraper']
 
 class Scraper(object):
     @staticmethod
-    def scrape_competition_name(html, xpath, tokenise=False):
+    def scrape_competition_name(html, xpath, tokenise=False, league=None):
         """Extract the competition name.  For example,
         "Saturday AM - Spring 2015"
 
@@ -18,7 +18,10 @@ class Scraper(object):
 
         **Kwargs:**
             *tokenise*: tokenises the competition name to be used as an
-            identifier.  For example, ``saturday_am-spring_2015``
+            identifier.  For example, ``saturday_am_spring_2015``
+
+            *league*: name of the league from where the matches
+            are sourced from
 
         **Returns:**
             string representation of the compeition name
@@ -26,6 +29,8 @@ class Scraper(object):
         """
         root = lxml.html.fromstring(html)
         comp_name = root.xpath(xpath)[0]
+        if league is not None:
+            comp_name = '{} {}'.format(league.upper(), comp_name)
 
         log.info('Scraped competition name: %s', comp_name)
 
@@ -59,6 +64,8 @@ class Scraper(object):
                 continue
 
             comp_ids.update(Scraper._get_competition_id(element))
+
+        log.info('Scraped competition IDs: "%s"', comp_ids)
 
         return comp_ids
 

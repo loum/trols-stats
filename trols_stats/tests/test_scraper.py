@@ -121,8 +121,57 @@ class TestScraper(unittest2.TestCase):
         msg = 'Competition name extracted error'
         self.assertEqual(received, expected, msg)
 
+    def test_scrape_competition_name_with_league(self):
+        """Scrape_competition name: with league.
+        """
+        # Given a TROLS competition|section results page
+        test_file = os.path.join(self.__files_dir, 'main_results.php')
+        with open(test_file) as html_fh:
+            html = html_fh.read()
+
+        # and an xpath definition to target the extraction
+        xpath = '//table/tr/td/select/option[@value="AA"]/text()'
+
+        # when I scrape the page for match competitions
+        kwargs = {
+            'html': html,
+            'xpath': xpath,
+            'league': 'nejta',
+        }
+        received = trols_stats.Scraper.scrape_competition_name(**kwargs)
+
+        # then I should receive the competition name
+        expected = 'NEJTA Saturday AM - Autumn 2015'
+        msg = 'Competition name extracted error'
+        self.assertEqual(received, expected, msg)
+
     def test_scrape_competition_name_tokenised(self):
         """Scrape_competition name: tokenised.
+        """
+        # Given a TROLS competition|section results page
+        test_file = os.path.join(self.__files_dir, 'main_results.php')
+        with open(test_file) as html_fh:
+            html = html_fh.read()
+
+        # and an xpath definition to target the extraction
+        xpath = '//table/tr/td/select/option[@value="AA"]/text()'
+
+        # when I scrape the page for match competitions
+        kwargs = {
+            'html': html,
+            'xpath': xpath,
+            'tokenise': True,
+            'league': 'nejta',
+        }
+        received = trols_stats.Scraper.scrape_competition_name(**kwargs)
+
+        # then I should receive the competition name
+        expected = 'nejta_saturday_am_autumn_2015'
+        msg = 'Competition name extracted (tokenised) error'
+        self.assertEqual(received, expected, msg)
+
+    def test_scrape_competition_name_with_league_tokenised(self):
+        """Scrape_competition name: with league tokenised.
         """
         # Given a TROLS competition|section results page
         test_file = os.path.join(self.__files_dir, 'main_results.php')

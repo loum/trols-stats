@@ -1,3 +1,6 @@
+# Config versioning files
+config.conf.*
+
 *.py[cod]
 *.swp
 

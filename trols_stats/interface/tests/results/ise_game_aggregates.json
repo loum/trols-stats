@@ -2,7 +2,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Blue",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "31 Jan 15",
             "home_team": "St Marys",
@@ -39,7 +39,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Blue",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "31 Jan 15",
             "home_team": "St Marys",
@@ -76,7 +76,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Red",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "7 Feb 15",
             "home_team": "Watsonia Blue",
@@ -113,7 +113,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Red",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "7 Feb 15",
             "home_team": "Watsonia Blue",
@@ -150,7 +150,7 @@
     {
         "fixture": {
             "away_team": "View Bank",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "21 Feb 15",
             "home_team": "Watsonia Blue",
@@ -187,7 +187,7 @@
     {
         "fixture": {
             "away_team": "View Bank",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "21 Feb 15",
             "home_team": "Watsonia Blue",
@@ -224,7 +224,7 @@
     {
         "fixture": {
             "away_team": "Mill Park",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "21 Mar 15",
             "home_team": "Watsonia Blue",
@@ -261,7 +261,7 @@
     {
         "fixture": {
             "away_team": "Mill Park",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "21 Mar 15",
             "home_team": "Watsonia Blue",
@@ -298,7 +298,7 @@
     {
         "fixture": {
             "away_team": "St Marys",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "28 Mar 15",
             "home_team": "Watsonia Blue",
@@ -335,7 +335,7 @@
     {
         "fixture": {
             "away_team": "St Marys",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "28 Mar 15",
             "home_team": "Watsonia Blue",
@@ -372,7 +372,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Blue",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "18 Apr 15",
             "home_team": "Watsonia Red",
@@ -409,7 +409,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Blue",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "18 Apr 15",
             "home_team": "Watsonia Red",
@@ -446,7 +446,7 @@
     {
         "fixture": {
             "away_team": "Bundoora",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "2 May 15",
             "home_team": "Watsonia Blue",
@@ -483,7 +483,7 @@
     {
         "fixture": {
             "away_team": "Bundoora",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "2 May 15",
             "home_team": "Watsonia Blue",
@@ -520,7 +520,7 @@
     {
         "fixture": {
             "away_team": "Barry Road",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "16 May 15",
             "home_team": "Watsonia Blue",
@@ -557,7 +557,7 @@
     {
         "fixture": {
             "away_team": "Barry Road",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "16 May 15",
             "home_team": "Watsonia Blue",
@@ -594,7 +594,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Blue",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "30 May 15",
             "home_team": "Mill Park",
@@ -631,7 +631,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Blue",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": "30 May 15",
             "home_team": "Mill Park",
@@ -668,7 +668,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Blue",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": null,
             "home_team": "Barry Road",
@@ -705,7 +705,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Blue",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": null,
             "home_team": "Barry Road",
@@ -742,7 +742,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Blue",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": null,
             "home_team": "Bundoora",
@@ -779,7 +779,7 @@
     {
         "fixture": {
             "away_team": "Watsonia Blue",
-            "competition": "saturday_am_autumn_2015",
+            "competition": "nejta_saturday_am_autumn_2015",
             "competition_type": "girls",
             "date": null,
             "home_team": "Bundoora",

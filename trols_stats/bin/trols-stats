@@ -72,46 +72,51 @@ def source(args, conf):
     #
     # TODO: Archived seasons have a "daytime" query parameter.
     query_args = {'daytime': str()}
-    comps_html = loader.request(conf.main_results, query_args)
+    for league, url in conf.trols_urls.iteritems():
+        comps_html = loader.request(url, query_args)
 
-    # Distinguish competions and seasons
-    comp_name_xpath = '//table/tr/td/select/option[@value="AA"]/text()'
-    comp_name = trols_stats.Scraper.scrape_competition_name(comps_html,
-                                                            comp_name_xpath,
-                                                            True)
-
-    # Each competition is made of sections.  For example, "BOYS 21".
-    # Each section is identified by a code.
-    comps_xpath = '//select[@id="section" and @name="section"]/option'
-    comps_map = trols_stats.Scraper.scrape_competition_ids(comps_html,
-                                                           comps_xpath)
-
-    # Cycle through each competition and get the match codes.
-    match_xpath = '//a[contains(@onclick, "open_match")]'
-    for code in comps_map.values():
-        query_args = {
-            'which': 1,
-            'style': '',
-            'daytime': str(),
-            'section': code,
+        # Distinguish competions and seasons
+        comp_name_xpath = '//table/tr/td/select/option[@value="AA"]/text()'
+        kwargs = {
+            'html': comps_html,
+            'xpath': comp_name_xpath,
+            'tokenise': True,
+            'league': league,
         }
-        matches_html = loader.request(conf.main_results, query_args)
-        match_codes = trols_stats.Scraper.scrape_match_ids(matches_html,
-                                                           match_xpath)
+        comp_name = trols_stats.Scraper.scrape_competition_name(**kwargs)
 
-        match_uri = 'http://www.trols.org.au/nejta/match_popup.php'
-        for match_code in match_codes:
-            request_kwargs = {
-                'uri': match_uri,
-                'request_args': {
-                    'matchid': match_code,
-                    'seasonid': str(),
-                },
-                'cache_dir':  conf.cache,
-                'force_cache': args.force,
-                'comp_token': comp_name
+        # Each competition is made of sections.  For example, "BOYS 21".
+        # Each section is identified by a code.
+        comps_xpath = '//select[@id="section" and @name="section"]/option'
+        comps_map = trols_stats.Scraper.scrape_competition_ids(comps_html,
+                                                               comps_xpath)
+
+        # Cycle through each competition and get the match codes.
+        match_xpath = '//a[contains(@onclick, "open_match")]'
+        for code in comps_map.values():
+            query_args = {
+                'which': 1,
+                'style': '',
+                'daytime': str(),
+                'section': code,
             }
-            loader.request(**request_kwargs)
+            matches_html = loader.request(url, query_args)
+            match_codes = trols_stats.Scraper.scrape_match_ids(matches_html,
+                                                               match_xpath)
+
+            match_uri = 'http://www.trols.org.au/nejta/match_popup.php'
+            for match_code in match_codes:
+                request_kwargs = {
+                    'uri': match_uri,
+                    'request_args': {
+                        'matchid': match_code,
+                        'seasonid': str(),
+                    },
+                    'cache_dir':  conf.cache,
+                    'force_cache': args.force,
+                    'comp_token': comp_name
+                }
+                loader.request(**request_kwargs)
 
 
 def scrape(args, conf):
