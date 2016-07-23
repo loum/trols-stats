@@ -260,6 +260,10 @@ class Scraper(object):
 
             GIRLS 14 on Semi Final
 
+        DVTA formats a different::
+
+            Thu Sect 8 on 19th May 16  Rd.14
+
         **Args:**
             *html*: string representation of the HTML page to process.
             *html* is typically a TROLS match results page.
@@ -269,7 +273,7 @@ class Scraper(object):
             preamble in the form::
 
                 {
-                    'competition_type': <girls|boys>,
+                    'competition_type': <girls|boys|thu>,
                     'section': <section_no>,
                     'date': <date>,
                     'match_round': <round_no>
@@ -285,14 +289,21 @@ class Scraper(object):
         preamble = {}
 
         def competition(matchobj):
+            preamble['competition_type'] = None
+
             match_competition = matchobj.group(1).lower()
-            log.debug('Match competition_type: "%s"', match_competition)
-            preamble['competition_type'] = match_competition.encode('utf8')
+            if match_competition in ['girls', 'boys']:
+                preamble['competition_type'] = match_competition.encode('utf8')
+            log.debug('Match competition_type: "%s"',
+                      preamble['competition_type'])
 
             return matchobj.group(2)
 
-        competition_re = re.compile(r'^(girls|boys)\s+(.*)', re.IGNORECASE)
+        competition_re = re.compile(r'^(girls|boys|.*?)\s+(.*)',
+                                    re.IGNORECASE)
         raw_preamble = competition_re.sub(competition, raw_preamble)
+
+        raw_preamble = raw_preamble.replace('Sect ', '')
 
         def section(matchobj):
             match_section = int(matchobj.group(1))

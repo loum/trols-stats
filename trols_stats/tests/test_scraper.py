@@ -5,7 +5,9 @@ import lxml
 import trols_stats
 
 from trols_stats.tests.results.match_stats import (MATCH_STATS,
-                                                   MATCH_STATS_SINGLES)
+                                                   MATCH_STATS_SINGLES,
+                                                   DVTA_MATCH_STATS,
+                                                   DVTA_TN_MATCH_STATS)
 
 
 class TestScraper(unittest2.TestCase):
@@ -415,6 +417,32 @@ class TestScraper(unittest2.TestCase):
         msg = 'Match preamble dictionary error'
         self.assertDictEqual(received, expected, msg)
 
+    def test_scrape_match_preamble_dvta_thursday_night(self):
+        """Extract match preamble: DVTA Thursday night.
+        """
+        # Given a TROLS detailed match results page
+        match_file = 'match_HN020143.html'
+        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+            html = _fh.read()
+
+        # and an xpath definition to target the match preamble extraction
+        xpath = '//table/tr/td[contains(@class, "mb")]/text()'
+
+        # when I extract the match preamble
+        received = trols_stats.Scraper.scrape_match_preamble(html, xpath)
+
+        # then I should receive a dictionary structure of the form
+        # {'competition': <girls_or_boys>,
+        #  'section': <section_no>,
+        #  'date': <date>,
+        #  'match_round': <round_no>}
+        expected = {'competition_type': None,
+                    'section': 8,
+                    'date': '19 May 16',
+                    'match_round': 14}
+        msg = 'Match preamble dictionary error'
+        self.assertDictEqual(received, expected, msg)
+
     def test_scrape_match_preamble_semi_final(self):
         """Extract match preamble: semi final.
         """
@@ -466,6 +494,64 @@ class TestScraper(unittest2.TestCase):
         #     ...
         # }
         expected = MATCH_STATS
+        msg = 'Match stats dictionary structure error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_scrape_match_scores_doubles_dvta_thursday_night(self):
+        """Scrape match scores: doubles DVTA Thursday night.
+        """
+        # Given a TROLS detailed match results page
+        match_file = 'match_HN020143.html'
+        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+            html = _fh.read()
+
+        # and an xpath definition to target the match scores extraction
+        xpath = '//td/table/tr[contains(@valign, "top")]/td'
+
+        # when I extract the match scores
+        received = trols_stats.Scraper.scrape_match_scores(html, xpath)
+
+        # then I should received a dictionary structure of the form
+        # {
+        #     1: [
+        #         {
+        #             'opposition': (5, 6),
+        #             'score_against': 6,
+        #             'score_for': 3,
+        #             'team_mate': 2
+        #         },
+        #     ...
+        # }
+        expected = DVTA_MATCH_STATS
+        msg = 'Match stats dictionary structure error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_scrape_match_scores_doubles_dvta_tuesday_night(self):
+        """Scrape match scores: doubles DVTA Tuesday night.
+        """
+        # Given a TROLS detailed match results page
+        match_file = 'match_TN024321.html'
+        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+            html = _fh.read()
+
+        # and an xpath definition to target the match scores extraction
+        xpath = '//td/table/tr[contains(@valign, "top")]/td'
+
+        # when I extract the match scores
+        received = trols_stats.Scraper.scrape_match_scores(html, xpath)
+
+        # then I should received a dictionary structure of the form
+        # {
+        #     1: [
+        #         {
+        #             'opposition': (5, 6),
+        #             'score_against': 6,
+        #             'score_for': 3,
+        #             'team_mate': 2
+        #         },
+        #     ...
+        # }
+        expected = DVTA_TN_MATCH_STATS
         msg = 'Match stats dictionary structure error'
         self.assertDictEqual(received, expected, msg)
 
