@@ -93,7 +93,8 @@ class Loader(object):
                 request_args=None,
                 cache_dir=None,
                 force_cache=False,
-                comp_token='match'):
+                comp_token='match',
+                match_id=None):
         """Send a URL request to *uri*.  If *uri* is a file-type resource
         then an attempt will be made to open the file instead.
 
@@ -111,14 +112,14 @@ class Loader(object):
             *force_cache*: overwrite the file if it already exists in the
             cache
 
+            *match_id*: identifier of the match.  For example:
+
+                ``TN024083``
+
         **Returns:**
             HTML response string of the *uri*
 
         """
-        match_id = None
-        if request_args is not None:
-            match_id = request_args.get('matchid')
-
         target_file = None
         if match_id is not None and cache_dir is not None:
             target_file = os.path.join(cache_dir,

@@ -99,12 +99,10 @@ class TestLoader(unittest2.TestCase):
         # Given a match popup URI
         uri = 'http://www.trols.org.au/nejta/match_popup.php'
 
-        # and a payload
-        request_args = {
-            'matchid': 'AA026044',
-        }
+        # and a match_id
+        match_id = 'AA026044'
 
-        # and specify a cache directory
+        # and a cache directory
         cache_dir = tempfile.mkdtemp()
 
         # when I make a TROLS request
@@ -116,9 +114,9 @@ class TestLoader(unittest2.TestCase):
                                '_request_url') as mock_request_url:
             mock_request_url.return_value = html
             kwargs = {
-                'request_args': request_args,
                 'cache_dir': cache_dir,
                 'comp_token': 'nejta_saturday_am_autumn_2015',
+                'match_id': match_id,
             }
             interface.Loader.request(uri, **kwargs)
 
@@ -137,8 +135,8 @@ class TestLoader(unittest2.TestCase):
         # Given a match popup URI
         uri = 'http://www.trols.org.au/nejta/match_popup.php'
 
-        # and a payload
-        request_args = {'matchid': 'AA026044'}
+        # and a match ID
+        match_id = 'AA026044'
 
         # and specify a cache directory
         cache_dir = tempfile.mkdtemp()
@@ -150,9 +148,9 @@ class TestLoader(unittest2.TestCase):
 
         # when I make a TROLS request
         kwargs = {
-            'request_args': request_args,
             'cache_dir': cache_dir,
             'comp_token': 'nejta_saturday_am_autumn_2015',
+            'match_id': match_id,
         }
         received = interface.Loader.request(uri, **kwargs)
 
@@ -172,8 +170,8 @@ class TestLoader(unittest2.TestCase):
         # Given a match popup URI
         uri = 'http://www.trols.org.au/nejta/match_popup.php'
 
-        # and a payload
-        request_args = {'matchid': 'AA026044'}
+        # and a match ID
+        match_id = 'AA026044'
 
         # and specify a cache directory
         cache_dir = tempfile.mkdtemp()
@@ -195,10 +193,10 @@ class TestLoader(unittest2.TestCase):
                 html = _fh.read()
             mock_request_url.return_value = html
             kwargs = {
-                'request_args': request_args,
                 'cache_dir': cache_dir,
                 'force_cache': force_cache,
                 'comp_token': 'nejta_saturday_am_autumn_2015',
+                'match_id': match_id,
             }
             interface.Loader.request(uri, **kwargs)
 
