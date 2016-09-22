@@ -28,7 +28,8 @@ class TestConfig(unittest2.TestCase):
 
         # then I should get the expected URL
         expected = {
-            'nejta': 'http://trols.org.au/nejta/results.php',
+            'nejta': 'AA',
+            'dvta': 'TN,HN',
         }
         msg = 'trols_stats.Config.trols_urls error'
         self.assertEqual(received, expected, msg)

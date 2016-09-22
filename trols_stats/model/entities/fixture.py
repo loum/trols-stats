@@ -123,7 +123,7 @@ class Fixture(trols_stats.model.Base):
         return is_same
 
     def comvert_match_date(self):
-        """Convert a NETJA date format to a more human readable form.
+        """Convert a NEJTA date format to a more human readable form.
 
         **Args:**
             *date*: NEJTA date in the form DD MM YY.  For example,

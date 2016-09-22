@@ -1,7 +1,6 @@
 import unittest2
 import os
 import json
-import datetime
 
 import trols_stats
 import trols_stats.interface
@@ -1802,6 +1801,42 @@ class TestReporter(unittest2.TestCase):
             }
         }
         msg = 'Match results error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_get_competition_details(self):
+        """Get all match results associated with a player: no match.
+        """
+        # Given a competiton token
+        competition = 'dvta_tuesday_night_spring_2016'
+
+        # when I get the competition details
+        reporter = trols_stats.interface.Reporter(None)
+        received = reporter.get_competition_details(competition)
+
+        # then I should receive a matchin dictionary
+        expected = {
+            'event': ['doubles'],
+            'event_type': ['mens'],
+        }
+        msg = 'Competion details error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_get_competition_details_nejta(self):
+        """Get all match results associated with a player: no match.
+        """
+        # Given a competiton token
+        competition = 'nejta_saturday_am_spring_2016'
+
+        # when I get the competition details
+        reporter = trols_stats.interface.Reporter(None)
+        received = reporter.get_competition_details(competition)
+
+        # then I should receive a matchin dictionary
+        expected = {
+            'event': ['singles', 'doubles'],
+            'event_type': ['girls', 'boys'],
+        }
+        msg = 'Competion details error'
         self.assertDictEqual(received, expected, msg)
 
     def test_player_ids_dict(self):

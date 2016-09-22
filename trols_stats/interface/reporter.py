@@ -1,3 +1,4 @@
+import re
 import trols_stats
 from logga.log import log
 
@@ -71,6 +72,38 @@ class Reporter(object):
             matched = [x for x in matched if cmp_comp(competition, x)]
 
         return sorted(self.player_ids_dict(matched))
+
+    @staticmethod
+    def get_competition_details(competition):
+        """Ugly, hardwired event/event type lookup based on
+        *competition*.
+
+        **Args:**
+            *competition*: competition token to use as the mapper trigger
+
+        **Returns:**
+            dictionary structure representing the event/event type::
+
+            {
+                'event': ['doubles'],
+                'event_type': ['mens'],
+            }
+
+        """
+        comp_details = None
+
+        if re.match('dvta_(tuesday|thursday)_night', competition):
+            comp_details = {
+                'event': ['doubles'],
+                'event_type': ['mens'],
+            }
+        elif re.match('nejta', competition):
+            comp_details = {
+                'event': ['singles', 'doubles'],
+                'event_type': ['girls', 'boys'],
+            }
+
+        return comp_details
 
     def get_teams(self,
                   competition='nejta_saturday_am_spring_2015',

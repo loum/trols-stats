@@ -4,6 +4,7 @@ import sys
 import os
 import argparse
 import json
+import urllib
 
 import trols_stats.interface
 from filer.files import get_directory_files
@@ -71,12 +72,18 @@ def source(args, conf):
     # Load the competitions.
     #
     # TODO: Archived seasons have a "daytime" query parameter.
-    query_args = {'daytime': str()}
-    for league, url in conf.trols_urls.iteritems():
-        comps_html = loader.request(url, query_args)
+    results_url = 'http://trols.org.au/{}/results.php'
+    for league, daytime in conf.trols_urls.iteritems():
+        option_value = daytime
+        if league.lower() == 'nejta':
+            daytime = str()
 
-        # Distinguish competions and seasons
-        comp_name_xpath = '//table/tr/td/select/option[@value="AA"]/text()'
+        comps_html = loader.request(results_url.format(league),
+                                    {'daytime': daytime})
+        comp_name_xpath = (
+            '//table/tr/td/select/'
+            'option[@value="{}"]/text()'.format(option_value)
+        )
         kwargs = {
             'html': comps_html,
             'xpath': comp_name_xpath,
@@ -84,6 +91,9 @@ def source(args, conf):
             'league': league,
         }
         comp_name = trols_stats.Scraper.scrape_competition_name(**kwargs)
+
+        # Restore the daytime.  It's a NEJTA thing :-/
+        daytime = option_value
 
         # Each competition is made of sections.  For example, "BOYS 21".
         # Each section is identified by a code.
@@ -97,24 +107,30 @@ def source(args, conf):
             query_args = {
                 'which': 1,
                 'style': '',
-                'daytime': str(),
+                'daytime': option_value,
                 'section': code,
             }
-            matches_html = loader.request(url, query_args)
+            matches_html = loader.request(results_url.format(league),
+                                          query_args)
             match_codes = trols_stats.Scraper.scrape_match_ids(matches_html,
                                                                match_xpath)
 
-            match_uri = 'http://www.trols.org.au/nejta/match_popup.php'
+            root_uri = (
+                'http://www.trols.org.au/{}/match_popup.php'.format(league)
+            )
             for match_code in match_codes:
+                request_args = {
+                    'matchid': match_code,
+                    'seasonid': str(),
+                }
+                match_uri = '{}?{}'.format(root_uri,
+                                           urllib.urlencode(request_args))
                 request_kwargs = {
                     'uri': match_uri,
-                    'request_args': {
-                        'matchid': match_code,
-                        'seasonid': str(),
-                    },
                     'cache_dir':  conf.cache,
                     'force_cache': args.force,
-                    'comp_token': comp_name
+                    'comp_token': comp_name,
+                    'match_id': match_code
                 }
                 loader.request(**request_kwargs)
 
