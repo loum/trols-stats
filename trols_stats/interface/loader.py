@@ -1,14 +1,16 @@
-import urllib
-import urllib2
-import urlparse
+""":class:`trols_stats.interface.Loader`
+
+"""
 import re
 import os
+import urllib
+import urllib.request
 import tempfile
+from logga import log
+from filer.files import copy_file
 
 import trols_stats
 import trols_stats.interface
-from logga.log import log
-from filer.files import copy_file
 
 __all__ = ['Loader']
 
@@ -131,7 +133,7 @@ class Loader(object):
         if (force_cache
                 or target_file is None
                 or not os.path.exists(target_file)):
-            components = urlparse.urlparse(uri)
+            components = urllib.parse.urlparse(uri)
             log.debug('URI "%s" scheme|path: %s|%s',
                       uri, components.scheme, components.path)
             scheme_match = re.match('http',
@@ -146,8 +148,8 @@ class Loader(object):
             if target_file is not None:
                 log.info('Writing HTML response to cache file "%s"',
                          target_file)
-                with tempfile.NamedTemporaryFile() as _fh:
-                    _fh.write(html)
+                with tempfile.NamedTemporaryFile(mode='w') as _fh:
+                    _fh.write(html.decode('utf-8'))
                     _fh.flush()
                     copy_file(_fh.name, target_file)
         else:
@@ -194,14 +196,14 @@ class Loader(object):
 
         """
         log.info('URL request "%s": args "%s"', url, request_args)
-        request = urllib2.Request(url)
+        request = urllib.request.Request(url)
 
         if request_args is None:
             request_args = {}
 
-        encoded_args = urllib.urlencode(request_args)
+        encoded_args = urllib.parse.urlencode(request_args).encode('utf-8')
 
-        response = urllib2.urlopen(request, encoded_args)
+        response = urllib.request.urlopen(request, encoded_args)
         html = response.read()
 
         return html

@@ -1,4 +1,7 @@
-import unittest2
+"""Unit test cases for the :class:`trols_stats.Scraper` class.
+
+"""
+import unittest
 import os
 import lxml
 
@@ -10,13 +13,12 @@ from trols_stats.tests.results.match_stats import (MATCH_STATS,
                                                    DVTA_TN_MATCH_STATS)
 
 
-class TestScraper(unittest2.TestCase):
+class TestScraper(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.maxDiff = None
 
-        cls.__files_dir = os.path.join('trols_stats', 'tests', 'files')
-        cls.__results_dir = os.path.join('trols_stats', 'tests', 'results')
+        cls._files_dir = os.path.join('trols_stats', 'tests', 'files')
 
     def test_init(self):
         """Initialise a trols_stats.Scraper object.
@@ -29,7 +31,7 @@ class TestScraper(unittest2.TestCase):
         """Test scrape_competition_ids.
         """
         # Given a TROLS competition|section results page
-        test_file = os.path.join(self.__files_dir, 'main_results.php')
+        test_file = os.path.join(self._files_dir, 'main_results.php')
         with open(test_file) as html_fh:
             html = html_fh.read()
 
@@ -108,7 +110,7 @@ class TestScraper(unittest2.TestCase):
         """Scrape_competition name.
         """
         # Given a TROLS competition|section results page
-        test_file = os.path.join(self.__files_dir, 'main_results.php')
+        test_file = os.path.join(self._files_dir, 'main_results.php')
         with open(test_file) as html_fh:
             html = html_fh.read()
 
@@ -127,7 +129,7 @@ class TestScraper(unittest2.TestCase):
         """Scrape_competition name: with league.
         """
         # Given a TROLS competition|section results page
-        test_file = os.path.join(self.__files_dir, 'main_results.php')
+        test_file = os.path.join(self._files_dir, 'main_results.php')
         with open(test_file) as html_fh:
             html = html_fh.read()
 
@@ -151,7 +153,7 @@ class TestScraper(unittest2.TestCase):
         """Scrape_competition name: tokenised.
         """
         # Given a TROLS competition|section results page
-        test_file = os.path.join(self.__files_dir, 'main_results.php')
+        test_file = os.path.join(self._files_dir, 'main_results.php')
         with open(test_file) as html_fh:
             html = html_fh.read()
 
@@ -176,7 +178,7 @@ class TestScraper(unittest2.TestCase):
         """Scrape_competition name: with league tokenised.
         """
         # Given a TROLS competition|section results page
-        test_file = os.path.join(self.__files_dir, 'main_results.php')
+        test_file = os.path.join(self._files_dir, 'main_results.php')
         with open(test_file) as html_fh:
             html = html_fh.read()
 
@@ -197,7 +199,7 @@ class TestScraper(unittest2.TestCase):
         """Test scrape_match_ids.
         """
         # Given a TROLS competition|section results page
-        with open(os.path.join(self.__files_dir,
+        with open(os.path.join(self._files_dir,
                                'www.trols.org.au',
                                'nejta',
                                'results.php')) as _fh:
@@ -243,8 +245,8 @@ class TestScraper(unittest2.TestCase):
         """Test scrape_match_teams: no color code.
         """
         # Given a TROLS detailed match results page
-        match_file = 'match_AA039054.html'
-        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+        match_file = 'nejta_saturday_am_autumn_2015--AA039054.html'
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the team extraction
@@ -263,8 +265,8 @@ class TestScraper(unittest2.TestCase):
         """Test scrape_match_teams: no color code.
         """
         # Given a TROLS detailed match results page
-        match_file = 'match_AA039054.html'
-        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+        match_file = 'nejta_saturday_am_autumn_2015--AA039054.html'
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the team extraction
@@ -289,7 +291,7 @@ class TestScraper(unittest2.TestCase):
         """
         # Given a TROLS detailed match results page
         match_file = 'match_AA031012.html'
-        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the team extraction
@@ -314,7 +316,7 @@ class TestScraper(unittest2.TestCase):
         """
         # Given a TROLS detailed match results page
         match_file = 'match_AA039094.html'
-        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the team extraction
@@ -342,7 +344,7 @@ class TestScraper(unittest2.TestCase):
         """
         # Given a TROLS detailed match results page
         match_file = 'match_AA039301.html'
-        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the team extraction
@@ -369,8 +371,8 @@ class TestScraper(unittest2.TestCase):
         """Extract player names from detailed results page.
         """
         # Given a TROLS detailed match results page
-        match_file = 'match_AA039054.html'
-        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+        match_file = 'nejta_saturday_am_autumn_2015--AA039054.html'
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # when I extract the player names
@@ -395,8 +397,8 @@ class TestScraper(unittest2.TestCase):
         """Extract match preamble.
         """
         # Given a TROLS detailed match results page
-        match_file = 'match_AA039054.html'
-        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+        match_file = 'nejta_saturday_am_autumn_2015--AA039054.html'
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the match preamble extraction
@@ -422,7 +424,7 @@ class TestScraper(unittest2.TestCase):
         """
         # Given a TROLS detailed match results page
         match_file = 'match_HN020143.html'
-        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the match preamble extraction
@@ -448,7 +450,7 @@ class TestScraper(unittest2.TestCase):
         """
         # Given a TROLS detailed match results page: semi final
         match_semi_final = 'match_AA039301.html'
-        with open(os.path.join(self.__files_dir, match_semi_final)) as _fh:
+        with open(os.path.join(self._files_dir, match_semi_final)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the match preamble extraction
@@ -462,9 +464,11 @@ class TestScraper(unittest2.TestCase):
         #  'section': <section_no>,
         #  'date': <date>,
         #  'match_round': <round_no>}
-        expected = {'competition_type': 'girls',
-                    'section': 14,
-                    'match_round': 'Semi Final'}
+        expected = {
+            'competition_type': 'girls',
+            'section': 14,
+            'match_round': 'Semi Final'
+        }
         msg = 'Match preamble (semi-final) dictionary error'
         self.assertDictEqual(received, expected, msg)
 
@@ -472,8 +476,8 @@ class TestScraper(unittest2.TestCase):
         """Scrape match scores: doubles.
         """
         # Given a TROLS detailed match results page
-        match_file = 'match_AA039054.html'
-        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+        match_file = 'nejta_saturday_am_autumn_2015--AA039054.html'
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the match scores extraction
@@ -502,7 +506,7 @@ class TestScraper(unittest2.TestCase):
         """
         # Given a TROLS detailed match results page
         match_file = 'match_HN020143.html'
-        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the match scores extraction
@@ -531,7 +535,7 @@ class TestScraper(unittest2.TestCase):
         """
         # Given a TROLS detailed match results page
         match_file = 'match_TN024321.html'
-        with open(os.path.join(self.__files_dir, match_file)) as _fh:
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
             html = _fh.read()
 
         # and an xpath definition to target the match scores extraction
@@ -560,7 +564,7 @@ class TestScraper(unittest2.TestCase):
         """
         # Given a TROLS detailed match results page
         match_singles_file = 'match_AA026044.html'
-        with open(os.path.join(self.__files_dir,
+        with open(os.path.join(self._files_dir,
                                match_singles_file)) as _fh:
             html = _fh.read()
 
@@ -773,5 +777,4 @@ class TestScraper(unittest2.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.__files_dir = None
-        cls.__results_dir = None
+        cls._files_dir = None

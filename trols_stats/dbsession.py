@@ -1,7 +1,10 @@
+"""class:`trols_stats.DBSession`.
+
+"""
 import os
 import shelve
 
-from logga.log import log
+from logga import log
 from filer.files import create_dir
 
 
@@ -42,9 +45,12 @@ class DBSession(object):
             if create_dir(self.shelve_db):
                 shelve_path = os.path.join(self.shelve_db,
                                            'trols_stats.db')
+                log.debug('Shelve DB path "%s"', shelve_path)
                 flag = 'r'
                 if not os.path.exists(shelve_path):
+                    log.info('Creating data store')
                     flag = 'c'
+                log.debug('DB open flag: "%s"', flag)
                 self.connection = shelve.open(shelve_path, flag=flag)
                 status = True
 

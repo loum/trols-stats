@@ -1,6 +1,9 @@
-import unittest2
+"""Unit test cases for :class:`Loader`.
+
+"""
+import unittest
+import unittest.mock
 import os
-import mock
 import tempfile
 
 import trols_stats.interface as interface
@@ -9,7 +12,7 @@ from filer.files import (get_directory_files_list,
                          copy_file)
 
 
-class TestLoader(unittest2.TestCase):
+class TestLoader(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.__test_dir = os.path.join('trols_stats',
@@ -79,8 +82,8 @@ class TestLoader(unittest2.TestCase):
         with open(os.path.join(self.__test_dir, match_file)) as _fh:
             html = _fh.read()
 
-        with mock.patch.object(interface.Loader,
-                               '_request_url') as mock_request_url:
+        with unittest.mock.patch.object(interface.Loader,
+                                        '_request_url') as mock_request_url:
             mock_request_url.return_value = html
             kwargs = {
                 'request_args': request_args,
@@ -110,8 +113,8 @@ class TestLoader(unittest2.TestCase):
         with open(os.path.join(self.__test_dir, match)) as _fh:
             html = _fh.read()
 
-        with mock.patch.object(interface.Loader,
-                               '_request_url') as mock_request_url:
+        with unittest.mock.patch.object(interface.Loader,
+                                        '_request_url') as mock_request_url:
             mock_request_url.return_value = html
             kwargs = {
                 'cache_dir': cache_dir,
@@ -186,8 +189,8 @@ class TestLoader(unittest2.TestCase):
             os.utime(cache_file, None)
 
         # when I make a TROLS request
-        with mock.patch.object(interface.Loader,
-                               '_request_url') as mock_request_url:
+        with unittest.mock.patch.object(interface.Loader,
+                                        '_request_url') as mock_request_url:
             html_file = os.path.join(self.__test_dir, match_file)
             with open(html_file) as _fh:
                 html = _fh.read()
@@ -222,5 +225,5 @@ class TestLoader(unittest2.TestCase):
         self.assertIsNotNone(received, msg)
 
     @classmethod
-    def teatDownClass(cls):
+    def tearDownClass(cls):
         cls.__test_dir = None

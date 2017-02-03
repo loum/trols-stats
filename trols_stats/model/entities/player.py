@@ -44,7 +44,7 @@ class Player(trols_stats.model.Base):
 
         if isinstance(other, dict):
             player = {'name': self.name, 'team': self.team}
-            is_same = (cmp(player, other) == 0)
+            is_same = player == other
         else:
             is_same = self.__dict__ == other.__dict__
 

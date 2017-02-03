@@ -1,8 +1,10 @@
+"""class:`trols_stats.Stats`.
+
+"""
 import trols_stats.model
 import trols_stats.model.entities
 import trols_stats.model.aggregates
-
-from logga.log import log
+from logga import log
 
 __all__ = ['Stats']
 
@@ -10,6 +12,43 @@ __all__ = ['Stats']
 class Stats(object):
     """
     ..attribute:: players
+        list of tuples that represent the player number in the match
+        and the name of the player.  For example::
+
+            [
+                (1, 'Mladena Mitic'),
+                (2, 'Erica Bramble'),
+                (3, 'Indiana Pisasale'),
+                (4, 'Sasha Pecanic'),
+                (5, 'Shania Peric'),
+                (6, 'Maddison Batchelor'),
+                (7, 'Kristen Fisher'),
+                (8, 'Paris Batchelor')
+            ]
+
+       Player numbers 1-4 make up the Home Team.  5-8 are the Away Team
+
+    ..attribute:: teams
+        data structure that represents the match Home and Away teams.
+        For example::
+
+            {'away_team': 'Eltham', 'home_team': 'Norris Bank'}
+
+        The keys ``away_team`` and ``away_team`` are required
+
+    ..attribute:: fixture
+        dict data structure that represents the details of the match.
+        For example::
+
+            {
+                'competition_type': 'girls',
+                'competition': 'saturday_am_autumn_2015',
+                'section': 1,
+                'date': '21 Feb 15',
+                'match_round': 4,
+                'home_team': 'Norris Bank',
+                'away_team': 'Eltham',
+            }
 
     ..attribute:: games_cache
         list of :class:`trols_stats.model.aggregrates.Games` objects
@@ -92,13 +131,13 @@ class Stats(object):
         if player_details is not None:
             for cache in self.__players_cache:
                 if cache == player_details:
-                    log.debug('Player cache hit "%s"' %
+                    log.debug('Player cache hit "%s"',
                               player_details.get('name'))
                     player = cache
                     break
 
             if player is None:
-                log.debug('Adding "%s" to player cache' %
+                log.debug('Adding "%s" to player cache',
                           player_details.get('name'))
                 player = trols_stats.model.entities.Player(**player_details)
                 self.__players_cache.append(player)
@@ -133,18 +172,18 @@ class Stats(object):
         fixture = None
         for cache in self.__fixtures_cache:
             if cache == fixture_details:
-                log.debug('Fixture cache hit "%s %s round %s"' %
-                          (fixture_details.get('competition'),
-                           fixture_details.get('section'),
-                           fixture_details.get('match_round')))
+                log.debug('Fixture cache hit "%s %s round %s"',
+                          fixture_details.get('competition'),
+                          fixture_details.get('section'),
+                          fixture_details.get('match_round'))
                 fixture = cache
                 break
 
         if fixture is None:
-            log.debug('Adding "%s %s round %s" to fixture cache' %
-                      (fixture_details.get('competition'),
-                       fixture_details.get('section'),
-                       fixture_details.get('match_round')))
+            log.debug('Adding "%s %s round %s" to fixture cache',
+                      fixture_details.get('competition'),
+                      fixture_details.get('section'),
+                      fixture_details.get('match_round'))
             fixture = trols_stats.model.entities.Fixture(**fixture_details)
             self.__fixtures_cache.append(fixture)
 
@@ -191,7 +230,7 @@ class Stats(object):
                 }
 
         """
-        for code, games in stats.iteritems():
+        for code, games in stats.items():
             player_obj = self.set_players_cache(self.get_player(code))
 
             for raw_game in games:
@@ -223,10 +262,22 @@ class Stats(object):
                 self.set_games_cache(game_data)
 
     def get_player(self, code):
+        """Return the name and team of player defined by *code*.
+
+        **Args:**
+            *code*: integer representing the match player code
+
+        **Returns:**
+            player details within a dict structure.  For example::
+
+                {'team': 'Norris Bank', 'name': 'Indiana Pisasale'}
+
+        """
         player = None
         if code is not None:
             name = self.players.get(code)
-            team = self.teams.get('away_team' if (code - 1) / 4 else 'home_team')
+            index = 'away_team' if int((code - 1) / 4) else 'home_team'
+            team = self.teams.get(index)
             player = {'name': name, 'team': team}
 
             log.debug('Player code "%d" lookup produced "%s"',
@@ -235,6 +286,21 @@ class Stats(object):
         return player
 
     def get_opposition(self, opposition_codes):
+        """Get the opposition player details.
+
+        **Args:**
+            *opposition_codes*: tuple structure that represents
+            the player code (1-8) for a particular match.  A singles match
+            for example could as::
+
+                (3, None)
+
+            Here, the opposition player code 3 represents home team player 3
+
+        **Returns:**
+            Tuple of :class:`trols_stats.model.entities.player.Player` objects
+
+        """
         opposition_data_1 = self.get_player(opposition_codes[0])
         player_1 = self.set_players_cache(opposition_data_1)
 

@@ -1,8 +1,23 @@
+"""class:`trols_stats.Statistics`.
+
+Data structure managing match statistics.
+
+"""
 __all__ = ['Statistics']
 
 
 class Statistics(object):
+    """..attribute:: score_for
 
+        ..attribute:: score_against
+
+        ..attribute:: games_played
+
+        ..attribute:: games_won
+
+        ..attribute:: games_lost
+
+    """
     @property
     def score_for(self):
         return self.__score_for
@@ -51,9 +66,9 @@ class Statistics(object):
         self.__games_lost = 0
 
     def __call__(self):
-        pc = 0.0
+        percent = 0.0
         if self.score_against > 0:
-            pc = float(self.score_for) / float(self.score_against) * 100
+            percent = float(self.score_for) / float(self.score_against) * 100
 
         return {
             'games_lost': self.games_lost,
@@ -61,7 +76,7 @@ class Statistics(object):
             'games_won': self.games_won,
             'score_against': self.score_against,
             'score_for': self.score_for,
-            'percentage': pc
+            'percentage': percent
         }
 
     def aggregate(self, game):

@@ -1,8 +1,11 @@
-import lxml.html
-import re
-import string
+"""class:`trols_stats.Scraper`.
 
-from logga.log import log
+Scrape TROLS HTML.
+
+"""
+import re
+import lxml.html
+from logga import log
 
 __all__ = ['Scraper']
 
@@ -119,7 +122,8 @@ class Scraper(object):
                 match_id = Scraper.get_match_id(attrs)
 
                 if match_id is None:
-                    log.warn('Unable to extract match ID from "%s"', attrs)
+                    log.warning('Unable to extract match ID from "%s"',
+                                attrs)
                     continue
 
                 match_ids.append(match_id)
@@ -143,7 +147,7 @@ class Scraper(object):
             ``AA039054``
 
         """
-        prog = re.compile(r'open_match\(event,\'\',\'(\w+)\'\);')
+        prog = re.compile(r'open_match\(event,\'.*\',\'(\w+)\'\);')
 
         match_id = None
         if attributes[0] == 'onclick':
@@ -179,7 +183,7 @@ class Scraper(object):
             colors = []
             for color in tmp_colors:
                 # Some identifiers we don't want.
-                clean_color = string.replace(color, '(Late Start)', '')
+                clean_color = str.replace(color, '(Late Start)', '')
                 if len(clean_color):
                     colors.append(clean_color)
 
@@ -199,7 +203,8 @@ class Scraper(object):
 
         teams = {}
         if len(raw_teams) != 2:
-            log.warn('Expecting two teams. Received %d', len(raw_teams))
+            log.warning('Expecting two teams. Received %d',
+                        len(raw_teams))
         else:
             home_team = raw_teams[0].text
             away_team = raw_teams[1].text
@@ -254,15 +259,15 @@ class Scraper(object):
 
         A typical preamble string is as follows::
 
-            GIRLS 14 on 28th Feb 15  Rd.5
+            GIRLS 1  Rd.1 on 1st Feb 14
 
         For finals::
 
-            GIRLS 14 on Semi Final
+            GIRLS 14 Semi Final
 
         DVTA formats a different::
 
-            Thu Sect 8 on 19th May 16  Rd.14
+            Tue Sect 5  Rd.1 on 12th Jul 16
 
         **Args:**
             *html*: string representation of the HTML page to process.
@@ -293,7 +298,7 @@ class Scraper(object):
 
             match_competition = matchobj.group(1).lower()
             if match_competition in ['girls', 'boys']:
-                preamble['competition_type'] = match_competition.encode('utf8')
+                preamble['competition_type'] = match_competition
             log.debug('Match competition_type: "%s"',
                       preamble['competition_type'])
 
@@ -303,6 +308,7 @@ class Scraper(object):
                                     re.IGNORECASE)
         raw_preamble = competition_re.sub(competition, raw_preamble)
 
+        # Remove the "Sect" token (DVTA only).
         raw_preamble = raw_preamble.replace('Sect ', '')
 
         def section(matchobj):
@@ -312,8 +318,21 @@ class Scraper(object):
 
             return matchobj.group(2)
 
-        section_re = re.compile(r'^(\d+)\s+on\s+(.*)')
+        section_re = re.compile(r'^(\d+)\s+(.*)')
         raw_preamble = section_re.sub(section, raw_preamble)
+
+        def round_no(matchobj):
+            match_round_no = int(matchobj.group(1))
+            log.debug('Match round: %d', match_round_no)
+            preamble['match_round'] = match_round_no
+
+            return matchobj.group(2)
+
+        round_no_re = re.compile(r'^Rd.(\d+)\s+(.*)')
+        raw_preamble = round_no_re.sub(round_no, raw_preamble)
+
+        # Remove the "on" token (both DVTA/NEJTA only).
+        raw_preamble = raw_preamble.replace('on ', '')
 
         def date(matchobj):
             match_date = ('%s %s %s' % (matchobj.group(1),
@@ -324,23 +343,13 @@ class Scraper(object):
 
             return matchobj.group(5)
 
-        date_re = re.compile(r'^(\d+)(st|nd|rd|th)\s+(\w+)\s+(\d{2})\s+(.*)')
+        date_re = re.compile(r'^(\d+)(st|nd|rd|th)\s+(\w+)\s+(\d{2})(.*)')
         raw_preamble = date_re.sub(date, raw_preamble)
-
-        def round_no(matchobj):
-            match_round_no = int(matchobj.group(1))
-            log.debug('Match round: %d', match_round_no)
-            preamble['match_round'] = match_round_no
-
-            return matchobj.group(2)
-
-        round_no_re = re.compile(r'^Rd.(\d+)(.*)')
-        raw_preamble = round_no_re.sub(round_no, raw_preamble)
 
         def final(matchobj):
             final_token = '{} {}'.format(matchobj.group(1),
                                          matchobj.group(2))
-            log.debug('Final token: "%s"' % final_token)
+            log.debug('Final token: "%s"', final_token)
             preamble['match_round'] = final_token
 
             return matchobj.group(3)
@@ -349,8 +358,8 @@ class Scraper(object):
         raw_preamble = final_re.sub(final, raw_preamble)
 
         if len(raw_preamble):
-            log.warn('Match preamble string has unparsed tokens "%s"',
-                     raw_preamble)
+            log.warning('Match preamble string has unparsed tokens "%s"',
+                        raw_preamble)
 
         return preamble
 
@@ -378,9 +387,10 @@ class Scraper(object):
             if count % 3 == 2:
                 continue
 
-            log.debug('score component: %s', score.text)
+            log.debug('Score component: %s', score.text)
 
             if score.text is None:
+                log.warning('Score undefined: skipping')
                 continue
 
             # Check for doubles.

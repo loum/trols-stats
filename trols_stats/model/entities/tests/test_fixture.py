@@ -1,9 +1,14 @@
-import unittest2
+"""Unit test cases for the :class:`trols_stats.model.entities.Fixture`
+class.
+
+"""
+import unittest
+import json
 
 import trols_stats.model.entities
 
 
-class TestFixture(unittest2.TestCase):
+class TestFixture(unittest.TestCase):
     def test_init(self):
         """Initialise a trols_stats.model.Player object.
         """
@@ -32,9 +37,18 @@ class TestFixture(unittest2.TestCase):
         fixture = trols_stats.model.entities.Fixture(**fixture_data)
 
         # and dump to JSON
-        received = fixture.to_json()
+        received = json.loads(fixture.to_json())
 
         # then I should get a serialised JSON string
-        expected = '{"date": "28 Feb 15", "home_team": "Watsonia Red", "away_team": "St Marys", "uid": 1234, "competition_type": "girls", "section": 14, "competition": "saturday_am_autumn_2015", "match_round": 5}'
+        expected = {
+            "date": "28 Feb 15",
+            "home_team": "Watsonia Red",
+            "away_team": "St Marys",
+            "uid": 1234,
+            "competition_type": "girls",
+            "section": 14,
+            "competition": "saturday_am_autumn_2015",
+            "match_round": 5
+        }
         msg = 'trols_stats.model.entities.Fixture() to JSON error'
-        self.assertEqual(received, expected, msg)
+        self.assertDictEqual(received, expected, msg)

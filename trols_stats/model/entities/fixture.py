@@ -1,3 +1,6 @@
+""":class:`trols_stats.model.entities.Fixture`
+
+"""
 import trols_stats.model
 import time
 import datetime
@@ -8,21 +11,34 @@ __all__ = ['Fixture']
 class Fixture(trols_stats.model.Base):
     """
     .. attribute:: match_round
+        :class:`trols_stats.model.entities.MatchRound` object instance
+
     .. attribute:: competition_type
+
     .. attribute:: competition
+
     .. attribute:: section
+
     .. attribute:: date
+
     .. attribute:: home_team
+
     .. attribute:: away_team
 
     """
     @property
     def match_round(self):
-        return self.__round
+        return self.__round()
+
+    @property
+    def match_round_numeric(self):
+        return self.__round(as_number=True)
 
     @match_round.setter
     def match_round(self, value):
-        self.__round = value
+        self.__round = None
+        del self.__round
+        self.__round = trols_stats.model.entities.MatchRound(value)
 
     @property
     def competition_type(self):
@@ -83,7 +99,7 @@ class Fixture(trols_stats.model.Base):
                  away_team=None):
         super(Fixture, self).__init__(uid=uid)
 
-        self.__round = match_round
+        self.__round = trols_stats.model.entities.MatchRound(match_round)
         self.__competition_type = competition_type
         self.__competition = competition
         self.__section = section
@@ -116,7 +132,7 @@ class Fixture(trols_stats.model.Base):
                 'home_team': self.home_team,
                 'away_team': self.away_team,
             }
-            is_same = (cmp(fixture, other) == 0)
+            is_same = fixture == other
         else:
             is_same = self.__dict__ == other.__dict__
 

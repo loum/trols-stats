@@ -1,4 +1,7 @@
-import unittest2
+"""Unit test cases for the :class:`trols_stats.Statistics` class.
+
+"""
+import unittest
 import json
 import os
 
@@ -6,7 +9,7 @@ import trols_stats
 import trols_stats.model.aggregates
 
 
-class TestStatistics(unittest2.TestCase):
+class TestStatistics(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.__files_dir = os.path.join('trols_stats', 'tests', 'files')

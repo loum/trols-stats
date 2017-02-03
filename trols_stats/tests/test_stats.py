@@ -1,14 +1,16 @@
-import unittest2
+"""Unit test cases for the :class:`trols_stats.Stats` class.
+
+"""
+import unittest
 
 import trols_stats
 import trols_stats.model
-from trols_stats.tests.results.game_aggregates import (SINGLES,
-                                                       DOUBLES,
+from trols_stats.tests.results.game_aggregates import (DOUBLES,
                                                        COLOR_CODED_DOUBLES,
                                                        COLOR_CODED_4TH_DOUBLES)
 
 
-class TestStats(unittest2.TestCase):
+class TestStats(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.maxDiff = None
@@ -331,7 +333,34 @@ class TestStats(unittest2.TestCase):
 
         # then I should receive a Game dictionary object
         received = stats.games_cache[0]()
-        expected = SINGLES
+        # expected = SINGLES
+        expected = {
+            'uid': None,
+            'score_against': 3,
+            'fixture': {
+                'home_team': 'Norris Bank',
+                'away_team': 'Eltham',
+                'uid': None,
+                'section': 1,
+                'competition': 'saturday_am_autumn_2015',
+                'competition_type': 'girls',
+                'date': '21 Feb 15',
+                'match_round': 4
+            },
+            'score_for': 6,
+            'player': {
+                'team': 'Eltham',
+                'uid': None,
+                'name': 'Kristen Fisher'
+            },
+            'opposition': [
+                {
+                    'team': 'Norris Bank',
+                    'uid': None,
+                    'name': 'Indiana Pisasale'
+                }
+            ]
+        }
         msg = 'Games aggregate (singles) error'
         self.assertDictEqual(received, expected, msg)
 
@@ -357,14 +386,25 @@ class TestStats(unittest2.TestCase):
         stats = trols_stats.Stats(players=dict(players), teams=teams)
         opposition = stats.get_opposition((1, 2))
 
-        # then I should get a tuple of trols_stats.Players
-        received = (opposition[0].to_json(), opposition[1].to_json())
-        expected = (
-            '{"team": "Watsonia Red", "uid": null, "name": "Madeline Doyle"}',
-            '{"team": "Watsonia Red", "uid": null, "name": "Tara Watson"}'
-        )
-        msg = 'Opposition player structure (doubles) incorrect'
-        self.assertTupleEqual(received, expected, msg)
+        # then I should a list with two items
+        msg = 'Opponents list length not 2'
+        self.assertEqual(len(opposition), 2, msg)
+
+        # and the first opponent should match
+        expected = {
+            'team': 'Watsonia Red',
+            'uid': None,
+            'name': 'Madeline Doyle',
+        }
+        msg = 'Opposition player structure (doubles 1) incorrect'
+        self.assertEqual(opposition[0](), expected, msg)
+
+        # and the second opponent should match
+        expected = {
+            'team': 'Watsonia Red',
+            'uid': None,
+            'name': 'Tara Watson'
+        }
 
     def test_get_oppositon_singles(self):
         """Get the opposition players (singles) data structure.
@@ -388,11 +428,19 @@ class TestStats(unittest2.TestCase):
         stats = trols_stats.Stats(players=dict(players), teams=teams)
         opposition = stats.get_opposition((1, None))
 
-        # then I should get a tuple of trols_stats.Players
-        received = (opposition[0].to_json(), opposition[1])
-        expected = (
-            '{"team": "Watsonia Red", "uid": null, "name": "Madeline Doyle"}',
-            None
-        )
-        msg = 'Opposition player structure (doubles) incorrect'
-        self.assertTupleEqual(received, expected, msg)
+        # then I should a list with two items
+        msg = 'Opponents list length not 2'
+        self.assertEqual(len(opposition), 2, msg)
+
+        # and the first opponent should match
+        expected = {
+            'team': 'Watsonia Red',
+            'uid': None,
+            'name': 'Madeline Doyle'
+        }
+        msg = 'Opposition player structure (singles) incorrect'
+        self.assertEqual(opposition[0](), expected, msg)
+
+        # and the second index should be None
+        msg = 'Opposition player structure (singles) incorrect'
+        self.assertIsNone(opposition[1], msg)

@@ -1,9 +1,15 @@
-import unittest2
+"""Unit test cases for the :class:`trols_stats.model.entities.Player`
+class.
+
+"""
+import unittest
+import json
 
 import trols_stats.model.entities
 
 
-class TestPlayer(unittest2.TestCase):
+class TestPlayer(unittest.TestCase):
+
     def test_init(self):
         """Initialise a trols_stats.model.entities.Player object.
         """
@@ -27,12 +33,16 @@ class TestPlayer(unittest2.TestCase):
         player = trols_stats.model.entities.Player(**player_data)
 
         # and dump to JSON
-        received = player.to_json()
+        received = json.loads(player.to_json())
 
         # then I should received a serialised JSON string
-        expected = '{"team": "Best Team", "uid": "xyz", "name": "Player 1"}'
+        expected = {
+            "team": "Best Team",
+            "uid": "xyz",
+            "name": "Player 1"
+        }
         msg = 'trols_stats.model.entities.Player() to JSON error'
-        self.assertEqual(received, expected, msg)
+        self.assertDictEqual(received, expected, msg)
 
     def test_equality_dict_base(self):
         """trols_stats.model.entities.Player equality: dict base.

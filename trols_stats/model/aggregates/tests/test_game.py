@@ -1,4 +1,7 @@
-import unittest2
+"""Unit test cases for :class:`trols_stats.model.aggregates.Game`.
+
+"""
+import unittest
 import os
 import json
 import datetime
@@ -8,7 +11,7 @@ import trols_stats.model.aggregates
 import trols_stats.model.tests.files.game_aggregates as game_aggregates
 
 
-class TestGame(unittest2.TestCase):
+class TestGame(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.maxDiff = None
@@ -40,13 +43,12 @@ class TestGame(unittest2.TestCase):
         game = trols_stats.model.aggregates.Game(**game_data)
 
         # and dump to JSON
-        received = game.to_json()
+        received = json.loads(game.to_json())
 
         # then I should get a serialised JSON string
-        expected_fh = open(os.path.join(self.__results_dir,
-                                        'game_aggregate_doubles.json'))
-        expected = expected_fh.read().rstrip()
-        expected_fh.close()
+        with open(os.path.join(self.__results_dir,
+                               'game_aggregate_doubles.json')) as _fh:
+            expected = json.loads(_fh.read().rstrip())
         msg = 'trols_stats.model.Game() to JSON error: doubles'
         self.assertEqual(received, expected, msg)
 
@@ -60,15 +62,14 @@ class TestGame(unittest2.TestCase):
         game = trols_stats.model.aggregates.Game(**game_data)
 
         # and dump to JSON
-        received = game.to_json()
+        received = json.loads(game.to_json())
 
         # then I should get a serialised JSON string
-        expected_fh = open(os.path.join(self.__results_dir,
-                                        'game_aggregate_singles.json'))
-        expected = expected_fh.read().rstrip()
-        expected_fh.close()
+        with open(os.path.join(self.__results_dir,
+                               'game_aggregate_singles.json')) as _fh:
+            expected = json.loads(_fh.read().rstrip())
         msg = 'trols_stats.model.Game() to JSON error: singles'
-        self.assertEqual(received, expected, msg)
+        self.assertDictEqual(received, expected, msg)
 
     def test_build_opposition_singles(self):
         """Build opposition data structure from dictionary source: singles.

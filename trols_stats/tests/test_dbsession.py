@@ -1,4 +1,7 @@
-import unittest2
+"""Unit test cases for the :class:`trols_stats.DBSession` class.
+
+"""
+import unittest
 import os
 import tempfile
 
@@ -7,7 +10,7 @@ from filer.files import (get_directory_files_list,
                          remove_files)
 
 
-class TestDBSession(unittest2.TestCase):
+class TestDBSession(unittest.TestCase):
     def test_init(self):
         """Initialise an trols_stats.DBSession object
         """

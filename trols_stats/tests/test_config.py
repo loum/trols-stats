@@ -1,10 +1,13 @@
-import unittest2
+"""Unit test cases for the :class:`trols_stats.Config` class.
+
+"""
+import unittest
 import os
 
 import trols_stats
 
 
-class TestConfig(unittest2.TestCase):
+class TestConfig(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.__test_dir = os.path.join('trols_stats', 'tests', 'files')

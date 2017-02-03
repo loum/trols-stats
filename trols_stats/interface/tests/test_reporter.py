@@ -1,4 +1,7 @@
-import unittest2
+"""Unit test cases for the :class:`trols_stats.interface.Reporter` class.
+"""
+import unittest
+import operator
 import os
 import json
 
@@ -20,7 +23,7 @@ def json_loads_byteified(json_text):
 
 def _byteify(data, ignore_dicts=False):
     # If this is a unicode string, return its string representation.
-    if isinstance(data, unicode):
+    if isinstance(data, str):
         return data.encode('utf-8')
 
     # If this is a list of values, return list of byteified values.
@@ -33,14 +36,14 @@ def _byteify(data, ignore_dicts=False):
         return {
             _byteify(key, ignore_dicts=True):
                 _byteify(value, ignore_dicts=True)
-            for key, value in data.iteritems()
+            for key, value in data.items()
         }
 
     # If it's anything else, return it in its original form.
     return data
 
 
-class TestReporter(unittest2.TestCase):
+class TestReporter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.maxDiff = None
@@ -79,6 +82,16 @@ class TestReporter(unittest2.TestCase):
         # then I should get the player profile
         expected = [
             {
+                'comp': 'nejta_saturday_am_spring_2015',
+                'comp_string': 'NEJTA Saturday AM Spring 2015',
+                'comp_type': 'girls',
+                'name': 'Eboni Amos',
+                'section': '12',
+                'team': 'Watsonia',
+                'token': 'Eboni Amos~Watsonia~12~girls~'
+                         'nejta_saturday_am_spring_2015'
+            },
+            {
                 'comp': 'nejta_saturday_am_autumn_2015',
                 'comp_string': 'NEJTA Saturday AM Autumn 2015',
                 'comp_type': 'girls',
@@ -98,19 +111,13 @@ class TestReporter(unittest2.TestCase):
                 'token': 'Eboni Amos~Watsonia Red~15~girls~'
                          'nejta_saturday_am_spring_2014'
             },
-            {
-                'comp': 'nejta_saturday_am_spring_2015',
-                'comp_string': 'NEJTA Saturday AM Spring 2015',
-                'comp_type': 'girls',
-                'name': 'Eboni Amos',
-                'section': '12',
-                'team': 'Watsonia',
-                'token': 'Eboni Amos~Watsonia~12~girls~'
-                         'nejta_saturday_am_spring_2015'
-            },
         ]
         msg = 'Player instance mismatch'
-        self.assertListEqual(received, expected, msg)
+        self.assertListEqual(sorted(received,
+                                    key=operator.itemgetter('name',
+                                                            'section')),
+                             expected,
+                             msg)
 
     def test_get_players_lowercase(self):
         """Players lookup: lower case.
@@ -125,6 +132,16 @@ class TestReporter(unittest2.TestCase):
         # then I should get the player profile
         expected = [
             {
+                'comp': 'nejta_saturday_am_spring_2015',
+                'comp_string': 'NEJTA Saturday AM Spring 2015',
+                'comp_type': 'girls',
+                'name': 'Eboni Amos',
+                'section': '12',
+                'team': 'Watsonia',
+                'token': 'Eboni Amos~Watsonia~12~girls~'
+                         'nejta_saturday_am_spring_2015'
+            },
+            {
                 'comp': 'nejta_saturday_am_autumn_2015',
                 'comp_string': 'NEJTA Saturday AM Autumn 2015',
                 'comp_type': 'girls',
@@ -144,19 +161,13 @@ class TestReporter(unittest2.TestCase):
                 'token': 'Eboni Amos~Watsonia Red~15~girls~'
                          'nejta_saturday_am_spring_2014'
             },
-            {
-                'comp': 'nejta_saturday_am_spring_2015',
-                'comp_string': 'NEJTA Saturday AM Spring 2015',
-                'comp_type': 'girls',
-                'name': 'Eboni Amos',
-                'section': '12',
-                'team': 'Watsonia',
-                'token': 'Eboni Amos~Watsonia~12~girls~'
-                         'nejta_saturday_am_spring_2015'
-            },
         ]
         msg = 'Player instance mismatch'
-        self.assertListEqual(received, expected, msg)
+        self.assertListEqual(sorted(received,
+                                    key=operator.itemgetter('name',
+                                                            'section')),
+                             expected,
+                             msg)
 
     def test_get_players_lowercase_multiple_part_names(self):
         """Players lookup: lower case.
@@ -170,7 +181,7 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         msg = 'Players multi part query error'
-        self.assertEqual(len(received), 15, msg)
+        self.assertEqual(len(received), 20, msg)
 
     def test_get_players_team_and_section(self):
         """Players lookup: team and section.
@@ -192,7 +203,10 @@ class TestReporter(unittest2.TestCase):
                                'players_team_and_section.json')) as _fh:
             expected = json_loads_byteified(_fh.read().strip())
         msg = 'Player instance mismatch'
-        self.assertListEqual(sorted(received), expected, msg)
+        self.assertListEqual(sorted(received,
+                                    key=lambda x: x.get(b'name')),
+                             expected,
+                             msg)
 
     def test_get_players_team(self):
         """Players lookup: team.
@@ -206,7 +220,7 @@ class TestReporter(unittest2.TestCase):
 
         # then I should get the player profile
         msg = 'Player instance (team search) count error'
-        self.assertEqual(len(received), 193, msg)
+        self.assertEqual(len(received), 242, msg)
 
     def test_get_players_name_and_competition(self):
         """Players lookup: name and compeition.
@@ -227,6 +241,16 @@ class TestReporter(unittest2.TestCase):
             {
                 'comp': 'nejta_saturday_am_spring_2015',
                 'comp_string': 'NEJTA Saturday AM Spring 2015',
+                'comp_type': 'girls',
+                'name': 'Isabella Markovski',
+                'section': '12',
+                'team': 'Watsonia',
+                'token': 'Isabella Markovski~Watsonia~12~girls~'
+                         'nejta_saturday_am_spring_2015'
+            },
+            {
+                'comp': 'nejta_saturday_am_spring_2015',
+                'comp_string': 'NEJTA Saturday AM Spring 2015',
                 'comp_type': 'boys',
                 'name': 'Joel Markovski',
                 'section': '21',
@@ -234,19 +258,12 @@ class TestReporter(unittest2.TestCase):
                 'token': 'Joel Markovski~Watsonia~21~boys~'
                          'nejta_saturday_am_spring_2015'
             },
-            {
-                'comp': 'nejta_saturday_am_spring_2015',
-                'comp_string': 'NEJTA Saturday AM Spring 2015',
-                'comp_type': 'girls',
-                'name': 'Isabella Markovski',
-                'section': '12',
-                'team': 'Watsonia',
-                'token': 'Isabella Markovski~Watsonia~12~girls~'
-                         'nejta_saturday_am_spring_2015'
-            }
         ]
         msg = 'Player instance mismatch (name, competition)'
-        self.assertListEqual(sorted(received), expected, msg)
+        self.assertListEqual(sorted(received,
+                                    key=lambda x: x.get('name')),
+                             expected,
+                             msg)
 
     def test_get_players_multiple(self):
         """Players lookup: multiple.
@@ -264,7 +281,11 @@ class TestReporter(unittest2.TestCase):
                                'players_multiple_names.json')) as _fh:
             expected = json_loads_byteified(_fh.read().strip())
         msg = 'Players lookup (multiple name query) mismatch'
-        self.assertListEqual(sorted(received), expected, msg)
+        self.assertListEqual(sorted(received,
+                                    key=operator.itemgetter(b'name',
+                                                            b'section')),
+                             expected,
+                             msg)
 
     def test_get_teams(self):
         """Get unique list of sorted teams.
@@ -321,7 +342,7 @@ class TestReporter(unittest2.TestCase):
         received = reporter.get_sections(**kwargs)
 
         # then I should get a list of ordered teams
-        expected = range(1, 15)
+        expected = list(range(1, 15))
         msg = 'Section scan error: girls'
         self.assertListEqual(received, expected, msg)
 
@@ -337,7 +358,7 @@ class TestReporter(unittest2.TestCase):
         received = reporter.get_sections(**kwargs)
 
         # then I should get a list of ordered teams
-        expected = range(1, 27)
+        expected = list(range(1, 27))
         msg = 'Section scan error: boys'
         self.assertListEqual(received, expected, msg)
 
@@ -353,7 +374,7 @@ class TestReporter(unittest2.TestCase):
         received = reporter.get_sections(**kwargs)
 
         # then I should get a list of ordered teams
-        expected = range(1, 27)
+        expected = list(range(1, 27))
         msg = 'Section scan error: default'
         self.assertListEqual(received, expected, msg)
 
@@ -368,31 +389,8 @@ class TestReporter(unittest2.TestCase):
         received = len(reporter.get_players(names))
 
         # then I should get the player profile
-        expected = 5983
+        expected = 7882
         msg = 'Player instance (all players) incorrect count'
-        self.assertEqual(received, expected, msg)
-
-    def test_get_player_fixtures(self):
-        """Get all fixtures associated with a player.
-        """
-        # Given a player name
-        player = ('Isabella Markovski~Watsonia Blue~14~'
-                  'girls~nejta_saturday_am_autumn_2015')
-
-        # when I search for all of the player's fixtures
-        reporter = trols_stats.interface.Reporter(db=self.__db)
-        game_aggregates = reporter.get_player_fixtures(player)
-
-        # then I should receive a list of fixtures that player was part of
-        received = json.dumps([x() for x in game_aggregates],
-                              sort_keys=True,
-                              indent=4,
-                              separators=(',', ': '))
-
-        with open(os.path.join(self.__results_dir,
-                               'ise_game_aggregates.json')) as _fh:
-            expected = _fh.read().strip()
-        msg = 'Player combined fixtures output as JSON error'
         self.assertEqual(received, expected, msg)
 
     def test_last_fixture_played_grand_final(self):
@@ -403,6 +401,7 @@ class TestReporter(unittest2.TestCase):
         token = ('Isabella Markovski~Watsonia Blue~'
                  '14~girls~nejta_saturday_am_autumn_2015')
         game_aggregates = reporter.get_player_fixtures(token)
+        print([x() for x in game_aggregates])
 
         # when I search for the player's last fixture
         last_fixture = reporter.last_fixture_played(game_aggregates)
@@ -428,7 +427,7 @@ class TestReporter(unittest2.TestCase):
         # when I search for the player's last fixture
         last_fixture = reporter.last_fixture_played(game_aggregates)
 
-        # then I should receive a list of fixtures that player was part of
+        # then I should receive a list of fixtures
         received = json.dumps([x() for x in last_fixture],
                               sort_keys=True,
                               indent=4,
@@ -437,27 +436,6 @@ class TestReporter(unittest2.TestCase):
                                'zara_last_game_aggregates.json')) as _fh:
             expected = _fh.read().strip()
         msg = 'Last fixture (Semi Final) error'
-        self.assertEqual(received, expected, msg)
-
-    def test_last_fixture_played_semi_final(self):
-        """Get the last fixtures associated with a player: semi final.
-        """
-        # Given a player's game aggregate
-        reporter = trols_stats.interface.Reporter(db=self.__db)
-        token = ('Isabella Markovski~Watsonia~12~girls~'
-                 'nejta_saturday_am_spring_2015')
-        game_aggregates = reporter.get_player_fixtures(token)
-
-        # when I search for the player's last fixture
-        last_fixture = reporter.last_fixture_played(game_aggregates)
-        received = json.dumps([x() for x in last_fixture])
-        received = json_loads_byteified(received)
-
-        # then I should receive a list of fixtures that player was part of
-        with open(os.path.join(self.__results_dir,
-                               'ise_12_last_game_aggregates.json')) as _fh:
-            expected = json_loads_byteified(_fh.read().strip())
-        msg = 'Last fixture (normal round) error'
         self.assertEqual(received, expected, msg)
 
     def test_get_player_singles_games_no_games_played(self):
@@ -488,13 +466,46 @@ class TestReporter(unittest2.TestCase):
 
         # then I should receive a list of doubles games that player was
         # part of
-        received = json.dumps([x() for x in doubles_games])
-        received = json_loads_byteified(received)
-        with open(os.path.join(self.__results_dir,
-                               'ise_game_aggregates.json')) as _fh:
-            expected = json_loads_byteified(_fh.read().strip())
+        received = [x() for x in doubles_games][1]
+        expected = {
+            'fixture': {
+                'away_team': 'Watsonia Blue',
+                'competition': 'nejta_saturday_am_autumn_2015',
+                'competition_type': 'girls',
+                'date': '31 Jan 15',
+                'home_team': 'St Marys',
+                'match_round': 1,
+                'section': 14,
+                'uid': None
+            },
+            'opposition': [
+                {
+                    'name': 'Lauren Amsing',
+                    'team': 'St Marys',
+                    'uid': None
+                },
+                {
+                    'name': 'Lucinda Ford',
+                    'team': 'St Marys',
+                    'uid': None
+                }
+            ],
+            'player': {
+                'name': 'Isabella Markovski',
+                'team': 'Watsonia Blue',
+                'uid': None
+            },
+            'score_against': 6,
+            'score_for': 0,
+            'team_mate': {
+                'name': 'Lily Matt',
+                'team': 'Watsonia Blue',
+                'uid': None
+            },
+            'uid': None
+        }
         msg = 'Player doubles games (all doubles played) error'
-        self.assertEqual(received, expected, msg)
+        self.assertDictEqual(received, expected, msg)
 
     def test_get_player_singles_games_played(self):
         """Get all singles games associated with a player.
@@ -530,13 +541,50 @@ class TestReporter(unittest2.TestCase):
 
         # then I should receive a list of doubles games that player was
         # part of
-        received = json.dumps([x() for x in doubles_games])
-        received = json_loads_byteified(received)
-        with open(os.path.join(self.__results_dir,
-                               'kristen_doubles_aggregates.json')) as _fh:
-            expected = json_loads_byteified(_fh.read().rstrip())
-        msg = 'Doubles games list error'
-        self.assertEqual(received, expected, msg)
+        received = [x() for x in doubles_games]
+        msg = 'Doubles trols_stats.model.aggregate.Game count error'
+        self.assertEqual(len(received), 8, msg)
+
+        # and and item from the data structure should match
+        expected = {
+            'opposition': [
+                {
+                    'name': 'Indiana Pisasale',
+                    'uid': None,
+                    'team': 'Norris Bank'
+                },
+                {
+                    'name': 'Sasha Pecanic',
+                    'uid': None,
+                    'team': 'Norris Bank'
+                }
+            ],
+            'uid': None,
+            'team_mate': {
+                'name': 'Paris Batchelor',
+                'uid': None,
+                'team': 'Eltham'
+            },
+            'score_for': 6,
+            'player': {
+                'name': 'Kristen Fisher',
+                'uid': None,
+                'team': 'Eltham'
+            },
+            'fixture': {
+                'away_team': 'Eltham',
+                'home_team': 'Norris Bank',
+                'uid': None,
+                'competition_type': 'girls',
+                'match_round': 4,
+                'section': 1,
+                'date': '21 Feb 15',
+                'competition': 'nejta_saturday_am_autumn_2015'
+            },
+            'score_against': 0
+        }
+        msg = 'Doubles games list error (1st item)'
+        self.assertEqual(received[1], expected, msg)
 
     def test_get_player_stats(self):
         """Get all game stats associated with a player: doubles.
@@ -609,18 +657,93 @@ class TestReporter(unittest2.TestCase):
 
         # when I calculate the player stats
         reporter = trols_stats.interface.Reporter(db=self.__db)
-        received = reporter.get_player_stats(player,
-                                             last_fixture=True,
-                                             event='doubles')
+        result = reporter.get_player_stats(player,
+                                           last_fixture=True,
+                                           event='doubles')
 
-        # then I should get a stats structure
-        filename = 'kristen_stats_with_last_doubles_fixture.json'
-        with open(os.path.join(self.__results_dir, filename)) as _fh:
-            expected = json.loads(_fh.read().strip())
+        # then I should get a stats structure with a subset "last_fixture"
+        # filename = 'kristen_stats_with_last_doubles_fixture.json'
+        # with open(os.path.join(self.__results_dir, filename)) as _fh:
+        #     expected = json.loads(_fh.read().strip())
+        received = result.get(player[0]).get('last_fixture')
+        expected = [
+            {
+                'fixture': {
+                    'away_team': 'Eltham',
+                    'competition': 'nejta_saturday_am_autumn_2015',
+                    'competition_type': 'girls',
+                    'date': '16 May 15',
+                    'home_team': 'St Lukes Blue',
+                    'match_round': 12,
+                    'section': 1,
+                    'uid': None
+                },
+                'opposition': [
+                    {
+                        'name': 'Natalia Poposka',
+                        'team': 'St Lukes Blue',
+                        'uid': None
+                    },
+                    {
+                        'name': 'Jamie Lyons',
+                        'team': 'St Lukes Blue',
+                        'uid': None,
+                    }
+                ],
+                'player': {
+                    'name': 'Kristen Fisher',
+                    'team': 'Eltham',
+                    'uid': None
+                },
+                'score_against': 2,
+                'score_for': 6,
+                'team_mate': {
+                    'name': 'Julia Cinel',
+                    'team': 'Eltham',
+                    'uid': None
+                },
+                'uid': None
+            },
+            {
+                'fixture': {
+                    'away_team': 'Eltham',
+                    'competition': 'nejta_saturday_am_autumn_2015',
+                    'competition_type': 'girls',
+                    'date': '16 May 15',
+                    'home_team': 'St Lukes Blue',
+                    'match_round': 12,
+                    'section': 1,
+                    'uid': None
+                },
+                'opposition': [
+                    {
+                        'name': 'Jamie Lyons',
+                        'team': 'St Lukes Blue',
+                        'uid': None
+                    },
+                    {
+                        'name': 'Evie Loughnan',
+                        'team': 'St Lukes Blue',
+                        'uid': None
+                    }
+                ],
+                'player': {
+                    'name': 'Kristen Fisher',
+                    'team': 'Eltham',
+                    'uid': None
+                },
+                'score_against': 3,
+                'score_for': 6,
+                'team_mate': {
+                    'name': 'Paris Batchelor',
+                    'team': 'Eltham',
+                    'uid': None
+                },
+                'uid': None
+            }
+        ]
         msg = 'Player stats with last fixture'
-        self.assertListEqual(sorted(received.values()[0].keys()),
-                             sorted(expected.values()[0].keys()),
-                             msg)
+        self.assertListEqual(received, expected, msg)
 
     def test_get_player_stats_with_last_singles_fixture(self):
         """Get game stats associated with a player: singles last fixture.
@@ -658,8 +781,8 @@ class TestReporter(unittest2.TestCase):
         # when I filter on the players game score for
         key = 'score_for'
 
-        # limited to 5 players
-        limit = 5
+        # limited to 3 players
+        limit = 3
 
         # when I generate the player stats
         received = reporter.sort_stats(statistics,
@@ -757,66 +880,6 @@ class TestReporter(unittest2.TestCase):
                         'percentage': 237.14285714285714,
                         'score_against': 35,
                         'score_for': 83
-                    }
-                }
-            ),
-            (
-                "Emily O'Connor~Clifton~3~girls~"
-                "nejta_saturday_am_autumn_2015",
-                {
-                    'name': "Emily O'Connor",
-                    'team': 'Clifton',
-                    'section': '3',
-                    'comp_type': 'girls',
-                    'comp': 'nejta_saturday_am_autumn_2015',
-                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
-                    'token': "Emily O'Connor~Clifton~3~girls~"
-                             "nejta_saturday_am_autumn_2015",
-                    'doubles': {
-                        'games_lost': 6,
-                        'games_played': 30,
-                        'games_won': 24,
-                        'percentage': 177.77777777777777,
-                        'score_against': 90,
-                        'score_for': 160
-                    },
-                    'singles': {
-                        'games_lost': 3,
-                        'games_played': 15,
-                        'games_won': 12,
-                        'percentage': 180.0,
-                        'score_against': 45,
-                        'score_for': 81
-                    }
-                }
-            ),
-            (
-                'Lauren Jones~Yallambie~4~girls~'
-                'nejta_saturday_am_autumn_2015',
-                {
-                    'name': 'Lauren Jones',
-                    'team': 'Yallambie',
-                    'section': '4',
-                    'comp_type': 'girls',
-                    'comp': 'nejta_saturday_am_autumn_2015',
-                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
-                    'token': 'Lauren Jones~Yallambie~4~girls~'
-                             'nejta_saturday_am_autumn_2015',
-                    'doubles': {
-                        'games_lost': 8,
-                        'games_played': 28,
-                        'games_won': 20,
-                        'percentage': 150.0,
-                        'score_against': 100,
-                        'score_for': 150
-                    },
-                    'singles': {
-                        'games_lost': 2,
-                        'games_played': 14,
-                        'games_won': 12,
-                        'percentage': 192.85714285714286,
-                        'score_against': 42,
-                        'score_for': 81
                     }
                 }
             )
@@ -1770,11 +1833,11 @@ class TestReporter(unittest2.TestCase):
 
         # when I search for all of the player's results
         reporter = trols_stats.interface.Reporter(db=self.__db)
-        received = reporter.get_player_results_compact(player)
+        results = reporter.get_player_results_compact(player)
 
         # then I should receive a dict of results that player was
         # part of
-        received = [x.get('rounds').keys() for x in received.values()][0]
+        received = list(results.get(player[0])['rounds'])
         expected = [
             1, 2, 4, 7, 8, 9, 10, 12, 14, 'Semi Final', 'Grand Final'
         ]

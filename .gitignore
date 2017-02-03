@@ -1,8 +1,6 @@
-# Config versioning files
-config.conf.*
-
 *.py[cod]
 *.swp
+*.swo
 
 # C extensions
 *.so
@@ -20,7 +18,6 @@ develop-eggs
 .installed.cfg
 lib
 lib64
-build
 
 # Installer logs
 pip-log.txt
@@ -29,6 +26,7 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+coverage.xml
 
 # Translations
 *.mo
@@ -40,3 +38,7 @@ nosetests.xml
 
 # Local virtual environment
 .env
+venv
+
+# py.test
+.cache

@@ -1,9 +1,9 @@
-import unittest2
+import unittest
 
 import trols_stats.exception
 
 
-class TestTrolsStatsConfigError(unittest2.TestCase):
+class TestTrolsStatsConfigError(unittest.TestCase):
 
     def test_error_code_1000(self):
         """Config file not found: code 1000.

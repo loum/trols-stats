@@ -1,6 +1,12 @@
+"""class:`trols_stats.Reporter`
+
+Statistics reporting module.
+
+"""
 import re
+import collections
 import trols_stats
-from logga.log import log
+from logga import log
 
 
 class Reporter(object):
@@ -71,7 +77,7 @@ class Reporter(object):
         if competition is not None:
             matched = [x for x in matched if cmp_comp(competition, x)]
 
-        return sorted(self.player_ids_dict(matched))
+        return self.player_ids_dict(matched)
 
     @staticmethod
     def get_competition_details(competition):
@@ -178,7 +184,7 @@ class Reporter(object):
             match_aggregates = []
         else:
             match_aggregates = sorted(match_aggregates,
-                                      key=lambda x: x.fixture.match_round)
+                                      key=lambda x: x.fixture.match_round_numeric)
 
         return match_aggregates
 
@@ -218,9 +224,9 @@ class Reporter(object):
             *name*: name to filter DB against
 
         *Returns*: dict of all singles
-        :class:`trols_stats.model.aggregate.Game`
-        objects that *name* was involved in.  Key is the
-        :meth:`trols_stats.model.aggregate.Game.get_player_id` `token`.
+            :class:`trols_stats.model.aggregate.Game`
+            objects that *name* was involved in.  Key is the
+            :meth:`trols_stats.model.aggregate.Game.get_player_id` `token`.
 
         """
         log.info('Extracting singles games for player "%s"', name)
@@ -354,7 +360,7 @@ class Reporter(object):
 
             return is_qualified
 
-        sort_stats = sorted(statistics.iteritems(),
+        sort_stats = sorted(statistics.items(),
                             key=lambda x: x[1][event][key],
                             reverse=reverse)
 
@@ -408,7 +414,7 @@ class Reporter(object):
             player_matches = self.get_player_fixtures(player_token)
 
             stash = results[player_token] = {}
-            stash['rounds'] = {}
+            stash['rounds'] = collections.OrderedDict()
 
             events = ['is_singles', 'is_doubles']
             for event in events:

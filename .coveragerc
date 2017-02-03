@@ -1,0 +1,2 @@
+[run]
+omit = slagiatt/tests/*,slagiatt/route/tests/*
