@@ -149,7 +149,10 @@ class Loader(object):
                 log.info('Writing HTML response to cache file "%s"',
                          target_file)
                 with tempfile.NamedTemporaryFile(mode='w') as _fh:
-                    _fh.write(html.decode('utf-8'))
+                    try:
+                        _fh.write(html.decode('utf-8'))
+                    except AttributeError:
+                        _fh.write(html)
                     _fh.flush()
                     copy_file(_fh.name, target_file)
         else:

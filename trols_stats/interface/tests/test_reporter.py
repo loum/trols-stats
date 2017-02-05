@@ -1,4 +1,5 @@
 """Unit test cases for the :class:`trols_stats.interface.Reporter` class.
+
 """
 import unittest
 import operator
