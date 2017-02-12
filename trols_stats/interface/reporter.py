@@ -147,7 +147,7 @@ class Reporter(object):
         """Filter sections based on *competition* and *competition_type*.
 
         **Kwargs:**
-            *competition*: the competiton code (default
+            *competition*: the competition code (default
             ``nejta_saturday_am_spring_2015``)
 
             *competition_type*: either ``boys``, ``girls`` or ``None``
