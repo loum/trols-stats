@@ -5,3 +5,4 @@ from .stats import Stats
 from .config import Config
 from .statistics import Statistics
 from .dbsession import DBSession
+from .datamodel import DataModel

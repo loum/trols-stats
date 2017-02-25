@@ -7,7 +7,6 @@ import json
 import urllib
 
 import trols_stats.interface
-from filer.files import get_directory_files
 
 CONF = os.path.join(os.sep, 'etc', 'trols-stats', 'conf', 'config.conf')
 DESCRIPTION = """TROLS Stats Tool"""
@@ -137,33 +136,8 @@ def source(args, conf):
 
 
 def scrape(args, conf):
-    loader = trols_stats.interface.Loader()
-
-    for html_file in get_directory_files(conf.cache,
-                                         file_filter=r'.*.html$'):
-        with open(html_file) as _fh:
-            loader.build_game_map(_fh.read(), os.path.basename(html_file))
-
-    with open(args.dump, 'w') as games_fh:
-        games_fh.write(json.dumps([x() for x in loader.games],
-                                  sort_keys=True,
-                                  indent=4,
-                                  separators=(',', ': ')))
-
-    # Optimise against player ID
-    player_id_games = {}
-    for game in loader.games:
-        token = game.player_id().get('token')
-        if player_id_games.get(token) is None:
-            player_id_games[token] = []
-
-        player_id_games[token].append(game)
-
-    _db = trols_stats.DBSession(shelve=conf.shelve)
-    if _db.connect():
-        _db.connection['trols'] = player_id_games
-        _db.connection.close()
-
+    model = trols_stats.DataModel(shelve=conf.shelve)
+    model.construct(conf.cache)
 
 if __name__ == '__main__':
     main()

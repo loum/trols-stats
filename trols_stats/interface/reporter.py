@@ -19,7 +19,7 @@ class Reporter(object):
         self.__db = value
 
     def __init__(self, db):
-        self.__db = db
+        self.__db = db()
 
     def get_players(self,
                     names=None,

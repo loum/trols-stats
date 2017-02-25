@@ -15,10 +15,10 @@ from filer.files import (get_directory_files_list,
 class TestLoader(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.__test_dir = os.path.join('trols_stats',
-                                      'interface',
-                                      'tests',
-                                      'files')
+        cls._test_dir = os.path.join('trols_stats',
+                                     'interface',
+                                     'tests',
+                                     'files')
 
     def test_init(self):
         """Initialise a interface.Loader object.
@@ -32,7 +32,7 @@ class TestLoader(unittest.TestCase):
         """
         # Given a TROLS detailed match results page
         match_file = 'nejta_saturday_am_autumn_2015--AA039054.html'
-        with open(os.path.join(self.__test_dir, match_file)) as html_fh:
+        with open(os.path.join(self._test_dir, match_file)) as html_fh:
             html = html_fh.read()
 
         # when a scrape and load occurs
@@ -42,7 +42,25 @@ class TestLoader(unittest.TestCase):
 
         # then I should receive a list of Game objects
         expected = 16
-        msg = 'interface.Loader.games list length should be 8'
+        msg = 'interface.Loader.games list length should be 16'
+        self.assertEqual(len(received), expected, msg)
+
+    def test_build_game_map_dvta_friday(self):
+        """build_game_map of a game HTML page: DVTA Friday.
+        """
+        # Given a TROLS detailed match results page
+        match_file = 'dvta_friday_night_autumn_2017--FN004034.html'
+        with open(os.path.join(self._test_dir, match_file)) as html_fh:
+            html = html_fh.read()
+
+        # when a scrape and load occurs
+        loader = interface.Loader()
+        loader.build_game_map(html, 'dvta_friday_night_autumn_2017')
+        received = loader.games
+
+        # then I should receive a list of Game objects
+        expected = 16
+        msg = 'interface.Loader.games list length should be 16'
         self.assertEqual(len(received), expected, msg)
 
     def test_build_game_map_color_coded_teams(self):
@@ -50,7 +68,7 @@ class TestLoader(unittest.TestCase):
         """
         # Given a TROLS detailed match results page
         match_file = 'nejta_saturday_am_autumn_2015--AA039094.html'
-        with open(os.path.join(self.__test_dir, match_file)) as html_fh:
+        with open(os.path.join(self._test_dir, match_file)) as html_fh:
             html = html_fh.read()
 
         # when a scrape and load occurs
@@ -79,7 +97,7 @@ class TestLoader(unittest.TestCase):
 
         # when I make a TROLS request
         match_file = 'nejta_saturday_am_autumn_2015--AA026044.html'
-        with open(os.path.join(self.__test_dir, match_file)) as _fh:
+        with open(os.path.join(self._test_dir, match_file)) as _fh:
             html = _fh.read()
 
         with unittest.mock.patch.object(interface.Loader,
@@ -110,7 +128,7 @@ class TestLoader(unittest.TestCase):
 
         # when I make a TROLS request
         match = 'nejta_saturday_am_autumn_2015--AA026044.html'
-        with open(os.path.join(self.__test_dir, match)) as _fh:
+        with open(os.path.join(self._test_dir, match)) as _fh:
             html = _fh.read()
 
         with unittest.mock.patch.object(interface.Loader,
@@ -146,7 +164,7 @@ class TestLoader(unittest.TestCase):
 
         # and a copy of the request file already cached
         match_file = 'nejta_saturday_am_autumn_2015--AA026044.html'
-        html_file = os.path.join(self.__test_dir, match_file)
+        html_file = os.path.join(self._test_dir, match_file)
         copy_file(html_file, os.path.join(cache_dir, match_file))
 
         # when I make a TROLS request
@@ -191,7 +209,7 @@ class TestLoader(unittest.TestCase):
         # when I make a TROLS request
         with unittest.mock.patch.object(interface.Loader,
                                         '_request_url') as mock_request_url:
-            html_file = os.path.join(self.__test_dir, match_file)
+            html_file = os.path.join(self._test_dir, match_file)
             with open(html_file) as _fh:
                 html = _fh.read()
             mock_request_url.return_value = html
@@ -226,4 +244,4 @@ class TestLoader(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.__test_dir = None
+        cls._test_dir = None

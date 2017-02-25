@@ -60,5 +60,5 @@ class DBSession(object):
 
     def close(self):
         if self.connection is not None:
-            log.info('DB session (shelve): loaded ...')
             self.connection.close()
+            log.info('DB session (shelve) closed')

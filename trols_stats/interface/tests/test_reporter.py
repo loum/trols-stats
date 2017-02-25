@@ -45,6 +45,7 @@ def _byteify(data, ignore_dicts=False):
 
 
 class TestReporter(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
         cls.maxDiff = None
@@ -57,14 +58,15 @@ class TestReporter(unittest.TestCase):
                                   'interface',
                                   'tests',
                                   'files')
-        session = trols_stats.DBSession(shelve=shelve_dir)
-        session.connect()
-        cls.__db = session.connection['trols']
+        # session = trols_stats.DBSession(shelve=shelve_dir)
+        # session.connect()
+        # cls.__db = session.connection['trols']
+        cls._model = trols_stats.DataModel(shelve=shelve_dir)
 
     def test_init(self):
-        """Initialise an trols_stats.interface.Reporter object
+        """Initialise an trols_stats.interface.Reporter object.
         """
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         msg = 'Object is not a trols_stats.interface.Reporter'
         self.assertIsInstance(reporter,
                               trols_stats.interface.Reporter,
@@ -77,7 +79,7 @@ class TestReporter(unittest.TestCase):
         name = ['Eboni Amos']
 
         # when I query a player
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_players(name)
 
         # then I should get the player profile
@@ -127,7 +129,7 @@ class TestReporter(unittest.TestCase):
         name = ['eboni amos']
 
         # when I query a player
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_players(names=name)
 
         # then I should get the player profile
@@ -177,7 +179,7 @@ class TestReporter(unittest.TestCase):
         names = ['isabella', 'markovski']
 
         # when I query a player
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_players(names=names)
 
         # then I should get the player profile
@@ -194,7 +196,7 @@ class TestReporter(unittest.TestCase):
         section = 14
 
         # when I query the players
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = json.dumps(reporter.get_players(team=team,
                                                    section=section))
         received = json_loads_byteified(received)
@@ -216,7 +218,7 @@ class TestReporter(unittest.TestCase):
         team = 'Watsonia'
 
         # when I query the players
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_players(team=team)
 
         # then I should get the player profile
@@ -233,7 +235,7 @@ class TestReporter(unittest.TestCase):
         competition = 'nejta_saturday_am_spring_2015'
 
         # when I query the players
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_players(names=names,
                                         competition=competition)
 
@@ -273,7 +275,7 @@ class TestReporter(unittest.TestCase):
         name = ['Eboni Amos', 'Zoe Allen']
 
         # when I query a player
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = json.dumps(reporter.get_players(name))
         received = json_loads_byteified(received)
 
@@ -292,7 +294,7 @@ class TestReporter(unittest.TestCase):
         """Get unique list of sorted teams.
         """
         # When I scan for a unique list of teams
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_teams()
 
         # then I should get a list of ordered teams
@@ -310,7 +312,7 @@ class TestReporter(unittest.TestCase):
         section = 12
 
         # when I scan for a unique list of teams
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         kwargs = {
             'competition_type': competition_type,
             'section': section
@@ -338,7 +340,7 @@ class TestReporter(unittest.TestCase):
         competition_type = 'girls'
 
         # when I scan for a unique list of teams
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         kwargs = {'competition_type': competition_type}
         received = reporter.get_sections(**kwargs)
 
@@ -354,7 +356,7 @@ class TestReporter(unittest.TestCase):
         competition_type = 'boys'
 
         # when I scan for a unique list of teams
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         kwargs = {'competition_type': competition_type}
         received = reporter.get_sections(**kwargs)
 
@@ -370,7 +372,7 @@ class TestReporter(unittest.TestCase):
         competition_type = None
 
         # when I scan for a unique list of teams
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         kwargs = {'competition_type': competition_type}
         received = reporter.get_sections(**kwargs)
 
@@ -386,7 +388,7 @@ class TestReporter(unittest.TestCase):
         names = None
 
         # when I query a player
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = len(reporter.get_players(names))
 
         # then I should get the player profile
@@ -398,7 +400,7 @@ class TestReporter(unittest.TestCase):
         """Get the last fixtures associated with a player: grand final.
         """
         # Given a player's game aggregate
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         token = ('Isabella Markovski~Watsonia Blue~'
                  '14~girls~nejta_saturday_am_autumn_2015')
         game_aggregates = reporter.get_player_fixtures(token)
@@ -420,7 +422,7 @@ class TestReporter(unittest.TestCase):
         """Get the last fixtures associated with a player: semi final.
         """
         # Given a player's game aggregate
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         token = ('Zara Simiele~Bundoora~14~girls~'
                  'nejta_saturday_am_autumn_2015')
         game_aggregates = reporter.get_player_fixtures(token)
@@ -446,7 +448,7 @@ class TestReporter(unittest.TestCase):
         player = 'Isabella Markovski'
 
         # when I search for all of the player's singles games
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_player_singles(player)
 
         # then I should receive a list of singles games that player was
@@ -462,7 +464,7 @@ class TestReporter(unittest.TestCase):
                   'nejta_saturday_am_autumn_2015')
 
         # when I search for all of the player's doubles games
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         doubles_games = reporter.get_player_doubles(player)
 
         # then I should receive a list of doubles games that player was
@@ -516,7 +518,7 @@ class TestReporter(unittest.TestCase):
                   'nejta_saturday_am_autumn_2015')
 
         # when I search for all of the player's singles games
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         singles_games = reporter.get_player_singles(player)
 
         # then I should receive a list of singles games that player was
@@ -537,7 +539,7 @@ class TestReporter(unittest.TestCase):
                   'nejta_saturday_am_autumn_2015')
 
         # when I search for all of the player's doubles games
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         doubles_games = reporter.get_player_doubles(player)
 
         # then I should receive a list of doubles games that player was
@@ -595,7 +597,7 @@ class TestReporter(unittest.TestCase):
                   'nejta_saturday_am_autumn_2015']
 
         # when I calculate the player stats
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_player_stats(player)
 
         # then I should get a stats structure
@@ -639,7 +641,7 @@ class TestReporter(unittest.TestCase):
                   'nejta_saturday_am_autumn_2015']
 
         # when I calculate the player stats
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_player_stats(player, last_fixture=True)
 
         # then I should get a stats structure
@@ -657,7 +659,7 @@ class TestReporter(unittest.TestCase):
                   'nejta_saturday_am_autumn_2015']
 
         # when I calculate the player stats
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         result = reporter.get_player_stats(player,
                                            last_fixture=True,
                                            event='doubles')
@@ -754,7 +756,7 @@ class TestReporter(unittest.TestCase):
                   'nejta_saturday_am_autumn_2015']
 
         # when I calculate the player stats
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_player_stats(player,
                                              last_fixture=True,
                                              event='singles')
@@ -770,7 +772,7 @@ class TestReporter(unittest.TestCase):
         """Get sorted stats: girls singles score for.
         """
         # Given the players NEJTA Autumn 2015
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         kwargs = {
             'competition': 'nejta_saturday_am_autumn_2015',
             'competition_type': 'girls'
@@ -892,7 +894,7 @@ class TestReporter(unittest.TestCase):
         """Get sorted stats: singles girls score for.
         """
         # Given the statistics for all girl players
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         kwargs = {
             'competition': 'nejta_saturday_am_autumn_2015',
             'competition_type': 'girls',
@@ -1017,7 +1019,7 @@ class TestReporter(unittest.TestCase):
         """Get sorted stats: singles girls score for.
         """
         # Given the statistics for all players
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         kwargs = {
             'competition': 'nejta_saturday_am_autumn_2015',
             'competition_type': 'girls',
@@ -1200,7 +1202,7 @@ class TestReporter(unittest.TestCase):
         """Get sorted stats: singles percentage.
         """
         # Given the statistics for all players
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         kwargs = {
             'competition': 'nejta_saturday_am_autumn_2015',
         }
@@ -1215,7 +1217,7 @@ class TestReporter(unittest.TestCase):
         limit = 5
 
         # when I generate the player stats
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.sort_stats(statistics,
                                        event='singles',
                                        key=key,
@@ -1382,7 +1384,7 @@ class TestReporter(unittest.TestCase):
         """Get sorted stats: doubles percentage.
         """
         # Given the players NEJTA Autumn 2015
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         kwargs = {
             'competition': 'nejta_saturday_am_autumn_2015'
         }
@@ -1397,7 +1399,7 @@ class TestReporter(unittest.TestCase):
         limit = 5
 
         # when I generate the player stats
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.sort_stats(statistics,
                                        event='doubles',
                                        key=key,
@@ -1561,7 +1563,7 @@ class TestReporter(unittest.TestCase):
         """Get sorted stats: singles score against.
         """
         # Given the statistics for all players
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         kwargs = {
             'competition': 'nejta_saturday_am_autumn_2015'
         }
@@ -1576,7 +1578,7 @@ class TestReporter(unittest.TestCase):
         limit = 2
 
         # when I generate the player stats
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.sort_stats(statistics,
                                        event='singles',
                                        key=key,
@@ -1653,7 +1655,7 @@ class TestReporter(unittest.TestCase):
         """Get sorted stats: doubles team and section.
         """
         # Given the players for a section based team
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         players = reporter.get_players(team='Watsonia Blue',
                                        section=14)
         player_tokens = [x.get('token') for x in players]
@@ -1833,7 +1835,7 @@ class TestReporter(unittest.TestCase):
                   'nejta_saturday_am_autumn_2015']
 
         # when I search for all of the player's results
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         results = reporter.get_player_results_compact(player)
 
         # then I should receive a dict of results that player was
@@ -1853,7 +1855,7 @@ class TestReporter(unittest.TestCase):
                   'nejta_saturday_am_autumn_2015']
 
         # when I search for all of the player's results
-        reporter = trols_stats.interface.Reporter(db=self.__db)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_player_results_compact(player)
 
         # then I should receive a dict of results that player was
@@ -1874,7 +1876,7 @@ class TestReporter(unittest.TestCase):
         competition = 'dvta_tuesday_night_spring_2016'
 
         # when I get the competition details
-        reporter = trols_stats.interface.Reporter(None)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_competition_details(competition)
 
         # then I should receive a matchin dictionary
@@ -1892,10 +1894,10 @@ class TestReporter(unittest.TestCase):
         competition = 'nejta_saturday_am_spring_2016'
 
         # when I get the competition details
-        reporter = trols_stats.interface.Reporter(None)
+        reporter = trols_stats.interface.Reporter(db=self._model)
         received = reporter.get_competition_details(competition)
 
-        # then I should receive a matchin dictionary
+        # then I should receive a matching dictionary
         expected = {
             'event': ['singles', 'doubles'],
             'event_type': ['girls', 'boys'],
@@ -1943,5 +1945,5 @@ class TestReporter(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        del cls.__db
+        del cls._model
         del cls.__results_dir
