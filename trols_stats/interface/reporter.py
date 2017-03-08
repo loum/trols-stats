@@ -320,9 +320,9 @@ class Reporter(object):
 
             if last_fixture:
                 event_aggregates = list(game_aggregates)
-                if event is not None and event == "singles":
+                if event is not None and event == 'singles':
                     event_aggregates = self.get_player_singles(player_token)
-                elif event is not None and event == "doubles":
+                elif event is not None and event == 'doubles':
                     event_aggregates = self.get_player_doubles(player_token)
 
                 fixture = self.last_fixture_played(event_aggregates)
@@ -339,16 +339,34 @@ class Reporter(object):
                    key='score_for',
                    reverse=False,
                    limit=None):
-        """Manipulate player *name* stats.
+        """Sort the given dictionary of :class:`trols_stats.Statistics`
+        based on order criteria denoted by *event*, *key* and whether
+        the order is *reverse*.
 
         **Args:**
-            *statistics*:
+            *statistics*: as per :meth:`get_player_stats` return value
 
         **Kwargs:**
-            *key*: as the sort criteria
+            *event*: since the :class:`trols_stats.Statistics` item
+            contains both *singles* and *doubles* scores we need to denote
+            which event to sort by.  Default is *singles*
+
+            *key*: :class:`trols_stats.Statistics` attribute
+            to sort by.  Possible values include *games_won*,
+            *games_played*, *percentage*, *score_against*, *games_lost*
+            or *score_for*.  Default, *score_for*
 
             *reverse*: if ``True``, will reverse the sort order from lowest
             to highest
+
+            *limit*: limit the number of :class:`trols_stats.Statistics`
+            items to return after sorting.  Setting a *limit* will also
+            trigger the qualified metric that will further filter the
+            results based on whether the athlete has played more that 3
+            matches.
+
+        **Returns:**
+            Same as :meth:`get_player_stats`
 
         """
         def qualified(statistic):
@@ -360,14 +378,51 @@ class Reporter(object):
 
             return is_qualified
 
-        sort_stats = sorted(statistics.items(),
-                            key=lambda x: x[1][event][key],
-                            reverse=reverse)
+        stats = sorted(statistics.items(),
+                       key=lambda x: x[1][event][key],
+                       reverse=reverse)
 
         if limit is not None:
-            sort_stats = [x for x in sort_stats if qualified(x)][:limit]
+            stats = [x for x in stats if qualified(x)][:limit]
 
-        return sort_stats
+        return stats
+
+    @staticmethod
+    def rank_stats(statistics, event='singles', key='score_for'):
+        """Rank the given *statistics*.
+
+        Adds another key, ``rank`` to the *statistics* structure that
+        represents the athlete's rank in the list.
+
+        **Args:**
+            *statistics*: as per :meth:`get_player_stats` return value
+
+            *event*: since the :class:`trols_stats.Statistics` item
+            contains both *singles* and *doubles* scores we need to denote
+            which event to sort by.  Default is *singles*
+
+            *key*: :class:`trols_stats.Statistics` attribute
+            to sort by.  Possible values include *games_won*,
+            *games_played*, *percentage*, *score_against*, *games_lost*
+            or *score_for*.  Default, *score_for*
+
+        """
+        last_rank = 1
+        last_value = None
+
+        for index, stat in enumerate(statistics, start=1):
+            if last_value is None:
+                log.debug('This is the first value')
+                last_value = stat[1][event][key]
+
+            if last_value == stat[1][event][key]:
+                stat[1]['rank'] = last_rank
+            else:
+                stat[1]['rank'] = index
+                last_rank = index
+                last_value = stat[1][event][key]
+
+        return statistics
 
     def get_player_results_compact(self, player_tokens):
         """Get all singles and doubles results associated with

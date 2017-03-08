@@ -7,7 +7,8 @@ __all__ = ['Statistics']
 
 
 class Statistics(object):
-    """..attribute:: score_for
+    """
+        ..attribute:: score_for
 
         ..attribute:: score_against
 

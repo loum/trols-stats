@@ -1943,6 +1943,414 @@ class TestReporter(unittest.TestCase):
         msg = 'Player IDs to dict conversion error'
         self.assertListEqual(received, expected, msg)
 
+    def test_rank_stats_singles_score_for(self):
+        """Rank stats for singles events across the "score_for" key.
+        """
+        # Given a list of "score_for" ordered singles
+        statistics = [
+            (
+                'Whitney Guan~Clifton~3~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Whitney Guan',
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Whitney Guan~Clifton~3~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 7,
+                        'games_played': 30,
+                        'games_won': 23,
+                        'percentage': 190.47619047619045,
+                        'score_against': 84,
+                        'score_for': 160
+                    },
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 15,
+                        'games_won': 15,
+                        'percentage': 428.57142857142856,
+                        'score_against': 21,
+                        'score_for': 90
+                    }
+                }
+            ),
+            (
+                'Rachelle Papantuono~Clifton~3~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Rachelle Papantuono',
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Rachelle Papantuono~Clifton~3~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 3,
+                        'games_played': 30,
+                        'games_won': 27,
+                        'percentage': 211.24999999999997,
+                        'score_against': 80,
+                        'score_for': 169
+                    },
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 15,
+                        'games_won': 14,
+                        'percentage': 366.66666666666663,
+                        'score_against': 24,
+                        'score_for': 88
+                    }
+                }
+            ),
+            (
+                'Maeve Suter~Montmorency~5~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Maeve Suter',
+                    'team': 'Montmorency',
+                    'section': '5',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Maeve Suter~Montmorency~5~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 3,
+                        'games_played': 28,
+                        'games_won': 25,
+                        'percentage': 195.06172839506172,
+                        'score_against': 81,
+                        'score_for': 158
+                    },
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 14,
+                        'games_won': 13,
+                        'percentage': 237.14285714285714,
+                        'score_against': 35,
+                        'score_for': 83
+                    }
+                }
+            )
+        ]
+
+        # when I rank on the players game score for
+        kwargs = {
+            'event': 'singles',
+            'key': 'score_for'
+        }
+        received = trols_stats.interface.Reporter.rank_stats(statistics,
+                                                             **kwargs)
+
+        # then I should get a list of ranked stats
+        expected = [
+            (
+                'Whitney Guan~Clifton~3~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Whitney Guan',
+                    'rank': 1,
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Whitney Guan~Clifton~3~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 7,
+                        'games_played': 30,
+                        'games_won': 23,
+                        'percentage': 190.47619047619045,
+                        'score_against': 84,
+                        'score_for': 160
+                    },
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 15,
+                        'games_won': 15,
+                        'percentage': 428.57142857142856,
+                        'score_against': 21,
+                        'score_for': 90
+                    }
+                }
+            ),
+            (
+                'Rachelle Papantuono~Clifton~3~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Rachelle Papantuono',
+                    'rank': 2,
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Rachelle Papantuono~Clifton~3~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 3,
+                        'games_played': 30,
+                        'games_won': 27,
+                        'percentage': 211.24999999999997,
+                        'score_against': 80,
+                        'score_for': 169
+                    },
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 15,
+                        'games_won': 14,
+                        'percentage': 366.66666666666663,
+                        'score_against': 24,
+                        'score_for': 88
+                    }
+                }
+            ),
+            (
+                'Maeve Suter~Montmorency~5~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Maeve Suter',
+                    'rank': 3,
+                    'team': 'Montmorency',
+                    'section': '5',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Maeve Suter~Montmorency~5~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 3,
+                        'games_played': 28,
+                        'games_won': 25,
+                        'percentage': 195.06172839506172,
+                        'score_against': 81,
+                        'score_for': 158
+                    },
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 14,
+                        'games_won': 13,
+                        'percentage': 237.14285714285714,
+                        'score_against': 35,
+                        'score_for': 83
+                    }
+                }
+            )
+        ]
+        msg = 'Player ranked stats (score_for, sorted, singles) error'
+        self.assertListEqual(received, expected, msg)
+
+    def test_rank_stats_singles_percentage_grouped_ranking(self):
+        """Group rank stats for singles events across the "percentage" key.
+        """
+        # Given a list of "percentage" ordered singles
+        statistics = [
+            (
+                'Whitney Guan~Clifton~3~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Whitney Guan',
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Whitney Guan~Clifton~3~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 7,
+                        'games_played': 30,
+                        'games_won': 23,
+                        'percentage': 190.47619047619045,
+                        'score_against': 84,
+                        'score_for': 160
+                    },
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 15,
+                        'games_won': 15,
+                        'percentage': 450,
+                        'score_against': 20,
+                        'score_for': 90
+                    }
+                }
+            ),
+            (
+                'Rachelle Papantuono~Clifton~3~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Rachelle Papantuono',
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Rachelle Papantuono~Clifton~3~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 3,
+                        'games_played': 30,
+                        'games_won': 27,
+                        'percentage': 211.24999999999997,
+                        'score_against': 80,
+                        'score_for': 169
+                    },
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 15,
+                        'games_won': 14,
+                        'percentage': 450,
+                        'score_against': 20,
+                        'score_for': 90 
+                    }
+                }
+            ),
+            (
+                'Maeve Suter~Montmorency~5~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Maeve Suter',
+                    'team': 'Montmorency',
+                    'section': '5',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Maeve Suter~Montmorency~5~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 3,
+                        'games_played': 28,
+                        'games_won': 25,
+                        'percentage': 195.06172839506172,
+                        'score_against': 81,
+                        'score_for': 158
+                    },
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 14,
+                        'games_won': 13,
+                        'percentage': 237.14285714285714,
+                        'score_against': 35,
+                        'score_for': 83
+                    }
+                }
+            )
+        ]
+
+        # when I rank on the players game score for
+        kwargs = {
+            'event': 'singles',
+            'key': 'percentage'
+        }
+        received = trols_stats.interface.Reporter.rank_stats(statistics,
+                                                             **kwargs)
+
+        # then I should get a list of ranked stats
+        expected = [
+            (
+                'Whitney Guan~Clifton~3~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Whitney Guan',
+                    'rank': 1,
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Whitney Guan~Clifton~3~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 7,
+                        'games_played': 30,
+                        'games_won': 23,
+                        'percentage': 190.47619047619045,
+                        'score_against': 84,
+                        'score_for': 160
+                    },
+                    'singles': {
+                        'games_lost': 0,
+                        'games_played': 15,
+                        'games_won': 15,
+                        'percentage': 450,
+                        'score_against': 20,
+                        'score_for': 90
+                    }
+                }
+            ),
+            (
+                'Rachelle Papantuono~Clifton~3~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Rachelle Papantuono',
+                    'rank': 1,
+                    'team': 'Clifton',
+                    'section': '3',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Rachelle Papantuono~Clifton~3~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 3,
+                        'games_played': 30,
+                        'games_won': 27,
+                        'percentage': 211.24999999999997,
+                        'score_against': 80,
+                        'score_for': 169
+                    },
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 15,
+                        'games_won': 14,
+                        'percentage': 450,
+                        'score_against': 20,
+                        'score_for': 90 
+                    }
+                }
+            ),
+            (
+                'Maeve Suter~Montmorency~5~girls~'
+                'nejta_saturday_am_autumn_2015',
+                {
+                    'name': 'Maeve Suter',
+                    'rank': 3,
+                    'team': 'Montmorency',
+                    'section': '5',
+                    'comp_type': 'girls',
+                    'comp': 'nejta_saturday_am_autumn_2015',
+                    'comp_string': 'NEJTA Saturday AM Autumn 2015',
+                    'token': 'Maeve Suter~Montmorency~5~girls~'
+                             'nejta_saturday_am_autumn_2015',
+                    'doubles': {
+                        'games_lost': 3,
+                        'games_played': 28,
+                        'games_won': 25,
+                        'percentage': 195.06172839506172,
+                        'score_against': 81,
+                        'score_for': 158
+                    },
+                    'singles': {
+                        'games_lost': 1,
+                        'games_played': 14,
+                        'games_won': 13,
+                        'percentage': 237.14285714285714,
+                        'score_against': 35,
+                        'score_for': 83
+                    }
+                }
+            )
+        ]
+        msg = 'Player ranked stats (score_for, sorted, singles) error'
+        self.assertListEqual(received, expected, msg)
+
     @classmethod
     def tearDownClass(cls):
         del cls._model
