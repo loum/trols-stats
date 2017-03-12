@@ -22,6 +22,7 @@
             "team": "Eltham",
             "uid": null
         },
+        "player_won": true,
         "score_against": 3,
         "score_for": 6,
         "uid": null
@@ -49,6 +50,7 @@
             "team": "Eltham",
             "uid": null
         },
+        "player_won": true,
         "score_against": 0,
         "score_for": 6,
         "uid": null
@@ -76,6 +78,7 @@
             "team": "Eltham",
             "uid": null
         },
+        "player_won": true,
         "score_against": 2,
         "score_for": 6,
         "uid": null
@@ -103,6 +106,7 @@
             "team": "Eltham",
             "uid": null
         },
+        "player_won": true,
         "score_against": 2,
         "score_for": 6,
         "uid": null

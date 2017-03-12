@@ -445,6 +445,32 @@ class TestScraper(unittest.TestCase):
         msg = 'Match preamble dictionary error'
         self.assertDictEqual(received, expected, msg)
 
+    def test_scrape_match_preamble_dvta_thursday_am(self):
+        """Extract match preamble: DVTA Thursday AM.
+        """
+        # Given a TROLS detailed match results page
+        match_file = 'dvta_thursday_am_autumn_2017--HA012053.html'
+        with open(os.path.join(self._files_dir, match_file)) as _fh:
+            html = _fh.read()
+
+        # and an xpath definition to target the match preamble extraction
+        xpath = '//table/tr/td[contains(@class, "mb")]/text()'
+
+        # when I extract the match preamble
+        received = trols_stats.Scraper.scrape_match_preamble(html, xpath)
+
+        # then I should receive a dictionary structure of the form
+        # {'competition': <girls_or_boys>,
+        #  'section': <section_no>,
+        #  'date': <date>,
+        #  'match_round': <round_no>}
+        expected = {'competition_type': None,
+                    'section': 4,
+                    'date': '2 Mar 17',
+                    'match_round': 5}
+        msg = 'Match preamble dictionary error'
+        self.assertDictEqual(received, expected, msg)
+
     def test_scrape_match_preamble_semi_final(self):
         """Extract match preamble: semi final.
         """
@@ -589,11 +615,182 @@ class TestScraper(unittest.TestCase):
         msg = 'Match stats dictionary (singles) structure error'
         self.assertDictEqual(received, expected, msg)
 
+    def test_scrape_match_scores_dvta_friday_night(self):
+        """Scrape match scores: DVTA Friday night.
+        """
+        # Given a TROLS detailed match results page
+        match_singles_file = 'dvta_friday_night_autumn_2017--FN004054.html'
+        with open(os.path.join(self._files_dir,
+                               match_singles_file)) as _fh:
+            html = _fh.read()
+
+        # and an xpath definition to target the match scores extraction
+        xpath = '//td/table/tr[contains(@valign, "top")]/td'
+
+        # when I extract the match scores
+        received = trols_stats.Scraper.scrape_match_scores(html, xpath)
+
+        # then I should received a dictionary structure of the form
+        # {
+        #     1: [
+        #         {
+        #             'opposition': (5, 6),
+        #             'score_against': 6,
+        #             'score_for': 3,
+        #             'team_mate': 2
+        #         },
+        #     ...
+        # }
+        expected = {
+            1: [
+                {
+                    'opposition': (6, None),
+                    'score_against': 3,
+                    'team_mate': None,
+                    'score_for': 6
+                },
+                {
+                    'opposition': (5, None),
+                    'score_against': 0,
+                    'team_mate': None,
+                    'score_for': 6
+                }
+            ],
+            2: [
+                {
+                    'opposition': (5, None),
+                    'score_against': 1,
+                    'team_mate': None,
+                    'score_for': 6
+                },
+                {
+                    'opposition': (6, None),
+                    'score_against': 0,
+                    'team_mate': None,
+                    'score_for': 6
+                }
+            ],
+            3: [
+                {
+                    'opposition': (8, None),
+                    'score_against': 3,
+                    'team_mate': None,
+                    'score_for': 6
+                },
+                {
+                    'opposition': (7, None),
+                    'score_against': 5,
+                    'team_mate': None,
+                    'score_for': 6
+                }
+            ],
+            4: [
+                {
+                    'opposition': (7, None),
+                    'score_against': 0,
+                    'team_mate': None,
+                    'score_for': 6
+                },
+                {
+                    'opposition': (8, None),
+                    'score_against': 6,
+                    'team_mate': None,
+                    'score_for': 0
+                }
+            ],
+            5: [
+                {
+                    'opposition': (2, None),
+                    'score_against': 6,
+                    'team_mate': None,
+                    'score_for': 1
+                },
+                {
+                    'opposition': (1, None),
+                    'score_against': 6,
+                    'team_mate': None,
+                    'score_for': 0
+                }
+            ],
+            6: [
+                {
+                    'opposition': (1, None),
+                    'score_against': 6,
+                    'team_mate': None,
+                    'score_for': 3
+                },
+                {
+                    'opposition': (2, None),
+                    'score_against': 6,
+                    'team_mate': None,
+                    'score_for': 0
+                }
+            ],
+            7: [
+                {
+                    'opposition': (4, None),
+                    'score_against': 6,
+                    'score_for': 0,
+                    'team_mate': None
+                },
+                {
+                    'opposition': (3, None),
+                    'score_against': 6,
+                    'score_for': 5,
+                    'team_mate': None
+                }
+            ],
+            8: [
+                {
+                    'opposition': (3, None),
+                    'score_against': 6,
+                    'score_for': 3,
+                    'team_mate': None
+                },
+                {
+                    'opposition': (4, None),
+                    'score_against': 0,
+                    'score_for': 6,
+                    'team_mate': None
+                }
+            ]
+        }
+        msg = 'Match stats dictionary (singles) structure error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_extract_player_codes_singles(self):
+        """Extract raw HTML player codes: singles
+        """
+        # Given a raw segment of HTML representing a player code
+        raw_player_code = "1"
+
+        # when I extract the player code
+        received = trols_stats.Scraper.extract_player_codes(raw_player_code)
+
+        # then I should receive a tuple construct
+        expected = (1, None)
+        msg = 'Singles raw HTML parse error'
+        self.assertTupleEqual(received, expected, msg)
+
+    def test_extract_player_codes_doubles(self):
+        """Extract raw HTML player codes: doubles
+        """
+        # Given a raw segment of HTML representing a doubles player code
+        raw_player_code = "1+4"
+
+        # when I extract the player codes
+        received = trols_stats.Scraper.extract_player_codes(raw_player_code)
+
+        # then I should receive a tuple construct
+        expected = (1, 4)
+        msg = 'Doubles raw HTML parse error'
+        self.assertTupleEqual(received, expected, msg)
+
     def test_create_stat(self):
         """Create a match results stat.
         """
         # Given a tuple of players
-        players = (1, 2)
+        players = ((1, 2), (1, 2))
 
         # and a tuple of results
         results = (3, 6)
@@ -615,7 +812,7 @@ class TestScraper(unittest.TestCase):
         """Create a match results stat: away.
         """
         # Given a tuple of players
-        players = (1, 2)
+        players = ((1, 2), (1, 2))
 
         # and a tuple of results
         results = (3, 6)
@@ -639,7 +836,7 @@ class TestScraper(unittest.TestCase):
         """Create a match results stat: reverse.
         """
         # Given a tuple of players
-        players = (1, 2)
+        players = ((1, 2), (1, 2))
 
         # and a tuple of results
         results = (3, 6)
@@ -661,7 +858,7 @@ class TestScraper(unittest.TestCase):
         """Create a match results stat: away team reverse.
         """
         # Given a tuple of players
-        players = (1, 2)
+        players = ((1, 2), (1, 2))
 
         # and a tuple of results
         results = (3, 6)
@@ -686,7 +883,7 @@ class TestScraper(unittest.TestCase):
         """Create a match results stat: singles.
         """
         # Given a tuple of players
-        players = (1, None)
+        players = ((1, None), (1, None))
 
         # and a tuple of results
         results = (3, 6)
@@ -708,7 +905,7 @@ class TestScraper(unittest.TestCase):
         """Create a match results stat: away singles.
         """
         # Given a tuple of players
-        players = (1, None)
+        players = ((1, None), (1, None))
 
         # and a tuple of results
         results = (3, 6)
@@ -732,7 +929,7 @@ class TestScraper(unittest.TestCase):
         """Create a match results stat: reverse singles.
         """
         # Given a tuple of players
-        players = (1, None)
+        players = ((1, None), (1, None))
 
         # and a tuple of results
         results = (3, 6)
@@ -740,21 +937,15 @@ class TestScraper(unittest.TestCase):
         # when I create a stat
         received = trols_stats.Scraper.create_stat(players, results, True)
 
-        # then I should receive a dictionary structure of the form
-        expected = {
-            'team_mate': None,
-            'opposition': (5, None),
-            'score_for': 3,
-            'score_against': 6,
-        }
-        msg = 'Match stat creation error: reverse singles'
-        self.assertDictEqual(received, expected, msg)
+        # then I should receive None
+        msg = 'Match stat for reverse singles not None'
+        self.assertIsNone(received, msg)
 
     def test_create_stat_reverse_away_singles(self):
         """Create a match results stat: away team reverse singles.
         """
         # Given a tuple of players
-        players = (1, None)
+        players = ((1, None), (1, None))
 
         # and a tuple of results
         results = (3, 6)
@@ -765,6 +956,46 @@ class TestScraper(unittest.TestCase):
                                                    reverse=True,
                                                    away_team=True)
 
+        # then I should receive None
+        msg = 'Match stat for away reverse singles not None'
+        self.assertIsNone(received, msg)
+
+    def test_create_stat_dvta_singles(self):
+        """Create a match results stat: DVTA singles.
+        """
+        # Given a tuple of players
+        players = ((1, None), (2, None))
+
+        # and a tuple of results
+        results = (3, 6)
+
+        # when I create a stat
+        received = trols_stats.Scraper.create_stat(players, results)
+
+        # then I should receive a dictionary structure of the form
+        expected = {
+            'team_mate': None,
+            'opposition': (6, None),
+            'score_for': 3,
+            'score_against': 6,
+        }
+        msg = 'Match stat creation error'
+        self.assertDictEqual(received, expected, msg)
+
+    def test_create_stat_away_dvta_singles(self):
+        """Create a match results stat: away DVTA singles.
+        """
+        # Given a tuple of players
+        players = ((1, None), (2, None))
+
+        # and a tuple of results
+        results = (3, 6)
+
+        # when I create an away team stat
+        received = trols_stats.Scraper.create_stat(players,
+                                                   results,
+                                                   away_team=True)
+
         # then I should receive a dictionary structure of the form
         expected = {
             'team_mate': None,
@@ -772,8 +1003,45 @@ class TestScraper(unittest.TestCase):
             'score_for': 6,
             'score_against': 3,
         }
-        msg = 'Match stat creation error: away team reverse singles'
+        msg = 'Match stat creation error: away_team singles'
         self.assertDictEqual(received, expected, msg)
+
+    def test_create_stat_reverse_dvta_singles(self):
+        """Create a match results stat: reverse DVTA singles.
+        """
+        # Given a tuple of players
+        players = ((1, None), (2, None))
+
+        # and a tuple of results
+        results = (3, 6)
+
+        # when I create a stat
+        received = trols_stats.Scraper.create_stat(players,
+                                                   results,
+                                                   reverse=True)
+
+        # then I should receive None
+        msg = 'Match stat for reverse DVTA singles not None'
+        self.assertIsNone(received, msg)
+
+    def test_create_stat_reverse_away_dvta_singles(self):
+        """Create a match results stat: away team reverse singles.
+        """
+        # Given a tuple of players
+        players = ((1, None), (1, None))
+
+        # and a tuple of results
+        results = (3, 6)
+
+        # when I create a stat
+        received = trols_stats.Scraper.create_stat(players,
+                                                   results,
+                                                   reverse=True,
+                                                   away_team=True)
+
+        # then I should receive None
+        msg = 'Match stat for reverse away DVTA singles not None'
+        self.assertIsNone(received, msg)
 
     @classmethod
     def tearDownClass(cls):

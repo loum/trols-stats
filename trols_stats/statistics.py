@@ -84,13 +84,28 @@ class Statistics(object):
         """Take a :class:`trols_stats.model.aggregate.Game` instance
         and add to the statistics.
 
+        On invocation, increments the :attr:`games_played` attribute by
+        one and the :attr:`score_for` :attr:`score_against`.  Also attempts
+        to maintain a count of sets won.
+
+
+        .. note::
+            Special consideration is required for 8 game sets (DVTA mid-week
+            ladies competition).
+
+        **Args:**
+            *game*: reference to a :class:`trols_stats.model.aggregate.Game`
+            instance
+
         """
         self.games_played += 1
 
         self.score_for += game.score_for
         self.score_against += game.score_against
 
-        if game.score_for == 6:
-            self.games_won += 1
-        if game.score_against == 6:
-            self.games_lost += 1
+        if game.player_won is not None:
+            if game.player_won:
+                self.games_won += 1
+
+            if not game.player_won:
+                self.games_lost += 1

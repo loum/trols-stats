@@ -16,6 +16,7 @@ else
 endif
 
 # OK, set some globals.
+PYTHONPATH=.
 WHEEL=~/wheelhouse
 
 GIT=$(shell which git 2>/dev/null)

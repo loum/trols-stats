@@ -103,6 +103,16 @@ class Reporter(object):
                 'event': ['doubles'],
                 'event_type': ['mens'],
             }
+        elif re.match('dvta_thursday_am', competition):
+            comp_details = {
+                'event': ['doubles'],
+                'event_type': ['womens'],
+            }
+        elif re.match('dvta_friday_night', competition):
+            comp_details = {
+                'event': ['singles'],
+                'event_type': ['mixed'],
+            }
         elif re.match('nejta', competition):
             comp_details = {
                 'event': ['singles', 'doubles'],
@@ -110,6 +120,26 @@ class Reporter(object):
             }
 
         return comp_details
+
+    def get_competitions(self):
+        """Return a list of all competitions represented in the current
+        data set.
+
+        **Returns:**
+            list of cometitions.  For example::
+
+                [
+                    'nejta_saturday_am_autumn_2014',
+                    'nejta_saturday_am_autumn_2015',
+                    'nejta_saturday_am_spring_2014',
+                    'nejta_saturday_am_spring_2015',
+                    ...
+                ]
+
+        """
+        competitions = set(x.split('~')[4] for x in self.db.keys())
+
+        return sorted(competitions)
 
     def get_teams(self,
                   competition='nejta_saturday_am_spring_2015',
@@ -119,15 +149,28 @@ class Reporter(object):
         and *section*.
 
         **Kwargs:**
-            *names*: list of name to filter DB against
+            *competition*: the TROLS Stats competiton key of the form::
+
+                <association>_<day>_<time_slot>_<season>_<year>
+
+            For example::
+                'nejta_saturday_am_spring_2015'
+
+            *competition_type*: one of ``girls``, ``boys`` or ``None``
+            for any
+
+            *section*: numeric representation of the team section number
 
         **Returns:**
             sorted list of team names of the form::
 
-            [
-                'Isabella Markovski~Watsonia Red~14~girls~saturday_...',
-                ...
-            ]
+                [
+                    'Bundoora',
+                    'Eaglemont',
+                    'Mill Park',
+                    'Rosanna',
+                    ...
+                ]
 
         """
         kwargs = {

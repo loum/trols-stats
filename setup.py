@@ -18,7 +18,7 @@ PACKAGES = [
 
 SETUP_KWARGS = {
     'name': 'trols-stats',
-    'version': '1.0.0',
+    'version': '1.0.1',
     'description': 'TROLS statistics data model and utils',
     'author': 'Lou Markovski',
     'author_email': 'lou.markovski@gmail.com',

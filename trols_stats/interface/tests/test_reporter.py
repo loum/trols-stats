@@ -58,9 +58,6 @@ class TestReporter(unittest.TestCase):
                                   'interface',
                                   'tests',
                                   'files')
-        # session = trols_stats.DBSession(shelve=shelve_dir)
-        # session.connect()
-        # cls.__db = session.connection['trols']
         cls._model = trols_stats.DataModel(shelve=shelve_dir)
 
     def test_init(self):
@@ -71,6 +68,27 @@ class TestReporter(unittest.TestCase):
         self.assertIsInstance(reporter,
                               trols_stats.interface.Reporter,
                               msg)
+
+    def test_get_competitions(self):
+        """Competitions lookup.
+        """
+        # Given a TROLS Stats data instance
+        reporter = trols_stats.interface.Reporter(db=self._model)
+
+        # when I query the available competitions
+        received = reporter.get_competitions()
+
+        # then I should get a list of competitions in the current data set
+        expected = [
+            'nejta_saturday_am_autumn_2014',
+            'nejta_saturday_am_autumn_2015',
+            'nejta_saturday_am_spring_2014',
+            'nejta_saturday_am_spring_2015',
+        ]
+        msg = 'Competition list mismatch'
+        self.assertListEqual(sorted(received),
+                             sorted(expected),
+                             msg)
 
     def test_get_players(self):
         """Players lookup.
@@ -404,7 +422,6 @@ class TestReporter(unittest.TestCase):
         token = ('Isabella Markovski~Watsonia Blue~'
                  '14~girls~nejta_saturday_am_autumn_2015')
         game_aggregates = reporter.get_player_fixtures(token)
-        print([x() for x in game_aggregates])
 
         # when I search for the player's last fixture
         last_fixture = reporter.last_fixture_played(game_aggregates)
@@ -498,6 +515,7 @@ class TestReporter(unittest.TestCase):
                 'team': 'Watsonia Blue',
                 'uid': None
             },
+            'player_won': False,
             'score_against': 6,
             'score_for': 0,
             'team_mate': {
@@ -568,6 +586,7 @@ class TestReporter(unittest.TestCase):
                 'uid': None,
                 'team': 'Eltham'
             },
+            'player_won': True,
             'score_for': 6,
             'player': {
                 'name': 'Kristen Fisher',
@@ -698,6 +717,7 @@ class TestReporter(unittest.TestCase):
                     'team': 'Eltham',
                     'uid': None
                 },
+                'player_won': True,
                 'score_against': 2,
                 'score_for': 6,
                 'team_mate': {
@@ -735,6 +755,7 @@ class TestReporter(unittest.TestCase):
                     'team': 'Eltham',
                     'uid': None
                 },
+                'player_won': True,
                 'score_against': 3,
                 'score_for': 6,
                 'team_mate': {

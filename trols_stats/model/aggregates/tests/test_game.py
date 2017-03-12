@@ -15,16 +15,16 @@ class TestGame(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.maxDiff = None
-        cls.__files_dir = os.path.join('trols_stats',
-                                       'model',
-                                       'aggregates',
-                                       'tests',
-                                       'files')
-        cls.__results_dir = os.path.join('trols_stats',
-                                         'model',
-                                         'aggregates',
-                                         'tests',
-                                         'results')
+        cls._files_dir = os.path.join('trols_stats',
+                                      'model',
+                                      'aggregates',
+                                      'tests',
+                                      'files')
+        cls._results_dir = os.path.join('trols_stats',
+                                        'model',
+                                        'aggregates',
+                                        'tests',
+                                        'results')
 
     def test_init(self):
         """Initialise a trols_stats.model.aggregates.Game object.
@@ -46,7 +46,7 @@ class TestGame(unittest.TestCase):
         received = json.loads(game.to_json())
 
         # then I should get a serialised JSON string
-        with open(os.path.join(self.__results_dir,
+        with open(os.path.join(self._results_dir,
                                'game_aggregate_doubles.json')) as _fh:
             expected = json.loads(_fh.read().rstrip())
         msg = 'trols_stats.model.Game() to JSON error: doubles'
@@ -65,7 +65,7 @@ class TestGame(unittest.TestCase):
         received = json.loads(game.to_json())
 
         # then I should get a serialised JSON string
-        with open(os.path.join(self.__results_dir,
+        with open(os.path.join(self._results_dir,
                                'game_aggregate_singles.json')) as _fh:
             expected = json.loads(_fh.read().rstrip())
         msg = 'trols_stats.model.Game() to JSON error: singles'
@@ -132,7 +132,7 @@ class TestGame(unittest.TestCase):
         """Match Game aggregate subset based on player instance.
         """
         # Given a Game instance
-        with open(os.path.join(self.__files_dir,
+        with open(os.path.join(self._files_dir,
                                'ise_home_st_marys.json')) as _fh:
             game_source = json.loads(_fh.read())
         game = trols_stats.model.aggregates.Game(**game_source)
@@ -155,7 +155,7 @@ class TestGame(unittest.TestCase):
         """Match Game aggregate subset based on player instance: no match.
         """
         # Given a Game instance
-        with open(os.path.join(self.__files_dir,
+        with open(os.path.join(self._files_dir,
                                'ise_home_st_marys.json')) as _fh:
             game_source = json.loads(_fh.read())
         game = trols_stats.model.aggregates.Game(**game_source)
@@ -324,5 +324,5 @@ class TestGame(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.__files_dir = None
-        cls.__results_dir = None
+        cls._files_dir = None
+        cls._results_dir = None

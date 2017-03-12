@@ -286,8 +286,8 @@ class Scraper(object):
 
         """
         root = lxml.html.fromstring(html)
-        preamble = root.xpath(xpath)[0]
-        raw_preamble = preamble.replace(u'\xa0', u' ')
+        tmp_preamble = root.xpath(xpath)[0]
+        raw_preamble = tmp_preamble.replace(u'\xa0', u' ')
 
         log.debug('Scraped preamble: "%s"', raw_preamble)
 
@@ -308,8 +308,9 @@ class Scraper(object):
                                     re.IGNORECASE)
         raw_preamble = competition_re.sub(competition, raw_preamble)
 
-        # Remove the "Sect" token (DVTA only).
+        # Remove the "Sect" and "MWL" token (DVTA only).
         raw_preamble = raw_preamble.replace('Sect ', '')
+        raw_preamble = raw_preamble.replace('MWL ', '')
 
         def section(matchobj):
             match_section = int(matchobj.group(1))
@@ -381,99 +382,135 @@ class Scraper(object):
 
         count = -1
         active_players = ()
+        active_scores = ()
         match_results = {}
-        for score in raw_scores:
-            count += 1
-            if count % 3 == 2:
-                continue
+        have_home_players = have_scores = False
 
-            log.debug('Score component: %s', score.text)
+        # List of raw scores presents as 3 index sets where:
+        #   index 1: home player code
+        #   index 2: score
+        #   index 3: opposition player code
+        #
+        for score in raw_scores:
+            log.debug('Raw score iteration value: %s', score.text)
+            count += 1
 
             if score.text is None:
-                log.warning('Score undefined: skipping')
+                log.warning('Parsed invalid raw score component: skipping')
                 continue
 
-            # Check for doubles.
-            player_re = re.compile(r'^(\d+)\+(\d+)')
-            players = player_re.match(score.text)
-            if players:
-                active_players = (int(players.group(1)),
-                                  int(players.group(2)))
-                log.debug('Players: %s', (active_players,))
+            if count % 3 == 0:
+                log.info('Starting match score parsing segment ...')
+
+                active_players = Scraper.extract_player_codes(score.text)
+                log.debug('Home players: %s', active_players)
+                have_home_players = True
                 continue
 
-            # Check for singles.
-            player_re = re.compile(r'^(\d+)$')
-            players = player_re.match(score.text)
-            if players:
-                active_players = (int(players.group(1)), None)
-                log.debug('Player: %s', (active_players,))
+            if count % 3 == 1:
+                active_scores = [int(x) for x in re.findall(r'\d+',
+                                                            score.text)]
+                active_scores = tuple(active_scores)
+                log.debug('Scores: %s', active_scores)
+                if len(active_scores) == 2:
+                    have_scores = True
+                else:
+                    log.warning('Rejecting this score: %s', active_scores)
                 continue
 
-            score_re = re.compile(r'^(\d+)\-(\d+)')
-            scores = score_re.match(score.text)
-            if scores:
-                active_scores = (int(scores.group(1)),
-                                 int(scores.group(2)))
-                log.debug('Scores: %s', (active_scores, ))
+            if count % 3 == 2:
+                away_players = Scraper.extract_player_codes(score.text)
+                log.debug('Away players: %s', away_players)
 
-                if match_results.get(active_players[0]) is None:
-                    match_results[active_players[0]] = []
+                active_players = (active_players, away_players)
+                log.debug('Active players: %s', active_players)
 
-                stat = Scraper.create_stat(active_players, active_scores)
-                match_results[active_players[0]].append(stat)
+                if have_home_players and have_scores:
+                    match_results.setdefault(active_players[0][0], [])
+                    stat = Scraper.create_stat(active_players,
+                                               active_scores)
+                    match_results[active_players[0][0]].append(stat)
 
-                if match_results.get(active_players[1]) is None:
-                    if active_players[1] is not None:
-                        match_results[active_players[1]] = []
+                    if active_players[0][1] is not None:
+                        match_results.setdefault(active_players[0][1], [])
+                    stat = Scraper.create_stat(active_players,
+                                               active_scores,
+                                               reverse=True)
+                    if active_players[0][1] is not None:
+                        match_results[active_players[0][1]].append(stat)
 
-                stat = Scraper.create_stat(active_players,
-                                           active_scores,
-                                           reverse=True)
-                if active_players[1] is not None:
-                    match_results[active_players[1]].append(stat)
+                    match_results.setdefault((active_players[1][0] + 4), [])
 
-                if match_results.get(active_players[0] + 4) is None:
-                    match_results[active_players[0] + 4] = []
+                    stat = Scraper.create_stat(active_players,
+                                               active_scores,
+                                               away_team=True)
+                    match_results[(active_players[1][0] + 4)].append(stat)
 
-                stat = Scraper.create_stat(active_players,
-                                           active_scores,
-                                           away_team=True)
-                match_results[active_players[0] + 4].append(stat)
+                    if active_players[1][1] is not None:
+                        match_results.setdefault((active_players[1][1] + 4), [])
 
-                if active_players[1] is not None:
-                    if match_results.get(active_players[1] + 4) is None:
-                        match_results[active_players[1] + 4] = []
+                    stat = Scraper.create_stat(active_players,
+                                               active_scores,
+                                               reverse=True,
+                                               away_team=True)
+                    if active_players[1][1] is not None:
+                        match_results[active_players[1][1] + 4].append(stat)
+                else:
+                    log.warning('Error processing match stats: '
+                                'skipping stat creation')
 
-                stat = Scraper.create_stat(active_players,
-                                           active_scores,
-                                           reverse=True,
-                                           away_team=True)
-                if active_players[1] is not None:
-                    match_results[active_players[1] + 4].append(stat)
+                # Reset state managers.
+                active_players = ()
+                active_scores = ()
+                have_home_players = have_scores = False
+
+                log.info('Match score parsing segment complete.')
 
         return match_results
+
+    @staticmethod
+    def extract_player_codes(raw_player_code):
+        """Attempt to extract the player codes from the *raw_player_code*
+        HTML segment.
+
+        **Args:**
+            *raw_player_code* can present as a singles match format code or
+            doubles.  A singles match format code is a single digit.
+            Doubles appear present as digits concatentated with a ``+``.
+            For example, ``1+2``.
+
+        **Returns:**
+            a tuple of tuples representing the player codes.  For example,
+            ``1+4`` would return ``((1, 4),)``.  In singles, ``1`` would
+           return ``((1, None),)``
+
+        """
+        player_codes = [int(x) for x in re.findall(r'\d+', raw_player_code)]
+        player_codes += [None] * (2 - len(player_codes))
+
+        return tuple(set(player_codes))
 
     @staticmethod
     def create_stat(players, scores, reverse=False, away_team=False):
         """Helper function to create a match results stat.
 
         **Args:**
-            *players*: tuple representing the player game positions.
-            For example, ``(1, 2)``
+            *players*: tuples representing the player game positions.
+            For example, ``((1, 2), (1, 2))``
 
             *scores*: tuple representing the player game results.
             For example, ``(6, 3)``.
 
             *reverse*: boolean which will create a stat within the
             context of the partner player (second item in the *players*
-            tuple)
+            tuple).  Note: it does not make sense to create a reverse
+            stat in singles matches
 
             *away_team*: boolean which will create a stat within the
             context of the away team (*players* tuple value plus 4)
 
         **Returns:**
-            dictionary structure of the form::
+            on success, dictionary structure of the form::
 
                 {
                     'team_mate': 5,
@@ -482,12 +519,18 @@ class Scraper(object):
                     'score_against': 3,
                 }
 
-        """
-        team_mate = players[1]
-        if team_mate is not None and reverse:
-            team_mate = players[0]
+            ``None`` otherwise
 
-        if team_mate is not None and away_team:
+        """
+        match_is_singles_format = False
+        if players[0][1] is None:
+            match_is_singles_format = True
+
+        team_mate = players[0][1]
+        if not match_is_singles_format and reverse:
+            team_mate = players[0][0]
+
+        if not match_is_singles_format and away_team:
             team_mate += 4
 
         score_for = scores[0]
@@ -499,19 +542,23 @@ class Scraper(object):
             score_against = scores[0]
 
         inc = 4
+        away_players_ref = players[1]
         if away_team:
             inc = 0
+            away_players_ref = players[0]
 
-        opposition_1 = players[0] + inc
+        opposition_1 = away_players_ref[0] + inc
         opposition_2 = None
-        if players[1] is not None:
-            opposition_2 = players[1] + inc
+        if away_players_ref[1] is not None:
+            opposition_2 = away_players_ref[1] + inc
 
-        stat = {
-            'team_mate': team_mate,
-            'opposition': (opposition_1, opposition_2),
-            'score_for': score_for,
-            'score_against': score_against,
-        }
+        stat = None
+        if not match_is_singles_format or not reverse:
+            stat = {
+                'team_mate': team_mate,
+                'opposition': (opposition_1, opposition_2),
+                'score_for': score_for,
+                'score_against': score_against,
+            }
 
         return stat

@@ -12,7 +12,7 @@ import trols_stats.model.aggregates
 class TestStatistics(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.__files_dir = os.path.join('trols_stats', 'tests', 'files')
+        cls._files_dir = os.path.join('trols_stats', 'tests', 'files')
 
     def test_init(self):
         """Initialise a trols_stats.Statistics object.
@@ -25,7 +25,7 @@ class TestStatistics(unittest.TestCase):
         """Aggregate results from a list of games.
         """
         # Given a list of games
-        with open(os.path.join(self.__files_dir,
+        with open(os.path.join(self._files_dir,
                                'ise_game_aggregates.json')) as _fh:
             games_json = _fh.read()
         games_raw = json.loads(games_json)

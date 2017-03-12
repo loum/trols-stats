@@ -27,6 +27,7 @@
             "team": "Bundoora",
             "uid": null
         },
+        "player_won": true,
         "score_against": 5,
         "score_for": 6,
         "team_mate": {
@@ -64,6 +65,7 @@
             "team": "Bundoora",
             "uid": null
         },
+        "player_won": false,
         "score_against": 6,
         "score_for": 3,
         "team_mate": {

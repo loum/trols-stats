@@ -161,6 +161,7 @@ class TestStats(unittest.TestCase):
                     'opposition': (5, 6),
                     'score_against': 6,
                     'score_for': 3,
+                    'player_won': False,
                     'team_mate': 2
                 }
             ]
@@ -214,6 +215,7 @@ class TestStats(unittest.TestCase):
                     'opposition': (5, 6),
                     'score_against': 6,
                     'score_for': 3,
+                    'player_won': False,
                     'team_mate': 2
                 }
             ]
@@ -267,6 +269,7 @@ class TestStats(unittest.TestCase):
                     'opposition': (6, 8),
                     'score_against': 2,
                     'score_for': 6,
+                    'player_won': True,
                     'team_mate': 4
                 }
             ]
@@ -320,6 +323,7 @@ class TestStats(unittest.TestCase):
                     'opposition': (3, None),
                     'score_against': 3,
                     'score_for': 6,
+                    'player_won': True,
                     'team_mate': None
                 }
             ]
@@ -336,6 +340,7 @@ class TestStats(unittest.TestCase):
         # expected = SINGLES
         expected = {
             'uid': None,
+            'player_won': True,
             'score_against': 3,
             'fixture': {
                 'home_team': 'Norris Bank',
@@ -348,6 +353,7 @@ class TestStats(unittest.TestCase):
                 'match_round': 4
             },
             'score_for': 6,
+            'player_won': True,
             'player': {
                 'team': 'Eltham',
                 'uid': None,

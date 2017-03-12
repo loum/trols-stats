@@ -35,6 +35,7 @@
                     "team": "Eltham",
                     "uid": null
                 },
+                "player_won": true,
                 "score_against": 2,
                 "score_for": 6,
                 "uid": null

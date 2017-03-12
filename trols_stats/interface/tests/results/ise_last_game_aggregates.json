@@ -27,6 +27,7 @@
             "team": "Watsonia Blue",
             "uid": null
         },
+        "player_won": true,
         "score_against": 3,
         "score_for": 6,
         "team_mate": {
@@ -64,6 +65,7 @@
             "team": "Watsonia Blue",
             "uid": null
         },
+        "player_won": false,
         "score_against": 6,
         "score_for": 5,
         "team_mate": {

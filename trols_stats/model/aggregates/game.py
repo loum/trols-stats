@@ -1,5 +1,6 @@
 import trols_stats.model
 import trols_stats.model.entities as entities
+from logga import log
 
 __all__ = ['Game']
 
@@ -18,14 +19,16 @@ class Game(trols_stats.model.Base):
 
     .. attribute:: score_against
 
-    """
-    @property
-    def fixture(self):
-        return self.__fixture
+    .. attribute:: player_won
 
+    """
     @property
     def fixture_round(self):
         return self.__fixture.match_round
+
+    @property
+    def fixture(self):
+        return self.__fixture
 
     @fixture.setter
     def fixture(self, value):
@@ -71,6 +74,14 @@ class Game(trols_stats.model.Base):
     def score_against(self, value):
         self.__score_against = value
 
+    @property
+    def player_won(self):
+        return self.__player_won
+
+    @player_won.setter
+    def player_won(self, value):
+        self.__player_won = value
+
     def __init__(self,
                  uid=None,
                  fixture=None,
@@ -87,6 +98,17 @@ class Game(trols_stats.model.Base):
         self.__opposition = Game.set_opposition(opposition)
         self.__score_for = score_for
         self.__score_against = score_against
+        self.__player_won = None
+
+        log.debug('SF|SA: %d|%d', self.__score_for, self.__score_against)
+        if (self.__score_for is not None
+                and self.__score_against is not None):
+            if self.__score_for in [6, 8] and self.__score_against != 8:
+                log.debug('Player Won')
+                self.__player_won = True
+            if self.__score_against in [6, 8] and self.__score_for != 8:
+                log.debug('Player Lost')
+                self.__player_won = False
 
     def __call__(self):
         # Cater for singles where player 2 is None.
@@ -101,6 +123,7 @@ class Game(trols_stats.model.Base):
             'opposition': opposition,
             'score_for': self.score_for,
             'score_against': self.score_against,
+            'player_won': self.player_won,
         }
 
         if self.team_mate.name is not None:
@@ -128,7 +151,7 @@ class Game(trols_stats.model.Base):
             'opposition': opposition,
             'score_for': self.score_for,
             'score_against': self.score_against,
-            'player_won': True if self.score_for == 6 else False
+            'player_won': self.player_won,
         }
 
         if self.is_doubles():

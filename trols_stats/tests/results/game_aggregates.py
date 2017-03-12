@@ -11,6 +11,7 @@ SINGLES = {
         'date': '21 Feb 15',
         'match_round': 4
     },
+    'player_won': True,
     'score_for': 6,
     'player': {
         'team': 'Eltham',
@@ -54,6 +55,7 @@ DOUBLES = {
         'team': 'Watsonia Red',
         'uid': None
     },
+    'player_won': False,
     'score_against': 6,
     'score_for': 3,
     'team_mate': {
@@ -92,6 +94,7 @@ COLOR_CODED_DOUBLES = {
         'team': 'Watsonia Red',
         'uid': None
     },
+    'player_won': False,
     'score_against': 6,
     'score_for': 3,
     'team_mate': {
@@ -130,6 +133,7 @@ COLOR_CODED_4TH_DOUBLES = {
         'team': 'Watsonia Blue',
         'uid': None
     },
+    'player_won': True,
     'score_against': 2,
     'score_for': 6,
     'team_mate': {

@@ -234,6 +234,10 @@ class Stats(object):
             player_obj = self.set_players_cache(self.get_player(code))
 
             for raw_game in games:
+                if raw_game is None:
+                    log.warn('Incomplete raw game detail: skipping')
+                    continue
+
                 # Team mate.
                 team_mate = raw_game.get('team_mate')
                 team_mate_obj = None
