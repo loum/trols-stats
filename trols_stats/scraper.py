@@ -488,7 +488,7 @@ class Scraper(object):
         player_codes = [int(x) for x in re.findall(r'\d+', raw_player_code)]
         player_codes += [None] * (2 - len(player_codes))
 
-        return tuple(set(player_codes))
+        return tuple(player_codes)
 
     @staticmethod
     def create_stat(players, scores, reverse=False, away_team=False):
