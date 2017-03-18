@@ -89,7 +89,6 @@ class Fixture(trols_stats.model.Base):
         self.__away_team = value
 
     def __init__(self,
-                 uid=None,
                  match_round=None,
                  competition_type=None,
                  competition=None,
@@ -97,7 +96,6 @@ class Fixture(trols_stats.model.Base):
                  date=None,
                  home_team=None,
                  away_team=None):
-        super(Fixture, self).__init__(uid=uid)
 
         self.__round = trols_stats.model.entities.MatchRound(match_round)
         self.__competition_type = competition_type
@@ -109,7 +107,6 @@ class Fixture(trols_stats.model.Base):
 
     def __call__(self):
         return {
-            'uid': self.uid,
             'match_round': self.match_round,
             'competition': self.competition,
             'competition_type': self.competition_type,

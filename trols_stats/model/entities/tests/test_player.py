@@ -24,7 +24,6 @@ class TestPlayer(unittest.TestCase):
         """
         # Given a player data structure
         player_data = {
-            'uid': 'xyz',
             'name': 'Player 1',
             'team': 'Best Team'
         }
@@ -38,7 +37,6 @@ class TestPlayer(unittest.TestCase):
         # then I should received a serialised JSON string
         expected = {
             "team": "Best Team",
-            "uid": "xyz",
             "name": "Player 1"
         }
         msg = 'trols_stats.model.entities.Player() to JSON error'
@@ -49,7 +47,6 @@ class TestPlayer(unittest.TestCase):
         """
         # Given a player data structure
         player_data = {
-            'uid': 'xyz',
             'name': 'Player 1',
             'team': 'Best Team'
         }
@@ -69,7 +66,6 @@ class TestPlayer(unittest.TestCase):
         """
         # Given a player data structure
         player_data = {
-            'uid': 'xyz',
             'name': 'Player 1',
             'team': 'Best Team'
         }
@@ -89,7 +85,6 @@ class TestPlayer(unittest.TestCase):
         """
         # Given a player data structure
         player_data = {
-            'uid': 'xyz',
             'name': 'Player 1',
             'team': 'Best Team'
         }
@@ -110,7 +105,6 @@ class TestPlayer(unittest.TestCase):
         """
         # Given a player data structure
         player_data = {
-            'uid': 'xyz',
             'name': 'Player 1',
             'team': 'Best Team'
         }
@@ -120,8 +114,7 @@ class TestPlayer(unittest.TestCase):
 
         # and compare it to a unlike Player object
         player_data_2 = {
-            'uid': 'abc',
-            'name': 'Player 1',
+            'name': 'Player 2',
             'team': 'Best Team'
         }
         player_2 = trols_stats.model.entities.Player(**player_data_2)

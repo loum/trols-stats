@@ -339,13 +339,11 @@ class TestStats(unittest.TestCase):
         received = stats.games_cache[0]()
         # expected = SINGLES
         expected = {
-            'uid': None,
             'player_won': True,
             'score_against': 3,
             'fixture': {
                 'home_team': 'Norris Bank',
                 'away_team': 'Eltham',
-                'uid': None,
                 'section': 1,
                 'competition': 'saturday_am_autumn_2015',
                 'competition_type': 'girls',
@@ -356,13 +354,11 @@ class TestStats(unittest.TestCase):
             'player_won': True,
             'player': {
                 'team': 'Eltham',
-                'uid': None,
                 'name': 'Kristen Fisher'
             },
             'opposition': [
                 {
                     'team': 'Norris Bank',
-                    'uid': None,
                     'name': 'Indiana Pisasale'
                 }
             ]
@@ -399,7 +395,6 @@ class TestStats(unittest.TestCase):
         # and the first opponent should match
         expected = {
             'team': 'Watsonia Red',
-            'uid': None,
             'name': 'Madeline Doyle',
         }
         msg = 'Opposition player structure (doubles 1) incorrect'
@@ -408,7 +403,6 @@ class TestStats(unittest.TestCase):
         # and the second opponent should match
         expected = {
             'team': 'Watsonia Red',
-            'uid': None,
             'name': 'Tara Watson'
         }
 
@@ -441,7 +435,6 @@ class TestStats(unittest.TestCase):
         # and the first opponent should match
         expected = {
             'team': 'Watsonia Red',
-            'uid': None,
             'name': 'Madeline Doyle'
         }
         msg = 'Opposition player structure (singles) incorrect'

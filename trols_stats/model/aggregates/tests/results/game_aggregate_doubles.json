@@ -1,9 +1,7 @@
 {
-    "uid": null,
     "player_won": false,
     "team_mate": {
         "team": "Watsonia Red",
-        "uid": null,
         "name": "Tara Watson"
     },
     "score_against": 6,
@@ -11,7 +9,6 @@
         "date": "28 Feb 15",
         "home_team": "Watsonia Red",
         "away_team": "St Marys",
-        "uid": null,
         "competition_type": "girls",
         "section": 14,
         "competition": "saturday_am_autumn_2015",
@@ -20,18 +17,15 @@
     "score_for": 3,
     "player": {
         "team": "Watsonia Red",
-        "uid": null,
         "name": "Madeline Doyle"
     },
     "opposition": [
         {
             "team": "St Marys",
-            "uid": null,
             "name": "Lauren Amsing"
         },
         {
             "team": "St Marys",
-            "uid": null,
             "name": "Mia Bovalino"
         }
     ]

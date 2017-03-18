@@ -83,14 +83,12 @@ class Game(trols_stats.model.Base):
         self.__player_won = value
 
     def __init__(self,
-                 uid=None,
                  fixture=None,
                  player=None,
                  team_mate=None,
                  opposition=None,
                  score_for=None,
                  score_against=None):
-        super(Game, self).__init__(uid=uid)
 
         self.__fixture = Game.set_fixture(fixture)
         self.__player = Game.set_player(player)
@@ -100,7 +98,7 @@ class Game(trols_stats.model.Base):
         self.__score_against = score_against
         self.__player_won = None
 
-        log.debug('SF|SA: %d|%d', self.__score_for, self.__score_against)
+        log.debug('SF|SA: %s|%s', self.__score_for, self.__score_against)
         if (self.__score_for is not None
                 and self.__score_against is not None):
             if self.__score_for in [6, 8] and self.__score_against != 8:
@@ -117,7 +115,6 @@ class Game(trols_stats.model.Base):
             opposition.append(self.opposition[1]())
 
         game = {
-            'uid': self.uid,
             'fixture': self.__fixture(),
             'player': self.__player(),
             'opposition': opposition,
@@ -289,7 +286,6 @@ class Game(trols_stats.model.Base):
                     'home_team': 'Watsonia Red',
                     'match_round': 5,
                     'section': 14,
-                    'uid': None
                 }
             }
 

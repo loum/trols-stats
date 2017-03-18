@@ -6,34 +6,28 @@
             "date": "31 Jan 15",
             "home_team": "St Marys",
             "match_round": 1,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Lauren Amsing",
-                "team": "St Marys",
-                "uid": null
+                "team": "St Marys"
             },
             {
                 "name": "Mia Bovalino",
-                "team": "St Marys",
-                "uid": null
+                "team": "St Marys"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 6,
         "score_for": 2,
         "team_mate": {
             "name": "Maddison Hollyoak",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -42,34 +36,28 @@
             "date": "31 Jan 15",
             "home_team": "St Marys",
             "match_round": 1,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Lauren Amsing",
-                "team": "St Marys",
-                "uid": null
+                "team": "St Marys"
             },
             {
                 "name": "Lucinda Ford",
-                "team": "St Marys",
-                "uid": null
+                "team": "St Marys"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 6,
         "score_for": 0,
         "team_mate": {
             "name": "Lily Matt",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -78,34 +66,28 @@
             "date": "7 Feb 15",
             "home_team": "Watsonia Blue",
             "match_round": 2,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Tara Watson",
-                "team": "Watsonia Red",
-                "uid": null
+                "team": "Watsonia Red"
             },
             {
                 "name": "Sallyanne Glover",
-                "team": "Watsonia Red",
-                "uid": null
+                "team": "Watsonia Red"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 4,
         "score_for": 6,
         "team_mate": {
             "name": "Lily Matt",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -114,34 +96,28 @@
             "date": "7 Feb 15",
             "home_team": "Watsonia Blue",
             "match_round": 2,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Sallyanne Glover",
-                "team": "Watsonia Red",
-                "uid": null
+                "team": "Watsonia Red"
             },
             {
                 "name": "Madeline Doyle",
-                "team": "Watsonia Red",
-                "uid": null
+                "team": "Watsonia Red"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 2,
         "score_for": 6,
         "team_mate": {
             "name": "Eboni Amos",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -150,34 +126,28 @@
             "date": "21 Feb 15",
             "home_team": "Watsonia Blue",
             "match_round": 4,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Maya Amit",
-                "team": "View Bank",
-                "uid": null
+                "team": "View Bank"
             },
             {
                 "name": "Danielle Chiupka",
-                "team": "View Bank",
-                "uid": null
+                "team": "View Bank"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 5,
         "score_for": 6,
         "team_mate": {
             "name": "Eboni Amos",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -186,34 +156,28 @@
             "date": "21 Feb 15",
             "home_team": "Watsonia Blue",
             "match_round": 4,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Danielle Chiupka",
-                "team": "View Bank",
-                "uid": null
+                "team": "View Bank"
             },
             {
                 "name": "Hayley Francis-D'amour",
-                "team": "View Bank",
-                "uid": null
+                "team": "View Bank"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 1,
         "score_for": 6,
         "team_mate": {
             "name": "Stephanie Lia",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -222,34 +186,28 @@
             "date": "21 Mar 15",
             "home_team": "Watsonia Blue",
             "match_round": 7,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Danielle Brodelis",
-                "team": "Mill Park",
-                "uid": null
+                "team": "Mill Park"
             },
             {
                 "name": "Sarah Ray",
-                "team": "Mill Park",
-                "uid": null
+                "team": "Mill Park"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 0,
         "score_for": 6,
         "team_mate": {
             "name": "Stephanie Lia",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -258,34 +216,28 @@
             "date": "21 Mar 15",
             "home_team": "Watsonia Blue",
             "match_round": 7,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Sarah Ray",
-                "team": "Mill Park",
-                "uid": null
+                "team": "Mill Park"
             },
             {
                 "name": "Belinda Borg",
-                "team": "Mill Park",
-                "uid": null
+                "team": "Mill Park"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 2,
         "score_for": 6,
         "team_mate": {
             "name": "Lily Matt",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -294,34 +246,28 @@
             "date": "28 Mar 15",
             "home_team": "Watsonia Blue",
             "match_round": 8,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Mia Bovalino",
-                "team": "St Marys",
-                "uid": null
+                "team": "St Marys"
             },
             {
                 "name": "Lucinda Ford",
-                "team": "St Marys",
-                "uid": null
+                "team": "St Marys"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 6,
         "score_for": 4,
         "team_mate": {
             "name": "Lily Matt",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -330,34 +276,28 @@
             "date": "28 Mar 15",
             "home_team": "Watsonia Blue",
             "match_round": 8,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Lauren Amsing",
-                "team": "St Marys",
-                "uid": null
+                "team": "St Marys"
             },
             {
                 "name": "Mia Bovalino",
-                "team": "St Marys",
-                "uid": null
+                "team": "St Marys"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 6,
         "score_for": 5,
         "team_mate": {
             "name": "Eboni Amos",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -366,34 +306,28 @@
             "date": "18 Apr 15",
             "home_team": "Watsonia Red",
             "match_round": 9,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Grace Heaver",
-                "team": "Watsonia Red",
-                "uid": null
+                "team": "Watsonia Red"
             },
             {
                 "name": "Alexis McIntosh",
-                "team": "Watsonia Red",
-                "uid": null
+                "team": "Watsonia Red"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 1,
         "score_for": 6,
         "team_mate": {
             "name": "Eboni Amos",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -402,34 +336,28 @@
             "date": "18 Apr 15",
             "home_team": "Watsonia Red",
             "match_round": 9,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Alexis McIntosh",
-                "team": "Watsonia Red",
-                "uid": null
+                "team": "Watsonia Red"
             },
             {
                 "name": "Tara Watson",
-                "team": "Watsonia Red",
-                "uid": null
+                "team": "Watsonia Red"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 0,
         "score_for": 6,
         "team_mate": {
             "name": "Lily Matt",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -438,34 +366,28 @@
             "date": "2 May 15",
             "home_team": "Watsonia Blue",
             "match_round": 10,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Olivia Ferraro",
-                "team": "Bundoora",
-                "uid": null
+                "team": "Bundoora"
             },
             {
                 "name": "Zara Simiele",
-                "team": "Bundoora",
-                "uid": null
+                "team": "Bundoora"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 3,
         "score_for": 6,
         "team_mate": {
             "name": "Eboni Amos",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -474,34 +396,28 @@
             "date": "2 May 15",
             "home_team": "Watsonia Blue",
             "match_round": 10,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Zara Simiele",
-                "team": "Bundoora",
-                "uid": null
+                "team": "Bundoora"
             },
             {
                 "name": "Priya Nair",
-                "team": "Bundoora",
-                "uid": null
+                "team": "Bundoora"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 6,
         "score_for": 4,
         "team_mate": {
             "name": "Maddison Hollyoak",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -510,34 +426,28 @@
             "date": "16 May 15",
             "home_team": "Watsonia Blue",
             "match_round": 12,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Sophia Papamitrou",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             },
             {
                 "name": "Emma German",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 6,
         "score_for": 4,
         "team_mate": {
             "name": "Maddison Hollyoak",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -546,34 +456,28 @@
             "date": "16 May 15",
             "home_team": "Watsonia Blue",
             "match_round": 12,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Emma German",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             },
             {
                 "name": "Nadia Belhaj",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 2,
         "score_for": 6,
         "team_mate": {
             "name": "Stephanie Lia",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -582,34 +486,28 @@
             "date": "30 May 15",
             "home_team": "Mill Park",
             "match_round": 14,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Sarah Ray",
-                "team": "Mill Park",
-                "uid": null
+                "team": "Mill Park"
             },
             {
                 "name": "Alanna Thwaites",
-                "team": "Mill Park",
-                "uid": null
+                "team": "Mill Park"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 0,
         "score_for": 6,
         "team_mate": {
             "name": "Stephanie Lia",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -618,34 +516,28 @@
             "date": "30 May 15",
             "home_team": "Mill Park",
             "match_round": 14,
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Alanna Thwaites",
-                "team": "Mill Park",
-                "uid": null
+                "team": "Mill Park"
             },
             {
                 "name": "Danielle Brodelis",
-                "team": "Mill Park",
-                "uid": null
+                "team": "Mill Park"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 0,
         "score_for": 6,
         "team_mate": {
             "name": "Lily Matt",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -654,34 +546,28 @@
             "date": null,
             "home_team": "Bundoora",
             "match_round": "Semi Final",
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Olivia Ferraro",
-                "team": "Bundoora",
-                "uid": null
+                "team": "Bundoora"
             },
             {
                 "name": "Zara Simiele",
-                "team": "Bundoora",
-                "uid": null
+                "team": "Bundoora"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 6,
         "score_for": 5,
         "team_mate": {
             "name": "Eboni Amos",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -690,34 +576,28 @@
             "date": null,
             "home_team": "Bundoora",
             "match_round": "Semi Final",
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Zara Simiele",
-                "team": "Bundoora",
-                "uid": null
+                "team": "Bundoora"
             },
             {
                 "name": "Emma Rassias",
-                "team": "Bundoora",
-                "uid": null
+                "team": "Bundoora"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 3,
         "score_for": 6,
         "team_mate": {
             "name": "Maddison Hollyoak",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -726,34 +606,28 @@
             "date": null,
             "home_team": "Barry Road",
             "match_round": "Grand Final",
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Alanah Halabi",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             },
             {
                 "name": "Nadia Belhaj",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 3,
         "score_for": 6,
         "team_mate": {
             "name": "Stephanie Lia",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -762,33 +636,27 @@
             "date": null,
             "home_team": "Barry Road",
             "match_round": "Grand Final",
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Emma German",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             },
             {
                 "name": "Nadia Belhaj",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "score_against": 6,
         "score_for": 5,
         "team_mate": {
             "name": "Maddison Hollyoak",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     }
 ]

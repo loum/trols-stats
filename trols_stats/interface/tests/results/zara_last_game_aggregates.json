@@ -7,35 +7,29 @@
             "date": null,
             "home_team": "Bundoora",
             "match_round": "Semi Final",
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Eboni Amos",
-                "team": "Watsonia Blue",
-                "uid": null
+                "team": "Watsonia Blue"
             },
             {
                 "name": "Isabella Markovski",
-                "team": "Watsonia Blue",
-                "uid": null
+                "team": "Watsonia Blue"
             }
         ],
         "player": {
             "name": "Zara Simiele",
-            "team": "Bundoora",
-            "uid": null
+            "team": "Bundoora"
         },
         "player_won": true,
         "score_against": 5,
         "score_for": 6,
         "team_mate": {
             "name": "Olivia Ferraro",
-            "team": "Bundoora",
-            "uid": null
-        },
-        "uid": null
+            "team": "Bundoora"
+        }
     },
     {
         "fixture": {
@@ -45,34 +39,28 @@
             "date": null,
             "home_team": "Bundoora",
             "match_round": "Semi Final",
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Isabella Markovski",
-                "team": "Watsonia Blue",
-                "uid": null
+                "team": "Watsonia Blue"
             },
             {
                 "name": "Maddison Hollyoak",
-                "team": "Watsonia Blue",
-                "uid": null
+                "team": "Watsonia Blue"
             }
         ],
         "player": {
             "name": "Zara Simiele",
-            "team": "Bundoora",
-            "uid": null
+            "team": "Bundoora"
         },
         "player_won": false,
         "score_against": 6,
         "score_for": 3,
         "team_mate": {
             "name": "Emma Rassias",
-            "team": "Bundoora",
-            "uid": null
-        },
-        "uid": null
+            "team": "Bundoora"
+        }
     }
 ]

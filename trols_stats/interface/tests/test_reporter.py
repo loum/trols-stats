@@ -495,35 +495,29 @@ class TestReporter(unittest.TestCase):
                 'date': '31 Jan 15',
                 'home_team': 'St Marys',
                 'match_round': 1,
-                'section': 14,
-                'uid': None
+                'section': 14
             },
             'opposition': [
                 {
                     'name': 'Lauren Amsing',
-                    'team': 'St Marys',
-                    'uid': None
+                    'team': 'St Marys'
                 },
                 {
                     'name': 'Lucinda Ford',
-                    'team': 'St Marys',
-                    'uid': None
+                    'team': 'St Marys'
                 }
             ],
             'player': {
                 'name': 'Isabella Markovski',
-                'team': 'Watsonia Blue',
-                'uid': None
+                'team': 'Watsonia Blue'
             },
             'player_won': False,
             'score_against': 6,
             'score_for': 0,
             'team_mate': {
                 'name': 'Lily Matt',
-                'team': 'Watsonia Blue',
-                'uid': None
-            },
-            'uid': None
+                'team': 'Watsonia Blue'
+            }
         }
         msg = 'Player doubles games (all doubles played) error'
         self.assertDictEqual(received, expected, msg)
@@ -571,32 +565,26 @@ class TestReporter(unittest.TestCase):
             'opposition': [
                 {
                     'name': 'Indiana Pisasale',
-                    'uid': None,
                     'team': 'Norris Bank'
                 },
                 {
                     'name': 'Sasha Pecanic',
-                    'uid': None,
                     'team': 'Norris Bank'
                 }
             ],
-            'uid': None,
             'team_mate': {
                 'name': 'Paris Batchelor',
-                'uid': None,
                 'team': 'Eltham'
             },
             'player_won': True,
             'score_for': 6,
             'player': {
                 'name': 'Kristen Fisher',
-                'uid': None,
                 'team': 'Eltham'
             },
             'fixture': {
                 'away_team': 'Eltham',
                 'home_team': 'Norris Bank',
-                'uid': None,
                 'competition_type': 'girls',
                 'match_round': 4,
                 'section': 1,
@@ -697,35 +685,29 @@ class TestReporter(unittest.TestCase):
                     'date': '16 May 15',
                     'home_team': 'St Lukes Blue',
                     'match_round': 12,
-                    'section': 1,
-                    'uid': None
+                    'section': 1
                 },
                 'opposition': [
                     {
                         'name': 'Natalia Poposka',
-                        'team': 'St Lukes Blue',
-                        'uid': None
+                        'team': 'St Lukes Blue'
                     },
                     {
                         'name': 'Jamie Lyons',
-                        'team': 'St Lukes Blue',
-                        'uid': None,
+                        'team': 'St Lukes Blue'
                     }
                 ],
                 'player': {
                     'name': 'Kristen Fisher',
-                    'team': 'Eltham',
-                    'uid': None
+                    'team': 'Eltham'
                 },
                 'player_won': True,
                 'score_against': 2,
                 'score_for': 6,
                 'team_mate': {
                     'name': 'Julia Cinel',
-                    'team': 'Eltham',
-                    'uid': None
-                },
-                'uid': None
+                    'team': 'Eltham'
+                }
             },
             {
                 'fixture': {
@@ -735,35 +717,29 @@ class TestReporter(unittest.TestCase):
                     'date': '16 May 15',
                     'home_team': 'St Lukes Blue',
                     'match_round': 12,
-                    'section': 1,
-                    'uid': None
+                    'section': 1
                 },
                 'opposition': [
                     {
                         'name': 'Jamie Lyons',
-                        'team': 'St Lukes Blue',
-                        'uid': None
+                        'team': 'St Lukes Blue'
                     },
                     {
                         'name': 'Evie Loughnan',
-                        'team': 'St Lukes Blue',
-                        'uid': None
+                        'team': 'St Lukes Blue'
                     }
                 ],
                 'player': {
                     'name': 'Kristen Fisher',
-                    'team': 'Eltham',
-                    'uid': None
+                    'team': 'Eltham'
                 },
                 'player_won': True,
                 'score_against': 3,
                 'score_for': 6,
                 'team_mate': {
                     'name': 'Paris Batchelor',
-                    'team': 'Eltham',
-                    'uid': None
-                },
-                'uid': None
+                    'team': 'Eltham'
+                }
             }
         ]
         msg = 'Player stats with last fixture'

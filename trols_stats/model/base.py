@@ -1,26 +1,17 @@
 import abc
 import json
 
+"""Base class for all objects in the TROLS Stats data model.
+
+"""
 __all__ = ['Base']
 
 
 class Base(object):
-    """
-    .. attribute:: uid
+    """This is a abstract class that must be inherited.
 
     """
     __metaclass__ = abc.ABCMeta
-
-    @property
-    def uid(self):
-        return self.__uid
-
-    @uid.setter
-    def uid(self, value):
-        self.__uid = value
-
-    def __init__(self, uid=None):
-        self.__uid = uid
 
     def to_json(self):
         return json.dumps(self())

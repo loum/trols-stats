@@ -26,15 +26,13 @@ class Player(trols_stats.model.Base):
     def team(self, value):
         self.__team = value
 
-    def __init__(self, uid=None, name=None, team=None):
-        super(Player, self).__init__(uid=uid)
+    def __init__(self, name=None, team=None):
 
         self.__name = name
         self.__team = team
 
     def __call__(self):
         return {
-            'uid': self.uid,
             'name': self.name,
             'team': self.team,
         }

@@ -23,7 +23,6 @@ class TestFixture(unittest.TestCase):
         """
         # Given a fixture data structure
         fixture_data = {
-            'uid': 1234,
             'competition': 'saturday_am_autumn_2015',
             'competition_type': 'girls',
             'section': 14,
@@ -44,7 +43,6 @@ class TestFixture(unittest.TestCase):
             "date": "28 Feb 15",
             "home_team": "Watsonia Red",
             "away_team": "St Marys",
-            "uid": 1234,
             "competition_type": "girls",
             "section": 14,
             "competition": "saturday_am_autumn_2015",

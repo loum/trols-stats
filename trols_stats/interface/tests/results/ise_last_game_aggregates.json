@@ -7,35 +7,29 @@
             "date": null,
             "home_team": "Barry Road",
             "match_round": "Grand Final",
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Alanah Halabi",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             },
             {
                 "name": "Nadia Belhaj",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "player_won": true,
         "score_against": 3,
         "score_for": 6,
         "team_mate": {
             "name": "Stephanie Lia",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     },
     {
         "fixture": {
@@ -45,34 +39,28 @@
             "date": null,
             "home_team": "Barry Road",
             "match_round": "Grand Final",
-            "section": 14,
-            "uid": null
+            "section": 14
         },
         "opposition": [
             {
                 "name": "Emma German",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             },
             {
                 "name": "Nadia Belhaj",
-                "team": "Barry Road",
-                "uid": null
+                "team": "Barry Road"
             }
         ],
         "player": {
             "name": "Isabella Markovski",
-            "team": "Watsonia Blue",
-            "uid": null
+            "team": "Watsonia Blue"
         },
         "player_won": false,
         "score_against": 6,
         "score_for": 5,
         "team_mate": {
             "name": "Maddison Hollyoak",
-            "team": "Watsonia Blue",
-            "uid": null
-        },
-        "uid": null
+            "team": "Watsonia Blue"
+        }
     }
 ]
