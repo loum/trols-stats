@@ -7,6 +7,7 @@ from configa.setter import set_scalar, set_dict
 class Config(configa.Config):
     def __init__(self, config_file=None):
         self.__trols_urls = {}
+        self.__drop_box = {}
         self.__cache = None
         self.__shelve = None
 
@@ -18,6 +19,14 @@ class Config(configa.Config):
 
     @set_dict
     def set_trols_urls(self, values=None):
+        pass
+
+    @property
+    def drop_box(self):
+        return self.__drop_box
+
+    @set_dict
+    def set_drop_box(self, values=None):
         pass
 
     @property
@@ -58,6 +67,10 @@ class Config(configa.Config):
         dict_kwargs = [
             {
                 'section': 'trols_urls',
+            },
+            {
+                'section': 'dropbox',
+                'var': 'drop_box',
             },
         ]
 

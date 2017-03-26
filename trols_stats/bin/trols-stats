@@ -49,6 +49,17 @@ def main():
                                help=dump_help,
                                dest='dump')
 
+    # 'cache' subcommand.
+    cache_help = 'Build player game map'
+    cache_parser = subparsers.add_parser('cache', help=cache_help)
+    cache_parser.set_defaults(func=cache)
+
+    cache_list_help = 'List raw TROLS HTML files cached at Dropbox'
+    cache_parser.add_argument('command',
+                               action='store',
+                               choices=['list'],
+                               help=cache_list_help)
+
     # Prepare the argument list and config.
     args = parser.parse_args()
 
@@ -138,6 +149,10 @@ def source(args, conf):
 def scrape(args, conf):
     model = trols_stats.DataModel(shelve=conf.shelve)
     model.construct(conf.cache)
+
+def cache(args, conf):
+    if args.command == 'list':
+        print('XXX Dropbox cache list')
 
 if __name__ == '__main__':
     main()

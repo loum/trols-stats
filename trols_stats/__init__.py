@@ -6,3 +6,4 @@ from .config import Config
 from .statistics import Statistics
 from .dbsession import DBSession
 from .datamodel import DataModel
+from .dropboxcacher import DropBoxCacher

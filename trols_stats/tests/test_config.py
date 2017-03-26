@@ -37,6 +37,23 @@ class TestConfig(unittest.TestCase):
         msg = 'trols_stats.Config.trols_urls error'
         self.assertEqual(received, expected, msg)
 
+    def test_parse_config_dropbox(self):
+        """Parse Dropbox config items from the config.
+        """
+        # Given a TROLS Stats config instance
+        conf = trols_stats.Config(self.__conf_path)
+
+        # when I reference the leagues attribute
+        received = conf.drop_box
+
+        # then I should get the expected Dropbox access items
+        expected = {
+            'access_token': 'THwAeP1QO5AAAAAAAAAA***',
+            'source_path': 'source_raw_html',
+        }
+        msg = 'trols_stats.Config.trols_urls error'
+        self.assertEqual(received, expected, msg)
+
     def test_parse_config_cache(self):
         """Parse cache from the config.
         """

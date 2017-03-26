@@ -5,6 +5,7 @@ import setuptools
 
 PACKAGES = [
     'configa==1.0.0',
+    'dropbox==7.2.1',
     'filer==1.0.0',
     'logga==1.0.0',
     'lxml==3.7.2',
