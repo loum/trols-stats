@@ -6,7 +6,7 @@ import os
 import urllib
 import urllib.request
 import tempfile
-from logga import log
+import logging
 from filer.files import copy_file
 
 import trols_stats
@@ -54,8 +54,7 @@ class Loader(object):
         """
         # Get the competition token.
         comp_token = source_file.split('--')[0]
-        log.debug('Competition token "%s" parsed from filename: "%s"',
-                  source_file, comp_token)
+        logging.debug('Competition token "%s" parsed from filename: "%s"', source_file, comp_token)
 
         # Scrape match teams.
         xpath = '//table/tr/td/b'
@@ -81,7 +80,7 @@ class Loader(object):
         fixture = preamble.copy()
         fixture.update(teams)
         fixture.update({'competition': comp_token})
-        log.debug('Fixture: %s', fixture)
+        logging.debug('Fixture: %s', fixture)
 
         # Build the Game aggregate object.
         stats = trols_stats.Stats(players=dict(players),
@@ -127,15 +126,14 @@ class Loader(object):
             target_file = os.path.join(cache_dir,
                                        '{}--{}.html'.format(comp_token,
                                                             match_id))
-            log.debug('HTML response cache filename: "%s"', target_file)
+            logging.debug('HTML response cache filename: "%s"', target_file)
 
         html = None
         if (force_cache
                 or target_file is None
                 or not os.path.exists(target_file)):
             components = urllib.parse.urlparse(uri)
-            log.debug('URI "%s" scheme|path: %s|%s',
-                      uri, components.scheme, components.path)
+            logging.debug('URI "%s" scheme|path: %s|%s', uri, components.scheme, components.path)
             scheme_match = re.match('http',
                                     components.scheme,
                                     flags=re.IGNORECASE)
@@ -146,8 +144,7 @@ class Loader(object):
 
         if html is not None:
             if target_file is not None:
-                log.info('Writing HTML response to cache file "%s"',
-                         target_file)
+                logging.info('Writing HTML response to cache file "%s"', target_file)
                 with tempfile.NamedTemporaryFile(mode='w') as _fh:
                     try:
                         _fh.write(html.decode('utf-8'))
@@ -157,8 +154,7 @@ class Loader(object):
                     copy_file(_fh.name, target_file)
         else:
             if target_file is not None:
-                log.info('Returning HTML response from cache file "%s"',
-                         target_file)
+                logging.info('Returning HTML response from cache file "%s"', target_file)
                 with open(target_file) as _fh:
                     html = _fh.read()
 
@@ -182,7 +178,7 @@ class Loader(object):
             HTML response string of the *path*
 
         """
-        log.info('Attempting to read file resource "%s"', path)
+        logging.info('Attempting to read file resource "%s"', path)
         html = None
 
         with open(path) as file_h:
@@ -198,7 +194,7 @@ class Loader(object):
         value.
 
         """
-        log.info('URL request "%s": args "%s"', url, request_args)
+        logging.info('URL request "%s": args "%s"', url, request_args)
         request = urllib.request.Request(url)
 
         if request_args is None:

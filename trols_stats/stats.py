@@ -1,10 +1,11 @@
 """class:`trols_stats.Stats`.
 
 """
+import logging
+
 import trols_stats.model
 import trols_stats.model.entities
 import trols_stats.model.aggregates
-from logga import log
 
 __all__ = ['Stats']
 
@@ -131,14 +132,12 @@ class Stats(object):
         if player_details is not None:
             for cache in self.__players_cache:
                 if cache == player_details:
-                    log.debug('Player cache hit "%s"',
-                              player_details.get('name'))
+                    logging.debug('Player cache hit "%s"', player_details.get('name'))
                     player = cache
                     break
 
             if player is None:
-                log.debug('Adding "%s" to player cache',
-                          player_details.get('name'))
+                logging.debug('Adding "%s" to player cache', player_details.get('name'))
                 player = trols_stats.model.entities.Player(**player_details)
                 self.__players_cache.append(player)
 
@@ -172,18 +171,18 @@ class Stats(object):
         fixture = None
         for cache in self.__fixtures_cache:
             if cache == fixture_details:
-                log.debug('Fixture cache hit "%s %s round %s"',
-                          fixture_details.get('competition'),
-                          fixture_details.get('section'),
-                          fixture_details.get('match_round'))
+                logging.debug('Fixture cache hit "%s %s round %s"',
+                              fixture_details.get('competition'),
+                              fixture_details.get('section'),
+                              fixture_details.get('match_round'))
                 fixture = cache
                 break
 
         if fixture is None:
-            log.debug('Adding "%s %s round %s" to fixture cache',
-                      fixture_details.get('competition'),
-                      fixture_details.get('section'),
-                      fixture_details.get('match_round'))
+            logging.debug('Adding "%s %s round %s" to fixture cache',
+                          fixture_details.get('competition'),
+                          fixture_details.get('section'),
+                          fixture_details.get('match_round'))
             fixture = trols_stats.model.entities.Fixture(**fixture_details)
             self.__fixtures_cache.append(fixture)
 
@@ -235,7 +234,7 @@ class Stats(object):
 
             for raw_game in games:
                 if raw_game is None:
-                    log.warn('Incomplete raw game detail: skipping')
+                    logging.warning('Incomplete raw game detail: skipping')
                     continue
 
                 # Team mate.
@@ -284,8 +283,7 @@ class Stats(object):
             team = self.teams.get(index)
             player = {'name': name, 'team': team}
 
-            log.debug('Player code "%d" lookup produced "%s"',
-                      code, player)
+            logging.debug('Player code "%d" lookup produced "%s"', code, player)
 
         return player
 

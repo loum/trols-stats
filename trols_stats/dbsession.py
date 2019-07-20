@@ -4,7 +4,7 @@
 import os
 import shelve
 
-from logga import log
+import logging
 from filer.files import create_dir
 
 
@@ -30,9 +30,8 @@ class DBSession(object):
         self.__shelve_db = kwargs.get('shelve')
 
     def __del__(self):
-        if self.connection is not None:
-            if self.shelve_db is not None:
-                self.close()
+        if self.connection and self.shelve_db:
+            self.connection.close()
 
     def connect(self):
         """Create a database session connection based on class attributes.
@@ -41,24 +40,19 @@ class DBSession(object):
         status = False
 
         if self.shelve_db is not None:
-            log.info('DB session (shelve): starting ...')
+            logging.info('DB session (shelve): starting ...')
             if create_dir(self.shelve_db):
                 shelve_path = os.path.join(self.shelve_db,
                                            'trols_stats.db')
-                log.debug('Shelve DB path "%s"', shelve_path)
+                logging.debug('Shelve DB path "%s"', shelve_path)
                 flag = 'r'
                 if not os.path.exists(shelve_path):
-                    log.info('Creating data store')
+                    logging.info('Creating data store')
                     flag = 'c'
-                log.debug('DB open flag: "%s"', flag)
+                logging.debug('DB open flag: "%s"', flag)
                 self.connection = shelve.open(shelve_path, flag=flag)
                 status = True
 
-        log.info('DB (shelve) connection status: %s', status)
+        logging.info('DB (shelve) connection status: %s', status)
 
         return status
-
-    def close(self):
-        if self.connection is not None:
-            self.connection.close()
-            log.info('DB session (shelve) closed')

@@ -2,7 +2,7 @@
 
 """
 import os
-from logga import log
+import logging
 
 import trols_stats.interface
 from filer.files import get_directory_files
@@ -49,7 +49,7 @@ class DataModel(object):
 
         self.__session.connection['trols'] = player_id_games
         self.__content = player_id_games
-        log.info('%d games written to "%s"',
-                 token_count, self.__session.shelve_db)
+        logging.info('%d games written to "%s"',
+                     token_count, self.__session.shelve_db)
 
         return token_count

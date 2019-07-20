@@ -5,11 +5,15 @@ Statistics reporting module.
 """
 import re
 import collections
+import logging
+
 import trols_stats
-from logga import log
 
 
-class Reporter(object):
+class Reporter:
+    def __init__(self, db):
+        self.__db = db()
+
     @property
     def db(self):
         return self.__db
@@ -17,9 +21,6 @@ class Reporter(object):
     @db.setter
     def db(self, value):
         self.__db = value
-
-    def __init__(self, db):
-        self.__db = db()
 
     def get_players(self,
                     names=None,
@@ -272,14 +273,13 @@ class Reporter(object):
             :meth:`trols_stats.model.aggregate.Game.get_player_id` `token`.
 
         """
-        log.info('Extracting singles games for player "%s"', name)
+        logging.info('Extracting singles games for player "%s"', name)
 
         fixtures = self.get_player_fixtures(name)
 
         singles_games = [x for x in fixtures if x.is_singles()]
 
-        log.info('Total singles games found with player "%s": %d',
-                 name, len(singles_games))
+        logging.info('Total singles games found with player "%s": %d', name, len(singles_games))
 
         return singles_games
 
@@ -295,14 +295,12 @@ class Reporter(object):
         objects that *name* was involved in
 
         """
-        log.info('Extracting doubles games for player "%s"', name)
-
+        logging.info('Extracting doubles games for player "%s"', name) 
         fixtures = self.get_player_fixtures(name)
 
         doubles_games = [x for x in fixtures if x.is_doubles()]
 
-        log.info('Total doubles games found with player "%s": %d',
-                 name, len(doubles_games))
+        logging.info('Total doubles games found with player "%s": %d', name, len(doubles_games))
 
         return doubles_games
 
@@ -455,7 +453,7 @@ class Reporter(object):
 
         for index, stat in enumerate(statistics, start=1):
             if last_value is None:
-                log.debug('This is the first value')
+                logging.debug('This is the first value')
                 last_value = stat[1][event][key]
 
             if last_value == stat[1][event][key]:

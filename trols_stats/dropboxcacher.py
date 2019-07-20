@@ -4,7 +4,7 @@
 import contextlib
 import time
 import dropbox
-from logga import log
+import logging
 
 
 class DropBoxCacher(object):
@@ -33,8 +33,7 @@ class DropBoxCacher(object):
             with self.stopwatch('list_folder'):
                 res = self.__dbx.files_list_folder(source_path)
         except dropbox.exceptions.ApiError as err:
-            log.error('Folder listing failed for "%s": %s',
-                      source_path, err)
+            logging.error('Folder listing failed for "%s": %s', source_path, err)
         else:
             for entry in res.entries:
                 files[entry.name] = entry
@@ -52,5 +51,4 @@ class DropBoxCacher(object):
             yield
         finally:
             time_end = time.time()
-        log.info('Total elapsed time for %s: %.3fs',
-                 message, time_end - time_start)
+        logging.info('Total elapsed time for %s: %.3fs', message, time_end - time_start)

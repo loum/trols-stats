@@ -1,24 +1,41 @@
+# Get the name of the project
+PROJECT_NAME := $(shell basename $(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
+
 # Check if we have python3 available.
 PY3_VERSION := $(shell python3 --version 2>/dev/null)
 PY3_VERSION_FULL := $(wordlist 2, 4, $(subst ., , ${PY3_VERSION}))
 PY3_VERSION_MAJOR := $(word 1, ${PY3_VERSION_FULL})
 PY3_VERSION_MINOR := $(word 2, ${PY3_VERSION_FULL})
 PY3_VERSION_PATCH := $(word 3, ${PY3_VERSION_FULL})
-USE_PY3VENV := $(shell [ ${PY3_VERSION_MINOR} -ge 3 ] && echo 0 || echo 1)
+
+# python3.3 introduced the venv module which is the
+# preferred method for creating python3 virtual envs.
+# Otherwise, python3 defaults to pyvenv
+USE_PYVENV := $(shell [ ${PY3_VERSION_MINOR} -ge 3 ] && echo 0 || echo 1)
 ifneq ($(PY3_VERSION),)
-  PY := $(shell which python3 2>/dev/null)
+  PY3 := $(shell which python3 2>/dev/null)
   ifeq ($(USE_PYVENV), 1)
     PY_VENV := pyvenv-${PY3_VERSION_MAJOR}.${PY3_VERSION_MINOR}
+  else
+    PY_VENV := ${PY3} -m venv
   endif
+endif
+
+# As long as pip has been installed system-wide, we can use virtualenv
+# for python2.
+PY2_VENV := $(shell which virtualenv 2>/dev/null)
+
+# Determine virtual env tool to use.
+ifeq ($(PYVERSION), 2)
+  VENV_TOOL := ${PY2_VENV}
 else
-  PY_VENV := $(shell which virtualenv 2>/dev/null)
-  PY := $(shell which python 2>/dev/null)
+  VENV_TOOL := ${PY_VENV}
+  PYVERSION := 3
 endif
 
 # OK, set some globals.
-PYTHONPATH=.
 WHEEL=~/wheelhouse
-
+PYTHONPATH=.
 GIT=$(shell which git 2>/dev/null)
 
 # Define the default test suit to run.
@@ -36,88 +53,66 @@ TESTS=trols_stats/tests/test_scraper.py::TestScraper \
   trols_stats/exception/tests/test_exception.py::TestTrolsStatsConfigError
 
 tests:
-	PYTHONPATH=$(PYTHONPATH) $(shell which py.test) \
-	--cov-config .coveragerc --cov=trols_stats -sv $(TESTS)
+	PYTHONPATH=$(PYTHONPATH) \
+  $(shell which py.test) -vv --exitfirst --cov-config .coveragerc \
+  --cov trols_stats \
+  --junitxml junit.xml -sv $(TESTS)
 
 docs:
-	PYTHONPATH=$(PYTHONPATH) $(shell which sphinx-build) \
-	-b html doc/source doc/build
+	$(shell which sphinx-build) -b html doc/source doc/out
 
 clean:
-	$(GIT) clean -xdf
+	$(GIT) clean -xdf -e .vagrant -e *.swp -e 2env -e 3env
 
-VENV_DIR_EXISTS := $(shell [ -e "venv" ] && echo 1 || echo 0)
+VENV_DIR_EXISTS := $(shell [ -e "${PYVERSION}env" ] && echo 1 || echo 0)
 clear_env:
 ifeq ($(VENV_DIR_EXISTS), 1)
-	@echo \#\#\# Deleting existing environment venv ...
-	$(shell which rm) -fr venv
-	@echo \#\#\# venv delete done.
+	@echo \#\#\# Deleting existing environment ${PYVERSION}env ...
+	$(shell which rm) -fr ${PYVERSION}env
+	@echo \#\#\# ${PYVERSION}env delete done.
 endif
 
 init_env:
-	@echo \#\#\# Creating virtual environment venv ...
-ifneq ($(PY3_VERSION),)
-    ifeq ($(USE_PY3VENV), 0)
-		$(PY) -m venv venv
-    else
-		$(PY_VENV) venv
-    endif
-	@echo \#\#\# venv build done.
+	@echo \#\#\# Creating virtual environment ${PYVERSION}env ...
+	@echo \#\#\# Using wheel house $(WHEEL) ...
+ifneq ($(VENV_TOOL),)
+	$(VENV_TOOL) ${PYVERSION}env
+	@echo \#\#\# ${PYVERSION}env build done.
+
+	@echo \#\#\# Preparing wheel environment and directory ...
+	$(shell which mkdir) -pv $(WHEEL) 2>/dev/null
+	$(PYVERSION)env/bin/pip install --upgrade pip
+	$(PYVERSION)env/bin/pip install --upgrade setuptools
+	$(PYVERSION)env/bin/pip install wheel
+	@echo \#\#\# wheel env done.
 
 	@echo \#\#\# Installing package dependencies ...
-	venv/bin/pip install --upgrade pip
-	venv/bin/pip install -e .
+	$(PYVERSION)env/bin/pip wheel --wheel-dir $(WHEEL) --find-links=$(WHEEL) .
+	$(PYVERSION)env/bin/pip install --find-links=$(WHEEL) -e .
 	@echo \#\#\# Package install done.
 else
-	@echo \#\#\# Hmmm, cannot find python3 exe.
+	@echo \#\#\# Hmmm, cannot find virtual env tool.
 	@echo \#\#\# Virtual environment not created.
 endif
 
 init: clear_env init_env
 
-init_env_from_wheel:
-	@echo \#\#\# Creating virtual environment venv.
-	@echo \#\#\# Using wheel house $(WHEEL) ...
-ifneq (${PY3_VERSION},)
-    ifeq ($(USE_PY3VENV), 0)
-		$(PY) -m venv venv
-    else
-		$(PY_VENV) venv
-    endif
-	@echo \#\#\# venv build done.
-
-	@echo \#\#\# Preparing wheel environment and directory ...
-	$(shell which mkdir) -pv $(WHEEL) 2>/dev/null
-	venv/bin/pip install --upgrade pip
-	venv/bin/pip install wheel
-	@echo \#\#\# wheel env done.
-
-	@echo \#\#\# Installing package dependencies ...
-	venv/bin/pip wheel --wheel-dir $(WHEEL) --find-links=$(WHEEL) .
-	venv/bin/pip install --use-wheel --find-links=$(WHEEL) -e .
-	@echo \#\#\# Package install done.
-else
-	@echo \#\#\# Hmmm, cannot find python3 exe.
-	@echo \#\#\# Virtual environment not created.
-endif
-
-init_wheel: clear_env init_env_from_wheel
-
-init_build: init_env_from_wheel build
+init_build: init_env build
 
 build:
 	@echo \#\#\# Building package ...
-	venv/bin/python setup.py sdist bdist_wheel -d $(WHEEL)
+	$(PYVERSION)env/bin/python setup.py bdist_wheel -d $(WHEEL)
 	@echo \#\#\# Build done.
-
-upload:
-	$(PY) setup.py sdist upload -r internal
 
 py_versions:
 	@echo python3 version: ${PY3_VERSION}
 	@echo python3 minor: ${PY3_VERSION_MINOR}
-	@echo USE_PY3VENV: ${USE_PY3VENV}
-	@echo python3 virtualenv command: ${PY_VENV}
-	@echo path to python executable: ${PY}
+	@echo path to python3 executable: ${PY3}
+	@echo python3 virtual env command: ${PY_VENV}
+	@echo python2 virtual env command: ${PY2_VENV}
+	@echo virtual env tooling: ${VENV_TOOL}
 
-.PHONY: tests docs py_versions init build upload
+print-%:
+	@echo '$*=$($*)'
+
+.PHONY: test docs py_versions init build upload

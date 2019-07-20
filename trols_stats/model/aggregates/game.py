@@ -1,6 +1,7 @@
+import logging
+
 import trols_stats.model
 import trols_stats.model.entities as entities
-from logga import log
 
 __all__ = ['Game']
 
@@ -22,6 +23,53 @@ class Game(trols_stats.model.Base):
     .. attribute:: player_won
 
     """
+
+    def __init__(self,
+                 fixture=None,
+                 player=None,
+                 team_mate=None,
+                 opposition=None,
+                 score_for=None,
+                 score_against=None):
+
+        self.__fixture = Game.set_fixture(fixture)
+        self.__player = Game.set_player(player)
+        self.__team_mate = Game.set_player(team_mate)
+        self.__opposition = Game.set_opposition(opposition)
+        self.__score_for = score_for
+        self.__score_against = score_against
+        self.__player_won = None
+
+        logging.debug('SF|SA: %s|%s', self.__score_for, self.__score_against)
+        if (self.__score_for is not None
+                and self.__score_against is not None):
+            if self.__score_for in [6, 8] and self.__score_against != 8:
+                logging.debug('Player Won')
+                self.__player_won = True
+            if self.__score_against in [6, 8] and self.__score_for != 8:
+                logging.debug('Player Lost')
+                self.__player_won = False
+
+    def __call__(self):
+        # Cater for singles where player 2 is None.
+        opposition = [self.opposition[0]()]
+        if len(self.opposition) == 2 and self.opposition[1] is not None:
+            opposition.append(self.opposition[1]())
+
+        game = {
+            'fixture': self.__fixture(),
+            'player': self.__player(),
+            'opposition': opposition,
+            'score_for': self.score_for,
+            'score_against': self.score_against,
+            'player_won': self.player_won,
+        }
+
+        if self.team_mate.name is not None:
+            game['team_mate'] = self.__team_mate()
+
+        return game
+
     @property
     def fixture_round(self):
         return self.__fixture.match_round
@@ -81,52 +129,6 @@ class Game(trols_stats.model.Base):
     @player_won.setter
     def player_won(self, value):
         self.__player_won = value
-
-    def __init__(self,
-                 fixture=None,
-                 player=None,
-                 team_mate=None,
-                 opposition=None,
-                 score_for=None,
-                 score_against=None):
-
-        self.__fixture = Game.set_fixture(fixture)
-        self.__player = Game.set_player(player)
-        self.__team_mate = Game.set_player(team_mate)
-        self.__opposition = Game.set_opposition(opposition)
-        self.__score_for = score_for
-        self.__score_against = score_against
-        self.__player_won = None
-
-        log.debug('SF|SA: %s|%s', self.__score_for, self.__score_against)
-        if (self.__score_for is not None
-                and self.__score_against is not None):
-            if self.__score_for in [6, 8] and self.__score_against != 8:
-                log.debug('Player Won')
-                self.__player_won = True
-            if self.__score_against in [6, 8] and self.__score_for != 8:
-                log.debug('Player Lost')
-                self.__player_won = False
-
-    def __call__(self):
-        # Cater for singles where player 2 is None.
-        opposition = [self.opposition[0]()]
-        if len(self.opposition) == 2 and self.opposition[1] is not None:
-            opposition.append(self.opposition[1]())
-
-        game = {
-            'fixture': self.__fixture(),
-            'player': self.__player(),
-            'opposition': opposition,
-            'score_for': self.score_for,
-            'score_against': self.score_against,
-            'player_won': self.player_won,
-        }
-
-        if self.team_mate.name is not None:
-            game['team_mate'] = self.__team_mate()
-
-        return game
 
     def compact_match(self):
         """Returns a simple, compact representation of the object instance.
