@@ -12,7 +12,7 @@ class MatchRound(trols_stats.model.Base):
     """Abstraction of a match round number.
 
     Enables support for numeric round numbers in addition to
-    string representations such as "Semi Final" and "Grand Final".
+    string representations such as "Semi Final", "Prelim Final" and "Grand Final".
 
     """
     def __init__(self, match_round=None):

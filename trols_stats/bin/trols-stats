@@ -3,7 +3,6 @@
 import sys
 import os
 import argparse
-import json
 import urllib
 
 import trols_stats.interface
@@ -56,9 +55,9 @@ def main():
 
     cache_list_help = 'List raw TROLS HTML files cached at Dropbox'
     cache_parser.add_argument('command',
-                               action='store',
-                               choices=['list'],
-                               help=cache_list_help)
+                              action='store',
+                              choices=['list'],
+                              help=cache_list_help)
 
     # Prepare the argument list and config.
     args = parser.parse_args()
@@ -82,15 +81,14 @@ def source(args, conf):
     # Load the competitions.
     #
     # TODO: Archived seasons have a "daytime" query parameter.
-    results_url = 'http://trols.org.au/{}/results.php'
+    results_url = 'https://trols.org.au/{}/results.php'
     for league, daytimes in conf.trols_urls.items():
         for daytime in daytimes.split(','):
             option_value = daytime
             if league.lower() == 'nejta':
                 daytime = str()
 
-            comps_html = loader.request(results_url.format(league),
-                                        {'daytime': daytime})
+            comps_html = loader.request(results_url.format(league), {'daytime': daytime})
             comp_name_xpath = (
                 '//table/tr/td/select/'
                 'option[@value="{}"]/text()'.format(option_value)
@@ -109,8 +107,7 @@ def source(args, conf):
             # Each competition is made of sections.  For example, "BOYS 21".
             # Each section is identified by a code.
             comps_xpath = '//select[@id="section" and @name="section"]/option'
-            comps_map = trols_stats.Scraper.scrape_competition_ids(comps_html,
-                                                                comps_xpath)
+            comps_map = trols_stats.Scraper.scrape_competition_ids(comps_html, comps_xpath)
 
             # Cycle through each competition and get the match codes.
             match_xpath = '//a[contains(@onclick, "open_match")]'
@@ -121,10 +118,8 @@ def source(args, conf):
                     'daytime': option_value,
                     'section': code,
                 }
-                matches_html = loader.request(results_url.format(league),
-                                            query_args)
-                match_codes = trols_stats.Scraper.scrape_match_ids(matches_html,
-                                                                match_xpath)
+                matches_html = loader.request(results_url.format(league), query_args)
+                match_codes = trols_stats.Scraper.scrape_match_ids(matches_html, match_xpath)
 
                 root_uri = (
                     'http://www.trols.org.au/{}/match_popup.php'.format(league)
@@ -134,8 +129,7 @@ def source(args, conf):
                         'matchid': match_code,
                         'seasonid': str(),
                     }
-                    match_uri = '{}?{}'.format(root_uri,
-                                            urllib.parse.urlencode(request_args))
+                    match_uri = '{}?{}'.format(root_uri, urllib.parse.urlencode(request_args))
                     request_kwargs = {
                         'uri': match_uri,
                         'cache_dir':  conf.cache,
@@ -150,7 +144,7 @@ def scrape(args, conf):
     model = trols_stats.DataModel(shelve=conf.shelve)
     model.construct(conf.cache)
 
-def cache(args, conf):
+def cache(args):
     if args.command == 'list':
         print('XXX Dropbox cache list')
 

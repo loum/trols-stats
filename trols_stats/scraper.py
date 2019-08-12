@@ -352,7 +352,7 @@ class Scraper(object):
 
             return matchobj.group(3)
 
-        final_re = re.compile(r'^(Semi|Grand) (Final)(.*)')
+        final_re = re.compile(r'^(Semi|Grand|Prelim) (Final)(.*)')
         raw_preamble = final_re.sub(final, raw_preamble)
 
         if len(raw_preamble):

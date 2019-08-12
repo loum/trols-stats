@@ -39,8 +39,7 @@ junit.xml
 
 # Local virtual environment
 .env
-venv
-[23]env
+[v23]env
 
 # py.test
 .cache
