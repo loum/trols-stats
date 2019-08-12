@@ -251,6 +251,8 @@ class Reporter:
         if rounds:
             if 'Grand Final' in rounds:
                 last_round = 'Grand Final'
+            elif 'Prelim Final' in rounds:
+                last_round = 'Prelim Final'
             elif 'Semi Final' in rounds:
                 last_round = 'Semi Final'
             else:
@@ -471,7 +473,7 @@ class Reporter:
 
         .. note::
 
-            Fixtures are returned in order of match rounds, "Semi Final"
+            Fixtures are returned in order of match rounds, "Semi Final", "Prelim Final"
             and then "Grand Final" with singles before doubles events.
 
         *Args:*
@@ -484,8 +486,7 @@ class Reporter:
         presentation in web templates.  For example::
 
             {
-                'Isabella Markovski~Watsonia~14~girls~'
-                'saturday_am_autumn_2015': [
+                'Isabella Markovski~Watsonia~14~girls~saturday_am_autumn_2015': [
                     {
                         'match_type': 'doubles',
                         'match_round': 5,
@@ -527,8 +528,7 @@ class Reporter:
         from *player_ids* list into separate parts.  For example::
 
         >>> from trols_munder_ui.utils import player_ids_dict
-        >>> token = ('Isabella Markovski~Watsonia~12~girls~'
-        ...          'saturday_am_spring_2015')
+        >>> token = ('Isabella Markovski~Watsonia~12~girls~saturday_am_spring_2015')
         >>> player_ids_dict([token])
         [{'name': 'Isabella Markovski', 'comp_type': 'girls', 'section': '12',
         'team': 'Watsonia', 'token': 'Isabella Markovski~Watsonia~12~girls~sa

@@ -34,7 +34,7 @@ else
 endif
 
 # OK, set some globals.
-WHEEL=~/wheelhouse
+WHEEL="$(HOME)/wheelhouse"
 PYTHONPATH=.
 GIT=$(shell which git 2>/dev/null)
 
